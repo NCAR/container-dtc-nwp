@@ -1,12 +1,6 @@
 FROM centos:latest
 MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 
-# TO DO:
-# - Compile with GRIB2 support and other optional libs
-# - Redirect output to log files and echo out useful info?
-# - everything else!
-# The ghostscript-fonts.noarch package didn't contain the expected font file names.  Downloading tarball instead. 
-
 # 
 # This Dockerfile compiles MET from source during "docker build" step
 #
@@ -20,7 +14,10 @@ ENV FC  /usr/bin/gfortran
 ENV F77 /usr/bin/gfortran
 
 RUN yum -y update
-RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel zlib zlib-devel cairo-devel.x86_64 freetype-devel.x86_64 epel-release hostname m4 make perl tar tcsh time wget which
+RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 \
+                   libpng-devel jasper jasper-devel zlib zlib-devel \
+                   cairo-devel.x86_64 freetype-devel.x86_64 epel-release \
+                   hostname m4 make tar tcsh time wget which
 RUN yum -y install g2clib-devel.x86_64
 
 #
@@ -60,8 +57,8 @@ RUN mkdir -p /met/external_libs/BUFRLIB \
  && LOG_FILE=/met/external_libs/BUFRLIB/build.log \
  && echo "Compiling BUFRLIB and writing log file ${LOG_FILE}" \
  && ./preproc_patch.sh *.F > ${LOG_FILE} \
- && ${CC} -c -DUNDERSCORE *.c >> ${LOG_FILE} \
- && ${FC} -c -fno-second-underscore *.f >> ${LOG_FILE} \
+ && ${CC} -c -DUNDERSCORE *.c >> ${LOG_FILE} 2>&1 \
+ && ${FC} -c -fno-second-underscore *.f >> ${LOG_FILE} 2>&1 \
  && ar crv libbufr.a *.o >> ${LOG_FILE} \
  && rm -f /usr/lib/libbufr.a \
  && cp  *.a /usr/lib \
