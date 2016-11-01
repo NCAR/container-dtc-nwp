@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# Script to uninstall and clean up MET
+#
+
+cd /met/met-5.2
+make uninstall
+make clean
+
+rm -f configure.log  make_install.log  make_test.log
+
