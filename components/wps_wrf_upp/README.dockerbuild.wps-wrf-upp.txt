@@ -12,28 +12,26 @@
 # The steps below are NOT necessary to run the docker demo, but instead for learning how to build docker images.
 #  using "Dockerfile" and commands such as "docker build -t <>"
 #
-git clone  https://github.com/NCAR/container-wrf
-cd ./container-wrf/3.7.1/datasets
-cd wpsgeog ; docker build -t my-wpsgeog .
-cd ../wrfinputsandy ; docker build -t my-wrfinputsandy .
-#cd ../mmet-20120629 ; docker build -t my-mmet-20120629 .
-#cd ../../ncl-mmet ; docker build -t my-ncl-mmet .
+git clone  https://github.com/NCAR/container-dtc-nwp
+cd ./container-dtc-nwp/components
+cd wps_geog ; docker build -t my-wpsgeog .
+cd ../cases/derecho_20120629 ; docker build -t my-derecho .
+#cd ../../ncl ; docker build -t my-ncl .
 #
-# now compile wrf from source
-cd ../ncar-wrf ; docker build -t my-wps-wrf-upp .
+# now compile wps, wrf, and upp from source
+cd ../../wps_wrf_upp ; docker build -t my-wps-wrf-upp .
 #
+# now compile met from source
+cd ../met ; docker build -t my-met .
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
-# Manual steps to instantiate local docker containers from your personal docker wrf images follow:
+# Manual steps to instantiate local docker containers from your personal docker images follow:
 #
 docker create -v /WPS_GEOG --name wpsgeog my-wpsgeog
-docker create -v /wrfinput --name wrfinputsandy my-wrfinputsandy
-#docker create -v /wrfinput --name mmet-20120629 my-mmet-20120629
+docker create -v /cases/derecho_20120629 --name derecho my-derecho
 #
-docker run -it --volumes-from wpsgeog --volumes-from wrfinputsandy -v ~/wrfoutput:/wrfoutput \
- --name mywrfsandy my-wps-wrf-upp /wrf/run-wps-wrf-upp
-#docker run -it --volumes-from wpsgeog --volumes-from mmet-20120629 -v ~/wrfoutput:/wrfoutput \
-# --name my-mmet-20120629 my-wrf /wrf/run-wrf
+docker run -it --volumes-from wpsgeog --volumes-from derecho -v ~/wrfoutput:/wrfoutput \
+ --name my-nwp-derecho my-wps-wrf-upp /wrf/run-wps-wrf-upp
 #
 # below a Windows directory mapping example:
 # docker run -it --volumes-from wpsgeog --volumes-from mmet-20120629 -v c:/Users/myid/wrfoutput:/wrfoutput \
