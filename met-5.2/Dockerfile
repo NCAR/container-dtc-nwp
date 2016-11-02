@@ -13,12 +13,13 @@ ENV CXX /usr/bin/g++
 ENV FC  /usr/bin/gfortran
 ENV F77 /usr/bin/gfortran
 
-RUN yum -y update
-RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 \
+RUN yum -y update \
+ && yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 \
                    libpng-devel jasper jasper-devel zlib zlib-devel \
                    cairo-devel.x86_64 freetype-devel.x86_64 epel-release \
-                   hostname m4 make tar tcsh time wget which
-RUN yum -y install g2clib-devel.x86_64
+                   hostname m4 make tar tcsh time wget which \
+                   ncview.x86_64 gv.x86_64 \
+ && yum -y install g2clib-devel.x86_64
 
 #
 # Now get 3rd party EPEL builds of netcdf
@@ -33,15 +34,7 @@ WORKDIR /met
 #
 # Set environment for interactive bash and csh container shells
 #
-RUN echo export CC=${CC} >> /etc/bashrc \
- && echo setenv CC ${CC} >> /etc/csh.cshrc \
- && echo export CXX=${CXX} >> /etc/bashrc \
- && echo setenv CXX ${CXX} >> /etc/csh.cshrc \
- && echo export FC=${FC} >> /etc/bashrc \
- && echo setenv FC ${FC} >> /etc/csh.cshrc \
- && echo export F77=${F77} >> /etc/bashrc \
- && echo setenv F77 ${F77} >> /etc/csh.cshrc \
- && echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
+RUN echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
  && echo setenv MET_FONT_DIR /met/external_libs/fonts >> /etc/csh.cshrc
 
 #
