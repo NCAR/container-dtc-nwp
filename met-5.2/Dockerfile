@@ -89,3 +89,10 @@ RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_V
  && echo "Testing met-${MET_VERSION} and writing log file ${LOG_FILE}" \
  && make test > ${LOG_FILE} 2>&1
 
+#
+# Pull input data for the online tutorial
+#
+RUN DATA_URL=http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz \
+ && echo "Downloading input data for the met-${MET_VERSION} online tutorial from ${DATA_URL}" \
+ && curl -SL ${DATA_URL} | tar zxC /met/met-${MET_VERSION}
+
