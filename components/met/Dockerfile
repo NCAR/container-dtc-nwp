@@ -13,17 +13,16 @@ ENV CXX /usr/bin/g++
 ENV FC  /usr/bin/gfortran
 ENV F77 /usr/bin/gfortran
 
-RUN yum -y update
-RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 \
+#
+# Install required packages
+#
+RUN yum -y update \
+ && yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 \
                    libpng-devel jasper jasper-devel zlib zlib-devel \
-                   cairo-devel.x86_64 freetype-devel.x86_64 epel-release \
-                   hostname m4 make tar tcsh time wget which
-RUN yum -y install g2clib-devel.x86_64
-
-#
-# Now get 3rd party EPEL builds of netcdf
-#
-RUN yum -y install netcdf-cxx-devel.x86_64 gsl-devel.x86_64 
+                   cairo-devel freetype-devel epel-release \
+                   hostname m4 make tar tcsh ksh time wget which \
+ && yum -y install g2clib-devel \
+ && yum -y install netcdf-cxx-devel gsl-devel
 
 #
 # Set working directory
@@ -33,15 +32,7 @@ WORKDIR /met
 #
 # Set environment for interactive bash and csh container shells
 #
-RUN echo export CC=${CC} >> /etc/bashrc \
- && echo setenv CC ${CC} >> /etc/csh.cshrc \
- && echo export CXX=${CXX} >> /etc/bashrc \
- && echo setenv CXX ${CXX} >> /etc/csh.cshrc \
- && echo export FC=${FC} >> /etc/bashrc \
- && echo setenv FC ${FC} >> /etc/csh.cshrc \
- && echo export F77=${F77} >> /etc/bashrc \
- && echo setenv F77 ${F77} >> /etc/csh.cshrc \
- && echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
+RUN echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
  && echo setenv MET_FONT_DIR /met/external_libs/fonts >> /etc/csh.cshrc
 
 #
@@ -57,8 +48,8 @@ RUN mkdir -p /met/external_libs/BUFRLIB \
  && LOG_FILE=/met/external_libs/BUFRLIB/build.log \
  && echo "Compiling BUFRLIB and writing log file ${LOG_FILE}" \
  && ./preproc_patch.sh *.F > ${LOG_FILE} \
- && ${CC} -c -DUNDERSCORE *.c >> ${LOG_FILE} 2>&1 \
- && ${FC} -c -fno-second-underscore *.f >> ${LOG_FILE} 2>&1 \
+ && ${CC} -c -DUNDERSCORE *.c >> ${LOG_FILE} \
+ && ${FC} -c -fno-second-underscore *.f >> ${LOG_FILE} \
  && ar crv libbufr.a *.o >> ${LOG_FILE} \
  && rm -f /usr/lib/libbufr.a \
  && cp  *.a /usr/lib \
@@ -87,5 +78,5 @@ RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_V
  && make install > ${LOG_FILE} \
  && LOG_FILE=/met/met-${MET_VERSION}/make_test.log \
  && echo "Testing met-${MET_VERSION} and writing log file ${LOG_FILE}" \
- && make test > ${LOG_FILE} 2>&1
+ && make test > ${LOG_FILE}
 
