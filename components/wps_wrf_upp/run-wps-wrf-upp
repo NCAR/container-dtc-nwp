@@ -271,7 +271,7 @@ cp namelist.nocolons namelist.input
 ./wrf.exe
 
 # Check success
-  ls -ls $OUTPUT_DIR/wrfo*
+  ls -ls $WRFPRD_DIR/wrfo*
   OK_wrfout=$?
 
   if [ $OK_wrfout -eq 0 ]; then
