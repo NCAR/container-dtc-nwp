@@ -78,5 +78,5 @@ RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_V
  && make install > ${LOG_FILE} \
  && LOG_FILE=/met/met-${MET_VERSION}/make_test.log \
  && echo "Testing met-${MET_VERSION} and writing log file ${LOG_FILE}" \
- && make test > ${LOG_FILE}
+ && make test > ${LOG_FILE} 2>&1
 
