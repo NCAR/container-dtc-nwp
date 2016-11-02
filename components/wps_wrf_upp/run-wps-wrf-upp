@@ -14,9 +14,11 @@ my_namelist=false
 #
 # variables need to match docker container volume names:
 WRF_BUILD="/wrf"
-NML_DIR="/wrfinput"
+#NML_DIR="/wrfinput"
+NML_DIR="/case_data/derecho_20120629/namelists"
 WPSPRD_DIR="/wpsprd"
-INPUT_DIR="/wrfinput"
+#INPUT_DIR="/wrfinput"
+INPUT_DIR="/case_data/derecho_20120629"
 WRFPRD_DIR="/wrfprd"
 OUTPUT_DIR="/wrfoutput"
 POSTPRD_DIR="/postprd"
@@ -84,11 +86,11 @@ ln -sf $WRF_BUILD/WPS/*.exe .
 # The Vtable is dependent on the data that is used
 # Will need to pull this in dynamically somehow, tie to data/namelist
 
-cp -f $INPUT_DIR/namelist.wps .
-cp -f $INPUT_DIR/Vtable.GFS Vtable
+cp -f $NML_DIR/namelist.wps .
+cp -f $NML_DIR/Vtable.GFS Vtable
 
 # Link input data
-$WRF_BUILD/WPS/link_grib.csh $INPUT_DIR/*_*
+$WRF_BUILD/WPS/link_grib.csh $INPUT_DIR/gfs/*_*
 
 ##################################
 #     Run the geogrid program    #
@@ -294,7 +296,7 @@ echo Starting UPP
 mkdir $POSTPRD_DIR
 cd $POSTPRD_DIR
 
-cp $INPUT_DIR/run_unipost .
+cp $NML_DIR/run_unipost .
 ./run_unipost
 
 echo
