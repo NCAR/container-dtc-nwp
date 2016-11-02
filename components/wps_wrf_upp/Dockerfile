@@ -48,7 +48,8 @@ RUN pwd \
  && ./configure <<< $'32\r1\r' \
 # && echo -e "32\r1\r" | ./configure
 # && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
- && /bin/csh ./compile em_real <<< $'y\r'
+ && /bin/csh ./compile em_real > compile_wrf.log 2>&1
+# && /bin/csh ./compile em_real <<< $'y\r'
 #
 # Build WPS second
 #
@@ -60,7 +61,7 @@ RUN pwd \
 # input 1 to configure script (gfortran for serial build)
  && ./configure <<< $'1\r' \
  && sed -i -e 's/-L$(NETCDF)\/lib/-L$(NETCDF)\/lib -lnetcdff /' ./configure.wps \
- && /bin/csh ./compile
+ && /bin/csh ./compile > compile_wps.log 2>&1
 #
 # Build UPP third
 #
@@ -68,7 +69,7 @@ RUN cd ./UPPV$UPP_VERSION \
  && export NETCDF=/wrf/netcdf_links \
 # input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
- && /bin/csh ./compile
+ && /bin/csh ./compile > compile_upp.log 2>&1
 #
 ENV LD_LIBRARY_PATH /usr/lib64/lib
 ENV PATH  /usr/lib64/bin:$PATH
