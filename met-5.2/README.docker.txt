@@ -8,13 +8,13 @@
 
 git clone https://github.com/NCAR/container-dtc-met
 cd ./container-dtc-met/met-5.2
-docker build -t my-met .
+docker build -t met-5.2-tutorial .
 
 #
 # Next, open up a shell in the docker environment and proceed through the online tutorial. 
 #
 
-docker run -it my-met /bin/bash
+docker run -it met-5.2-tutorial /bin/bash
 cd /met/met-5.2
 
 #
