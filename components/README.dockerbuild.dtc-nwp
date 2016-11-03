@@ -14,15 +14,16 @@
 #
 git clone  https://github.com/NCAR/container-dtc-nwp
 cd ./container-dtc-nwp/components
-cd wps_geog ; docker build -t my-wpsgeog .
-cd ../cases/derecho_20120629 ; docker build -t my-derecho .
-#cd ../../ncl ; docker build -t my-ncl .
+cd wps_geog ; docker build -t my-wpsgeog . ; cd ..
+cd cases/derecho_20120629 ; docker build -t my-derecho . ; cd ../..
+# FUTURE WORK:
+#cd ncl ; docker build -t my-ncl . ; cd ..
 #
 # now compile wps, wrf, and upp from source
-cd ../../wps_wrf_upp ; docker build -t my-wps-wrf-upp .
+cd wps_wrf_upp ; docker build -t my-wps-wrf-upp . ; cd ..
 #
 # now compile met from source
-cd ../met ; docker build -t my-met .
+cd met ; docker build -t my-met . ; cd ..
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
 # Manual steps to instantiate local docker containers from your personal docker images follow:
