@@ -6,7 +6,6 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 #
 ENV MET_VERSION 5.2
 ENV MET_RELEASE_DATE 20160815
-ENV MET_PATCH_DATE 20161010
 
 ENV CC  /usr/bin/gcc
 ENV CXX /usr/bin/g++
@@ -63,7 +62,7 @@ RUN mkdir -p /met/external_libs/BUFRLIB \
 RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz \
  && echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
  && curl -SL ${MET_URL} | tar zxC /met \
- && PATCH_URL=http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_${MET_PATCH_DATE}.tar.gz \
+ && PATCH_URL=http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz \
  && echo "Downloading met-${MET_VERSION} patches from ${PATCH_URL}" \
  && curl -SL ${PATCH_URL} | tar zxC /met/met-${MET_VERSION} \
  && cd /met/met-${MET_VERSION} \
