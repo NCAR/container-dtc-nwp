@@ -17,9 +17,9 @@ my_namelist=false
 
 # Variables need to match docker container volume names:
 WRF_BUILD="/wrf"
-NML_DIR="/case_data/derecho_20120629/namelists"
+NML_DIR="/case_data/sandy_20121027/namelists"
 WPSPRD_DIR="/wpsprd"
-INPUT_DIR="/case_data/derecho_20120629"
+INPUT_DIR="/case_data/sandy_20121027"
 WRFPRD_DIR="/wrfprd"
 OUTPUT_DIR="/wrfoutput"
 POSTPRD_DIR="/postprd"
