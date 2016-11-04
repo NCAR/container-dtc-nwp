@@ -3,30 +3,29 @@
 # Simplified script to run wrf test Sandy case in Docker world
 #
 # Examples in block below.
-# ./run-wrf -np 2 -skip wps -namelist /path/to/namelist -skip real
+# ./run-dtc-nwp -np 1 -skip wps -namelist /path/to/namelist -skip real
 
 #Initalize options
 num_procs=1
 skip_wps=false
 skip_real=false
+skip_wrf=false
+skip_upp=false
+skip_ncl=false
+skip_met=false
 my_namelist=false
 
-#
-# variables need to match docker container volume names:
+# Variables need to match docker container volume names:
 WRF_BUILD="/wrf"
-#NML_DIR="/wrfinput"
 NML_DIR="/case_data/derecho_20120629/namelists"
 WPSPRD_DIR="/wpsprd"
-#INPUT_DIR="/wrfinput"
 INPUT_DIR="/case_data/derecho_20120629"
 WRFPRD_DIR="/wrfprd"
 OUTPUT_DIR="/wrfoutput"
 POSTPRD_DIR="/postprd"
 METPRD_DIR="/metprd"
-#
 
 # Read in command line options
-
 while (( $# > 1 ))
 do
 
@@ -46,6 +45,18 @@ case $opt in
            if [[ $skip_stuff == "real" ]]; then
              skip_real=true
            fi
+           if [[ $skip_stuff == "wrf" ]]; then
+             skip_wrf=true
+           fi
+           if [[ $skip_stuff == "upp" ]]; then
+             skip_upp=true
+           fi
+           if [[ $skip_stuff == "ncl" ]]; then
+             skip_ncl=true
+           fi
+           if [[ $skip_stuff == "met" ]]; then
+             skip_met=true
+           fi
        shift
        ;;
 
@@ -63,20 +74,24 @@ esac
 shift
 done
 
-echo "num_procs = " $num_procs
-echo "skip_wps  = " $skip_wps
-echo "skip_real = " $skip_real
-echo "my_namelist = " $my_namelist
-echo "namelist dir = " $NML_DIR
+echo "num_procs     = " $num_procs
+echo "skip_wps      = " $skip_wps
+echo "skip_real     = " $skip_real
+echo "skip_wrf      = " $skip_wrf
+echo "skip_upp      = " $skip_upp
+echo "skip_ncl      = " $skip_ncl
+echo "skip_met      = " $skip_met
+echo "my_namelist   = " $my_namelist
+echo "namelist dir  = " $NML_DIR
 # End sample argument list
 
 # Set input data contain location
 
-#	To run the test, bring in the correct namelist.wps, and link the Grib data,
-#	select the right Vtable.
+# To run the test, bring in the correct namelist.wps, and link the Grib data,
+# select the right Vtable.
 
-if [ $skip_wps = "false" ]; then #Don't skip wps
-echo "doing wps"
+if [ $skip_wps = "false" ]; then # Don't skip wps
+echo Running WPS 
 
 mkdir $WPSPRD_DIR
 cd $WPSPRD_DIR
@@ -96,6 +111,7 @@ $WRF_BUILD/WPS/link_grib.csh $INPUT_DIR/gfs/*_*
 ##################################
 #     Run the geogrid program    #
 ##################################
+
 echo Starting geogrid
 
 # Remove old files
@@ -130,6 +146,7 @@ echo Starting geogrid
 ##################################
 #    Run the ungrib program      #
 ##################################
+
 echo Starting ungrib
 
 # checking to remove old files
@@ -166,6 +183,7 @@ echo Starting ungrib
 ##################################
 #     Run the metgrid program    #
 ##################################
+
 echo Starting metgrid 
 
 # Remove old files
@@ -201,7 +219,8 @@ fi # end if skip_wps = false
 ##################################
 #    Move to WRF                 #
 ##################################
-echo Moving on to WRF
+
+echo Running WRF
 
 # Go to test directory where tables, data, etc. exist
 # Perform wrf run here.
@@ -222,8 +241,8 @@ mv nml namelist.input
 #     Run the real program       #
 ##################################
 
-if [ $skip_real = "false" ]; then # Don't skip real if true
-echo "Executing real"
+if [ $skip_real = "false" ]; then # Don't skip real
+echo Running real
 
 # Link data from WPS
   ln -sf $WPSPRD_DIR/met_em.d0* .
@@ -263,7 +282,9 @@ fi # end skip_real = false
 ##################################
 #   Run the WRF forecast model.  #
 ##################################
-echo Executing wrf.exe
+
+if [ $skip_wrf = "false" ]; then # Don't skip wrf
+echo Running wrf.exe 
 
 # Command for openmpi wrf in Docker world
 cp namelist.nocolons namelist.input
@@ -289,10 +310,15 @@ cp namelist.nocolons namelist.input
 	echo
 	exit 888
   fi
+
+fi # end skip_wrf = false
+
 ##################################
 #   Run UPP                      #
 ##################################
-echo Starting UPP
+
+if [ $skip_upp = "false" ]; then # Don't skip upp
+echo Running UPP
 
 mkdir $POSTPRD_DIR
 cd $POSTPRD_DIR
@@ -300,11 +326,33 @@ cd $POSTPRD_DIR
 cp $NML_DIR/run_unipost .
 ./run_unipost
 
+fi # end skip_upp = false
+
+##################################
+#   Run NCL                      #
+##################################
+
+if [ $skip_ncl = "false" ]; then # Don't skip ncl
+echo Running NCL 
+
+echo Nothing to do yet...
+
+fi # end skip_ncl = false
+ 
+##################################
+#   Run MET                      #
+##################################
+
+if [ $skip_met = "false" ]; then # Don't skip met 
+echo Running MET 
+
 mkdir $METPRD_DIR
 cd $METPRD_DIR
 
 cp $NML_DIR/run_met .
 ./run_met
 
-echo
+fi # end skip_met = false
 
+echo Done
+ 
