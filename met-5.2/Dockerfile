@@ -21,9 +21,8 @@ RUN yum -y update \
                    libpng-devel jasper jasper-devel zlib zlib-devel \
                    cairo-devel freetype-devel epel-release \
                    hostname m4 make tar tcsh time wget which \
-                   ncview gv \
- && yum -y install g2clib-devel \
- && yum -y install netcdf-cxx-devel gsl-devel
+ && yum -y install g2clib-devel netcdf-cxx-devel gsl-devel \
+ && yum -y install gv ncview
 
 #
 # Set working directory
