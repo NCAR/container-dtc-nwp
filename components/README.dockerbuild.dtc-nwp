@@ -5,37 +5,48 @@
 #
 # These are manual steps to build your personal docker wrf container images.
 #
-# to simply run a WPS, WRF, UPP demo:
-# using pre-built NCAR docker-wrf container images, see the docker-compose-wps-wrf-upp.yml file
-# and the file README.dockerrun.wps-wrf-upp.txt
+# The following explains how to run an end-to-end NWP test case, running WPS, WRF, UPP, NCL, and MET.
 #
 # The steps below are NOT necessary to run the docker demo, but instead for learning how to build docker images.
 #  using "Dockerfile" and commands such as "docker build -t <>"
 #
+
 git clone  https://github.com/NCAR/container-dtc-nwp
 cd ./container-dtc-nwp/components
-cd wps_geog ; docker build -t my-wpsgeog . ; cd ..
-cd cases/derecho_20120629 ; docker build -t my-derecho . ; cd ../..
-# FUTURE WORK:
-#cd ncl ; docker build -t my-ncl . ; cd ..
-#
-# now compile wps, wrf, and upp from source
-cd wps_wrf_upp ; docker build -t my-wps-wrf-upp . ; cd ..
-#
-# now compile met from source
-cd met ; docker build -t my-met . ; cd ..
+
+# Build image for WPSGEOG static data
+cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
+
+# Build image for input test case data
+cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
+
+# Build image which compiles WPS, WRF, and UPP from source
+cd wps_wrf_upp ; docker build -t dtc-nwp-wps-wrf-upp . ; cd ..
+
+# FUTURE WORK
+# cd ncl ; docker build -t dtc-nwp-ncl . ; cd ..
+
+# Build image which compiles MET from source
+cd met ; docker build -t dtc-nwp-met . ; cd ..
+
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
-# Manual steps to instantiate local docker containers from your personal docker images follow:
+# Instantiate local docker containers from the images you created above:
 #
-docker create -v /WPS_GEOG --name wpsgeog my-wpsgeog
-docker create -v /cases/derecho_20120629 --name derecho my-derecho
+
+docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
+docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy 
+
 #
-docker run -it --volumes-from wpsgeog --volumes-from derecho -v ~/wrfoutput:/wrfoutput \
- --name my-nwp-derecho my-wps-wrf-upp /wrf/run-wps-wrf-upp
+# Run end-to-end NWP script in docker-space.
+#
+docker run -it --volumes-from wps_geog --volumes-from sandy \
+ -v ~/wrfoutput:/wrfoutput \
+ --name run-dtc-nwp-sandy dtc-nwp-wps-wrf-upp /case_data/sandy_20121027/scripts/run-nwp
+
 #
 # below a Windows directory mapping example:
-# docker run -it --volumes-from wpsgeog --volumes-from mmet-20120629 -v c:/Users/myid/wrfoutput:/wrfoutput \
+# docker run -it --volumes-from wps_geog --volumes-from mmet-20120629 -v c:/Users/myid/wrfoutput:/wrfoutput \
 #   --name my-mmet-20120629 my-wrf /wrf/run-wrf
 #
 # Now plot the .nc files
