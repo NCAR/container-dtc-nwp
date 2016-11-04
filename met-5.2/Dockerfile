@@ -22,7 +22,7 @@ RUN yum -y update \
                    cairo-devel freetype-devel epel-release \
                    hostname m4 make tar tcsh time wget which \
  && yum -y install g2clib-devel netcdf-cxx-devel gsl-devel \
- && yum -y install gv ncview
+ && yum -y install gv ncview wgrib wgrib2
 
 #
 # Set working directory
