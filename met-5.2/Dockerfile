@@ -21,7 +21,7 @@ RUN yum -y update \
                    cairo-devel freetype-devel epel-release \
                    hostname m4 make tar tcsh time wget which \
  && yum -y install g2clib-devel netcdf-cxx-devel gsl-devel \
- && yum -y install gv ncview wgrib wgrib2
+ && yum -y install gv ncview wgrib wgrib2 convert ps2pdf
 
 #
 # Set working directory
@@ -82,7 +82,7 @@ RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_V
 #
 # Pull input data for the online tutorial
 #
-RUN DATA_URL=http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz \
+RUN DATA_URL=http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_docker_data.tar.gz \
  && echo "Downloading input data for the met-${MET_VERSION} online tutorial from ${DATA_URL}" \
- && curl -SL ${DATA_URL} | tar zxC /met/met-${MET_VERSION}
+ && curl -SL ${DATA_URL} | tar zxC /met/met-${MET_VERSION} data
 
