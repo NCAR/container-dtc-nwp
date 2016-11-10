@@ -47,5 +47,9 @@ cd /met/met-5.2
 #   - MET is installed in /usr/local/bin.
 #     Therefore, the "bin/" prefix should be ommitted from all tutorial commands.
 #     For example, run "grid_stat" instead of "bin/grid_stat".
+#   - MET creates PostScript ouput image which may be difficult to view on your local machine.
+#     The convert or ps2pdf may be used to convert PostScript images to PDF or other image file formats.
+#       convert -background white in.ps out.png
+#       ps2pdf -dPDFSETTINGS=/prepress in.ps [out.pdf] 
 #
 

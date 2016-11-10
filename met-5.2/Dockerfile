@@ -21,7 +21,7 @@ RUN yum -y update \
                    cairo-devel freetype-devel epel-release \
                    hostname m4 make tar tcsh time wget which \
  && yum -y install g2clib-devel netcdf-cxx-devel gsl-devel \
- && yum -y install gv ncview wgrib wgrib2 convert ps2pdf
+ && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf
 
 #
 # Set working directory
