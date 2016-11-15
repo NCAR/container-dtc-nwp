@@ -3,6 +3,12 @@
 # these are tutorial steps for learning on a personal workstation or laptop where Docker engine
 # has been installed and running.
 #
+# You can obtain Docker (current Mac and Windows 10 users) at:
+#   https://www.docker.com/products/overview
+#
+# Or Docker Tools (for older Mac and Windows users) at:
+#   https://www.docker.com/products/docker-toolbox
+#
 # These are manual steps to build your personal docker MET container image.
 #
 
@@ -20,15 +26,27 @@ docker build -t met-5.2-tutorial .
 # Once MET_TUTORIAL_DIR is set, run the following commands to set up the output directory structure.
 #
 
+# For Linux Users
 mkdir -p ${MET_TUTORIAL_DIR}
 curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv5.2_tutorial_data.tar.gz | \
   tar zxC ${MET_TUTORIAL_DIR} tutorial
- 
+
+# For Windows Users
+# We recommend you place the tutorial directory in the container-dtc-met folder, which will likely be
+# located in C:\Users\your-name\container-dtc-met\met-5.2 (where you are after executing docker build  
+curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv5.2_tutorial_data.tar.gz | \
+  tar zxC ./ tutorial
+
 #
 # Next, open up a shell in the docker environment and point to your tutorial output directory.
 #
 
+# For Linux Users
 docker run -it -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-5.2/tutorial met-5.2-tutorial /bin/bash
+cd /met/met-5.2
+
+# For Windows Users
+docker run -it -v /c/Users/your-name/container-dtc-met/met-5.2/tutorial:/met/met-5.2/tutorial met-5.2-tutorial /bin/bash
 cd /met/met-5.2
 
 #
