@@ -52,7 +52,7 @@ RUN mkdir -p /met/external_libs/BUFRLIB \
  && ar crv libbufr.a *.o >> ${LOG_FILE} \
  && rm -f /usr/lib/libbufr.a \
  && cp  *.a /usr/lib \
- && GSFONT_URL=http://iweb.dl.sourceforge.net/project/gs-fonts/gs-fonts/8.11%20%28base%2035%2C%20GPL%29/ghostscript-fonts-std-8.11.tar.gz \
+ && GSFONT_URL=http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/ghostscript-fonts-std-8.11.tar.gz \
  && echo "Downloading GhostScript fonts from ${GSFONT_URL}" \
  && curl -SL ${GSFONT_URL} | tar zxC /met/external_libs
 
