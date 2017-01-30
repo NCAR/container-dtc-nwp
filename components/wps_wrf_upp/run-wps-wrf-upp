@@ -20,7 +20,6 @@ WPSPRD_DIR="/wpsprd"
 #INPUT_DIR="/wrfinput"
 INPUT_DIR="/case_data/derecho_20120629"
 WRFPRD_DIR="/wrfprd"
-OUTPUT_DIR="/wrfoutput"
 POSTPRD_DIR="/postprd"
 #
 
