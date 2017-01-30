@@ -41,8 +41,8 @@ docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy
 # Run end-to-end NWP script in docker-space.
 #
 docker run -it --volumes-from wps_geog --volumes-from sandy \
- -v ~/wrfprd:/wrfprd ~/postprd:/postprd \
- --name run-dtc-nwp-sandy dtc-nwp-wps-wrf-upp /case_data/sandy_20121027/scripts/run-nwp
+ -v ~/wrfprd:/wrfprd -v ~/postprd:/postprd \
+ --name run-dtc-nwp-sandy dtc-nwp-wps-wrf-upp /case_data/sandy_20121027/scripts/run-dtc-nwp
 
 #
 # below a Windows directory mapping example:
