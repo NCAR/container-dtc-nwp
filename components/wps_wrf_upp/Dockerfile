@@ -3,7 +3,7 @@ MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
 ENV WRF_VERSION 3.7.1
-ENV UPP_VERSION 3.1
+ENV UPP_VERSION 3.1.1
 #
 RUN yum -y update
 RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release which wget 
@@ -65,10 +65,11 @@ RUN pwd \
 #
 # Build UPP third
 #
-RUN cd ./UPPV$UPP_VERSION \
+RUN cd ./UPPV3.1 \
  && export NETCDF=/wrf/netcdf_links \
 # input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
+ && sed -i -e 's/-lnetcdf /-lnetcdff /' ./configure.upp \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
 ENV LD_LIBRARY_PATH /usr/lib64/lib

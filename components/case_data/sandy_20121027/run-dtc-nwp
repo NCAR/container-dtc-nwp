@@ -17,7 +17,8 @@ my_namelist=false
 
 # Variables need to match docker container volume names:
 WRF_BUILD="/wrf"
-NML_DIR="/case_data/sandy_20121027/namelists"
+NML_DIR="/case_data/sandy_20121027/param"
+SCRIPT_DIR="/case_data/sandy_20121027/scripts"
 WPSPRD_DIR="/wpsprd"
 INPUT_DIR="/case_data/sandy_20121027"
 WRFPRD_DIR="/wrfprd"
@@ -106,7 +107,7 @@ cp -f $NML_DIR/namelist.wps .
 cp -f $NML_DIR/Vtable.GFS Vtable
 
 # Link input data
-$WRF_BUILD/WPS/link_grib.csh $INPUT_DIR/gfs/*_*
+$WRF_BUILD/WPS/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
 
 ##################################
 #     Run the geogrid program    #
@@ -323,7 +324,7 @@ echo Running UPP
 mkdir $POSTPRD_DIR
 cd $POSTPRD_DIR
 
-cp $NML_DIR/run_unipost .
+cp $SCRIPT_DIR/run_unipost .
 ./run_unipost
 
 fi # end skip_upp = false
@@ -349,7 +350,7 @@ echo Running MET
 mkdir $METPRD_DIR
 cd $METPRD_DIR
 
-cp $NML_DIR/run_met .
+cp $SCRIPT_DIR/run_met .
 ./run_met
 
 fi # end skip_met = false
