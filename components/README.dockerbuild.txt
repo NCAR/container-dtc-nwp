@@ -21,13 +21,13 @@ cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
 cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
 
 # Build image which compiles WPS, WRF, and UPP from source
-cd wps_wrf_upp ; docker build -t dtc-nwp-wps-wrf-upp . ; cd ..
+cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
 
 # FUTURE WORK
 # cd ncl ; docker build -t dtc-nwp-ncl . ; cd ..
 
 # Build image which compiles MET from source
-cd met ; docker build -t dtc-nwp-met . ; cd ..
+cd met ; docker build -t dtc-met . ; cd ..
 
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
@@ -38,24 +38,7 @@ docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
 docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy 
 
 #
-# Run end-to-end NWP script in docker-space.
-#
-docker run -it --volumes-from wps_geog --volumes-from sandy \
- -v ~/wrfprd:/wrfprd -v ~/postprd:/postprd -v ~/metprd:/metprd \
- --name run-dtc-nwp-sandy dtc-nwp-wps-wrf-upp /case_data/sandy_20121027/scripts/run-dtc-nwp
-
-#
-# below a Windows directory mapping example:
-# docker run -it --volumes-from wps_geog --volumes-from mmet-20120629 -v c:/Users/myid/wrfoutput:/wrfoutput \
-#   --name my-mmet-20120629 my-wrf /wrf/run-wrf
-#
-# Now plot the .nc files
-#docker run -it --rm=true -v ~/wrfoutput:/wrfoutput --name nclplot my-ncl
-#
-# Windows:
-# docker run -it --rm=true -v c:/Users/myid/wrfoutput:/wrfoutput --name nclplot my-ncl
-#
-# A more automated method using pre-built NCAR docker-wrf container images,
-# edit the docker-compose-mmet.yml file to reflect wrfoutput directory, number of cores, etc
-# again, see the file README.dockerrun.mmet.txt
+# A more automated method using pre-built DTC docker-nwp/met container images,
+# edit the docker-compose-dtc.yml file to reflect wrfoutput directory, number of cores, etc
+# again, see the file README.dockerrun.txt
 #
