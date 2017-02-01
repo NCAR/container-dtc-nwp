@@ -351,6 +351,8 @@ mkdir $METPRD_DIR
 cd $METPRD_DIR
 
 cp $SCRIPT_DIR/run_met .
+cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
+cp $SCRIPT_DIR/met_point_verf_all.ksh .
 ./run_met
 
 fi # end skip_met = false
