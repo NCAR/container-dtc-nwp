@@ -8,8 +8,7 @@ RUN mkdir -p $CASE_DIR \
 
 COPY scripts/ ${CASE_DIR}
 COPY param/ ${CASE_DIR}
-COPY run-dtc-nwp ${CASE_DIR}/scripts
-RUN chmod +x ${CASE_DIR}/scripts/run-dtc-nwp
+RUN chmod +x ${CASE_DIR}/scripts/run* ${CASE_DIR}/scripts/met*
 
 VOLUME $CASE_DIR
 CMD ["true"]
