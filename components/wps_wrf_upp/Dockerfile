@@ -69,7 +69,7 @@ RUN cd ./UPPV3.1 \
  && export NETCDF=/wrf/netcdf_links \
 # input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
- && sed -i -e 's/-lnetcdf/-lnetcdff/' ./configure.upp \
+ && sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/' ./configure.upp \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
 ENV LD_LIBRARY_PATH /usr/lib64/lib
