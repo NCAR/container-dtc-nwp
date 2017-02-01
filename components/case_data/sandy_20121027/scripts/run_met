@@ -1,0 +1,39 @@
+#!/bin/ksh -x
+
+# Constants for the 2012102712 case
+export START_TIME=2012102712
+export DOMAIN_LIST=d01
+export MET_EXE_ROOT=/usr/local/bin
+export MET_CONFIG=/case_data/sandy_20121027/param/met_config
+export UNIPOST_EXEC=/wrf/UPPV3.1/bin
+export DATAROOT=/postprd
+export MODEL=ARW
+
+# Forecast hours to evaluate
+FCST_HR_BEG=0
+FCST_HR_END=6
+FCST_HR_INC=1 
+
+# Define FCST_TIME as 2-digits
+typeset -Z2 FCST_TIME
+
+# Loop through the forecast hours
+FCST_TIME=$FCST_HR_BEG
+while [ $FCST_TIME -le $FCST_HR_END ] ; do
+
+  echo "FCST_TIME = $FCST_TIME"
+  export FCST_TIME=${FCST_TIME}
+
+  # Do point verification
+  export RAW_OBS=/case_data/sandy_20121027/obs_data/prepbufr
+  ./met_point_verf_all.ksh
+
+  # Do qpf verification
+  export RAW_OBS=/case_data/sandy_20121027/obs_data/qpe
+  ./met_qpf_verf_all.ksh
+
+  # Increment the forecast hour
+  FCST_TIME=$(( $FCST_TIME + $FCST_HR_INC ))
+
+done
+
