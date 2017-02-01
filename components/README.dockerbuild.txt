@@ -29,13 +29,17 @@ cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
 # Build image which compiles MET from source
 cd met ; docker build -t dtc-met . ; cd ..
 
+# Build image for utility scripts
+cd scripts ; docker build -t dtc-scripts . ; cd ..
+
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
 # Instantiate local docker containers from the images you created above:
 #
 
 docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
-docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy 
+docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy
+docker create -v /scripts --name scripts dtc-scripts
 
 #
 # A more automated method using pre-built DTC docker-nwp/met container images,
