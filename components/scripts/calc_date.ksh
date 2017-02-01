@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-DATE=gdate
+DATE=date
 
 usage() {
   echo "Usage: $0 beg +|-inc [-fmt str]"
