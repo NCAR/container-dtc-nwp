@@ -21,7 +21,7 @@
 #           MET_EXE_ROOT = The full path of the MET executables.
 #             MET_CONFIG = The full path of the MET configuration files.
 #           UNIPOST_EXEC = The full path of the UPP executables.
-#          DATAROOT = Top-level data directory of WRF output.
+#               DATAROOT = Top-level data directory of WRF output.
 #                RAW_OBS = Directory containing observations to be used.
 #                  MODEL = The model being evaluated.
 #
@@ -32,6 +32,7 @@ MKDIR=/bin/mkdir
 ECHO=/bin/echo
 CUT=`which cut`
 DATE=/bin/date
+CALC_DATE=/scripts/calc_date.ksh
 LD_LIBRARY_PATH=/glade/p/ral/jnt/tools/MET_external_libs_intel/lib
 export LD_LIBRARY_PATH
 
@@ -77,7 +78,7 @@ ${ECHO} "FCST_TIME=${FCST_TIME}"
 ########################################################################
 
 # Compute the verification date
-VDATE=`${UNIPOST_EXEC}/ndate.exe +${FCST_TIME} ${START_TIME}`
+VDATE=`${CALC_DATE} ${START_TIME} +${FCST_TIME}`
 VYYYYMMDD=`${ECHO} ${VDATE} | ${CUT} -c1-8`
 VYYYY=`${ECHO} ${VDATE} | ${CUT} -c1-4`
 VMM=`${ECHO} ${VDATE} | ${CUT} -c5-6`
@@ -86,7 +87,7 @@ VHH=`${ECHO} ${VDATE} | ${CUT} -c9-10`
 ${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
 
 # Compute the doy of year
-DOY=`${DATE} -ud ''${VYYYY}-${VMM}-${VDD}' UTC '${VHH}':00:00' +%j`
+DOY=`${CALC_DATE} ${START_TIME} +${FCST_TIME} -fmt "%j"`
 
 ########################################################################
 # Run pb2nc on prepbufr obs file - only need to run once

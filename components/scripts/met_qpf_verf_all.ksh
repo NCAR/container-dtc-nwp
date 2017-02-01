@@ -22,7 +22,6 @@
 #            DOMAIN_LIST = A list of domains to be verified.
 #           MET_EXE_ROOT = The full path of the MET executables.
 #             MET_CONFIG = The full path of the MET configuration files.
-#           UNIPOST_EXEC = The full path of the UPP executables.
 #               DATAROOT = Top-level data directory of WRF output.
 #                RAW_OBS = Directory containing observations to be used.
 #                  MODEL = The model being evaluated.
@@ -33,21 +32,9 @@ MKDIR=/bin/mkdir
 ECHO=/bin/echo
 CUT=`which cut`
 DATE=/bin/date
+CALC_DATE=/scripts/calc_date.ksh
 LD_LIBRARY_PATH=/glade/p/ral/jnt/tools/MET_external_libs_intel/lib
 export LD_LIBRARY_PATH
-
-# Vars used for manual testing of the script
-#export START_TIME=2015100312
-#export FCST_TIME=02
-#export ACCUM_TIME=01
-#export BUCKET_TIME=1
-#export DOMAIN_LIST="hrconus"
-#export MET_EXE_ROOT=/glade/p/ral/jnt/HRRR/retro/exec/MET
-#export MET_CONFIG=/glade/p/ral/jnt/HRRR/retro/static.harrold/MET/met_config
-#export UNIPOST_EXEC=/glade/p/ral/jnt/HRRR/retro/exec/UPP
-#export DATAROOT=/glade/scratch/harrold/2015100312
-#export RAW_OBS=/glade/scratch/jfrimel/init/obs/201510/mrms_grb2
-#export MODEL="hrconus"
 
 # Print run parameters
 ${ECHO}
@@ -60,7 +47,6 @@ ${ECHO} "   BUCKET_TIME = ${BUCKET_TIME}"
 ${ECHO} "   DOMAIN_LIST = ${DOMAIN_LIST}"
 ${ECHO} "  MET_EXE_ROOT = ${MET_EXE_ROOT}"
 ${ECHO} "    MET_CONFIG = ${MET_CONFIG}"
-${ECHO} "  UNIPOST_EXEC = ${UNIPOST_EXEC}"
 ${ECHO} "      DATAROOT = ${DATAROOT}"
 ${ECHO} "       GRID_VX = ${GRID_VX}"
 ${ECHO} "       RAW_OBS = ${RAW_OBS}"
@@ -111,7 +97,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
     # Compute the verification date
     YYYYMMDD=`${ECHO} ${START_TIME} | ${CUT} -c1-8`
     HH=`${ECHO} ${START_TIME} | ${CUT} -c9-10`
-    VDATE=`${UNIPOST_EXEC}/ndate.exe +${FCST_TIME} ${START_TIME}`
+    VDATE=`${CALC_DATE} ${START_TIME} +${FCST_TIME}`
     VYYYYMMDD=`${ECHO} ${VDATE} | ${CUT} -c1-8`
     VYYYY=`${ECHO} ${VDATE} | ${CUT} -c1-4`
     VMM=`${ECHO} ${VDATE} | ${CUT} -c5-6`
@@ -119,7 +105,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
     VHH=`${ECHO} ${VDATE} | ${CUT} -c9-10`
     ${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
 
-    PVDATE=`${UNIPOST_EXEC}/ndate.exe -24 ${VDATE}`
+    PVDATE=`${CALC_DATE} ${VDATE} -24`
     PVYYYYMMDD=`${ECHO} ${PVDATE} | ${CUT} -c1-8`
 
     # Specify mask directory structure
