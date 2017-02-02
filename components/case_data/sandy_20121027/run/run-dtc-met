@@ -32,7 +32,7 @@ export MODEL=ARW
 # Forecast hours to evaluate
 FCST_HR_BEG=0
 FCST_HR_END=6
-FCST_HR_INC=1 
+FCST_HR_INC=3
 
 # Define FCST_TIME as 2-digits
 typeset -Z2 FCST_TIME
