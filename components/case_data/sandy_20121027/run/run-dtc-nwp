@@ -94,7 +94,7 @@ echo "namelist dir  = " $NML_DIR
 if [ $skip_wps = "false" ]; then # Don't skip wps
 echo Running WPS 
 
-mkdir $WPSPRD_DIR
+mkdir -p $WPSPRD_DIR
 cd $WPSPRD_DIR
 
 ln -sf $WRF_BUILD/WPS/*.exe .
@@ -321,41 +321,13 @@ fi # end skip_wrf = false
 if [ $skip_upp = "false" ]; then # Don't skip upp
 echo Running UPP
 
-mkdir $POSTPRD_DIR
+mkdir -p $POSTPRD_DIR
 cd $POSTPRD_DIR
 
 cp $SCRIPT_DIR/run_unipost .
 ./run_unipost
 
 fi # end skip_upp = false
-
-##################################
-#   Run NCL                      #
-##################################
-
-if [ $skip_ncl = "false" ]; then # Don't skip ncl
-echo Running NCL 
-
-echo Nothing to do yet...
-
-fi # end skip_ncl = false
- 
-##################################
-#   Run MET                      #
-##################################
-
-if [ $skip_met = "false" ]; then # Don't skip met 
-echo Running MET 
-
-mkdir $METPRD_DIR
-cd $METPRD_DIR
-
-cp $SCRIPT_DIR/run_met .
-cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
-cp $SCRIPT_DIR/met_point_verf_all.ksh .
-./run_met
-
-fi # end skip_met = false
 
 echo Done
  
