@@ -14,7 +14,7 @@ METPRD_DIR="/metprd"
 
 echo Running MET 
 
-mkdir $METPRD_DIR
+mkdir -p $METPRD_DIR
 cd $METPRD_DIR
 
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
