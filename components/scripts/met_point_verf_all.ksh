@@ -188,7 +188,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
    fi
 
    # Get the forecast to verify
-   FCST_FILE=${DATAROOT}/wrfprs_${DOMAIN}_${FCST_TIME}.grib2
+   FCST_FILE=${DATAROOT}/wrfprs_${DOMAIN}_${FCST_TIME}
 
    if [ ! -e ${FCST_FILE} ]; then
      ${ECHO} "ERROR: Could not find UPP output file: ${FCST_FILE}"
