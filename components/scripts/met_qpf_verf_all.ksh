@@ -121,7 +121,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
     #
     #######################################################################
     # Run pcp_combine on 1-hourly HRRR model output to make appropriate accumulation times
-    #FCST_GRIB_FILE_DIR=${DATAROOT}/postprd/wrfprs_${DOMAIN}_${FCST_TIME}.grib2
+    #FCST_GRIB_FILE_DIR=${DATAROOT}/postprd/wrfprs_${DOMAIN}.${FCST_TIME}
     FCST_GRIB_FILE_DIR=${DATAROOT}/postprd
     if [ ! -e ${FCST_GRIB_FILE_DIR} ]; then
        ${ECHO} "ERROR: ${FCST_GRIB_FILE_DIR} does not exist!"
