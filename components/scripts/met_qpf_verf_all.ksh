@@ -71,7 +71,7 @@ if [ ! -d ${RAW_OBS} ]; then
 fi
 
 # Go to working directory
-workdir=${DATAROOT}/metprd
+workdir=${DATAROOT}/metprd/grid_stat
 ${MKDIR} -p ${workdir}/pcp_combine
 pcp_combine_dir=${MOAD_DATAROOT}/pcp_combine
 ${MKDIR} -p ${pcp_combine_dir}
