@@ -121,9 +121,6 @@ if [ ! -e ${OBS_FILE} ]; then
   NDAS_YMDH=`${CALC_DATE} ${VDATE} +${TM_HR} -fmt %Y%m%d%H`
   NDAS_HR=`  ${CALC_DATE} ${VDATE} +${TM_HR} -fmt %H`
 
-  NDAS_YMD=`${DATE} -ud '1970-01-01 UTC '${NDAS_UT}' seconds' +%Y%m%d`
-  NDAS_HR=` ${DATE} -ud '1970-01-01 UTC '${NDAS_UT}' seconds' +%H`
-
   # List observation file to be run through pb2nc
   PB_FILE=`${LS} ${RAW_OBS}/${NDAS_YMDH}/ndas.t${NDAS_HR}z.prepbufr.${TMMARK}.nr | head -1`
   if [ ! -e ${PB_FILE} ]; then
