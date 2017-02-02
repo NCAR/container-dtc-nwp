@@ -11,8 +11,6 @@ skip_wps=false
 skip_real=false
 skip_wrf=false
 skip_upp=false
-skip_ncl=false
-skip_met=false
 my_namelist=false
 
 # Variables need to match docker container volume names:
@@ -24,7 +22,6 @@ INPUT_DIR="/case_data/sandy_20121027"
 WRFPRD_DIR="/wrfprd"
 OUTPUT_DIR="/wrfoutput"
 POSTPRD_DIR="/postprd"
-METPRD_DIR="/metprd"
 
 # Read in command line options
 while (( $# > 1 ))
@@ -52,12 +49,6 @@ case $opt in
            if [[ $skip_stuff == "upp" ]]; then
              skip_upp=true
            fi
-           if [[ $skip_stuff == "ncl" ]]; then
-             skip_ncl=true
-           fi
-           if [[ $skip_stuff == "met" ]]; then
-             skip_met=true
-           fi
        shift
        ;;
 
@@ -80,8 +71,6 @@ echo "skip_wps      = " $skip_wps
 echo "skip_real     = " $skip_real
 echo "skip_wrf      = " $skip_wrf
 echo "skip_upp      = " $skip_upp
-echo "skip_ncl      = " $skip_ncl
-echo "skip_met      = " $skip_met
 echo "my_namelist   = " $my_namelist
 echo "namelist dir  = " $NML_DIR
 # End sample argument list
