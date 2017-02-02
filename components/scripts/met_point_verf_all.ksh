@@ -78,16 +78,10 @@ ${ECHO} "FCST_TIME=${FCST_TIME}"
 ########################################################################
 
 # Compute the verification date
-VDATE=`${CALC_DATE} ${START_TIME} +${FCST_TIME}`
+VDATE=`    ${CALC_DATE} ${START_TIME} +${FCST_TIME}`
 VYYYYMMDD=`${ECHO} ${VDATE} | ${CUT} -c1-8`
-VYYYY=`${ECHO} ${VDATE} | ${CUT} -c1-4`
-VMM=`${ECHO} ${VDATE} | ${CUT} -c5-6`
-VDD=`${ECHO} ${VDATE} | ${CUT} -c7-8`
-VHH=`${ECHO} ${VDATE} | ${CUT} -c9-10`
+VHH=`      ${ECHO} ${VDATE} | ${CUT} -c9-10`
 ${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
-
-# Compute the doy of year
-DOY=`${CALC_DATE} ${START_TIME} +${FCST_TIME} -fmt "%j"`
 
 ########################################################################
 # Run pb2nc on prepbufr obs file - only need to run once
@@ -98,7 +92,7 @@ pb2nc=/metprd/pb2nc
 ${MKDIR} -p ${pb2nc}
 
 # Create a PB2NC output file name
-OBS_FILE="${pb2nc}/rap.t${VHH}z.prepbufr.tm00.nc"
+OBS_FILE="${pb2nc}/prepbufr.ndas.${VYYYYMMDD}.t${VHH}z.nc"
 
 if [ ! -e ${OBS_FILE} ]; then
 
@@ -111,8 +105,27 @@ if [ ! -e ${OBS_FILE} ]; then
     exit 1
   fi
 
+  # Process time information -- NDAS specific
+  # For retro NDAS vx, use "late" files, which are tm09 and tm12.
+    if [[ ${VHH} == "00" || ${VHH} == "06" || ${VHH} == "12" || ${VHH} == "18" ]]; then
+    TMMARK="tm12"
+  elif [[ ${VHH} == "03" || ${VHH} == "09" || ${VHH} == "15" || ${VHH} == "21" ]]; then
+    TMMARK="tm09"
+  else
+    echo "ERROR: Valid hour is not compatible with using NDAS data."
+    exit 1
+  fi
+
+  # Determine the NDAS time stamps
+  TM_HR=`echo ${TMMARK} | cut -c3-4`
+  NDAS_YMD=`${CALC_DATE} ${VDATE} +${TM_HR} -fmt %Y%m%d`
+  NDAS_HR=` ${CALC_DATE} ${VDATE} +${TM_HR} -fmt %H`
+
+  NDAS_YMD=`${DATE} -ud '1970-01-01 UTC '${NDAS_UT}' seconds' +%Y%m%d`
+  NDAS_HR=` ${DATE} -ud '1970-01-01 UTC '${NDAS_UT}' seconds' +%H`
+
   # List observation file to be run through pb2nc
-  PB_FILE=`${LS} ${RAW_OBS}/${VYYYY}${DOY}${VHH}00.rap.t${VHH}z.prepbufr.tm00.${VYYYYMMDD} | head -1`
+  PB_FILE=`${LS} ${PNT_OBS_DIR}/ndas/ndas.${NDAS_YMD}/ndas.t${NDAS_HR}z.prepbufr.${TMMARK} | head -1`
   if [ ! -e ${PB_FILE} ]; then
     echo "ERROR: Could not find observation file: ${PB_FILE}"
     exit 1
@@ -126,12 +139,12 @@ if [ ! -e ${OBS_FILE} ]; then
 fi
 
 ########################################################################
-# Run point stat for each domain 
+# Run point stat for each domain
 ########################################################################
 
 # Loop through the domain list
 for DOMAIN in ${DOMAIN_LIST}; do
-   
+
    export DOMAIN
    export ${GRID_VX}
    ${ECHO} "DOMAIN=${DOMAIN}"
@@ -191,7 +204,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
    # Verify upper air variables only at 00Z and 12Z
    if [ "${VHH}" == "00" -o "${VHH}" == "12" ]; then
      CONFIG_FILE=${CONFIG_ADPUPA}
-   
+
      /usr/bin/time ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
        -outdir . -v 2
 
@@ -201,7 +214,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
        exit ${error}
      fi
    fi
-   
+
    # Verify surface variables for each forecast hour
    CONFIG_FILE=${CONFIG_ADPSFC}
 
