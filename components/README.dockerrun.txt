@@ -8,7 +8,7 @@ docker run -it --volumes-from wps_geog --volumes-from sandy \
 #
 # Run MET script in docker-space.
 #
-docker run -it --volumes-from scripts \
+docker run -it --volumes-from scripts --volumes-from sandy \
  -v ~/postprd:/postprd -v ~/metprd:/metprd \
  --name run-dtc-met-sandy dtc-met /case_data/sandy_20121027/run/run-dtc-met
  
