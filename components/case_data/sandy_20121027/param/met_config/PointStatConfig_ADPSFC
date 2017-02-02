@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}_${RES}_${VERSION}";
+model = "${MODEL}";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -177,7 +177,7 @@ obs_quality    = [];
 duplicate_flag = SINGLE;
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
-output_prefix  = "${MODEL}_F${FCST_TIME}_${RES}_ADPSFC";
+output_prefix  = "${MODEL}_F${FCST_TIME}_ADPSFC";
 version        = "V5.2";
 
 ////////////////////////////////////////////////////////////////////////////////
