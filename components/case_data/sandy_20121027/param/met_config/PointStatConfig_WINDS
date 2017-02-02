@@ -38,20 +38,20 @@ fcst = {
         level      = [ "P1000-850", "P850-700", "P700-550", "P550-400", "P400-300", "P300-250", "P250-200" ];
         cat_thresh = [ >0.0 ];
       },
-      
+
       {
         name       = "UGRD";
         level      = [ "P1000-850", "P850-700", "P700-550", "P550-400", "P400-300", "P300-250", "P250-200" ];
         cat_thresh = [ >0.0 ];
       },
-   
-      
+
+
       {
         name       = "VGRD";
         level      = [ "P1000-850", "P850-700", "P700-550", "P550-400", "P400-300", "P300-250", "P250-200" ];
         cat_thresh = [ >0.0 ];
       },
-      
+
       {
         name       = "WIND";
         level      = [ "P1000-850", "P850-700", "P700-550", "P550-400", "P400-300", "P300-250", "P250-200" ];
@@ -80,23 +80,23 @@ obs_window = {
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${MASKS}/APL.nc",
-            "${MASKS}/GMC.nc",
-            "${MASKS}/GRB.nc",
-            "${MASKS}/LMV.nc",
-            "${MASKS}/MDW.nc",
-            "${MASKS}/NEC.nc",
-            "${MASKS}/NMT.nc",
-            "${MASKS}/NPL.nc",
-            "${MASKS}/NWC.nc",
-            "${MASKS}/SEC.nc",
-            "${MASKS}/SMT.nc",
-            "${MASKS}/SPL.nc",
-            "${MASKS}/SWC.nc",
-            "${MASKS}/SWD.nc",
-            "${MASKS}/EAST.nc",
-            "${MASKS}/WEST.nc",
-            "${MASKS}/CONUS.nc" ];
+   poly = [ "MET_BASE/poly/APL.poly",
+            "MET_BASE/poly/GMC.poly",
+            "MET_BASE/poly/GRB.poly",
+            "MET_BASE/poly/LMV.poly",
+            "MET_BASE/poly/MDW.poly",
+            "MET_BASE/poly/NEC.poly",
+            "MET_BASE/poly/NMT.poly",
+            "MET_BASE/poly/NPL.poly",
+            "MET_BASE/poly/NWC.poly",
+            "MET_BASE/poly/SEC.poly",
+            "MET_BASE/poly/SMT.poly",
+            "MET_BASE/poly/SPL.poly",
+            "MET_BASE/poly/SWC.poly",
+            "MET_BASE/poly/SWD.poly",
+            "MET_BASE/poly/EAST.poly",
+            "MET_BASE/poly/WEST.poly",
+            "MET_BASE/poly/CONUS.poly" ];
    sid  = "";
 };
 
