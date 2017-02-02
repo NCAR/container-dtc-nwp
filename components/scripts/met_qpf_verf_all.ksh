@@ -108,10 +108,6 @@ for DOMAIN in ${DOMAIN_LIST}; do
     PVDATE=`${CALC_DATE} ${VDATE} -24`
     PVYYYYMMDD=`${ECHO} ${PVDATE} | ${CUT} -c1-8`
 
-    # Specify mask directory structure
-    MASKS=${MET_CONFIG}/masks
-    export MASKS
-
     # Specify the MET Grid-Stat and MODE configuration files to be used
     GS_CONFIG_LIST="${MET_CONFIG}/GridStatConfig_${ACCUM_TIME}h"
 

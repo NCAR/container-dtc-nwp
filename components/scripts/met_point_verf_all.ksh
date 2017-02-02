@@ -151,10 +151,6 @@ for DOMAIN in ${DOMAIN_LIST}; do
    ${ECHO} "GRID_VX=${GRID_VX}"
    ${ECHO} "FCST_TIME=${FCST_TIME}"
 
-   # Specify new mask directory structure
-   MASKS=${MET_CONFIG}/masks
-   export MASKS
-
    # Specify the MET Point-Stat configuration files to be used
    CONFIG_ADPUPA="${MET_CONFIG}/PointStatConfig_ADPUPA"
    CONFIG_ADPSFC="${MET_CONFIG}/PointStatConfig_ADPSFC"
