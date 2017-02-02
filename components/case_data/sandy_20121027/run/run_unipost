@@ -580,7 +580,7 @@ fi # End if-block for if grib or grib2
 #----------------------------------------------------------------------
 
 elif [ $dyncore = "ARW" ]; then
-    ln -s WRFPRS_${domain}.${fhr} wrfprs_${domain}.${fhr}
+    ln -sf WRFPRS_${domain}.${fhr} wrfprs_${domain}.${fhr}
 
 fi # End if-block for if NMM or NMB or ARW
 
