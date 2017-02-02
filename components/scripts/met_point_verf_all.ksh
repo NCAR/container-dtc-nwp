@@ -64,7 +64,7 @@ if [ ! -d ${RAW_OBS} ]; then
 fi
 
 # Go to working directory
-workdir=/metprd
+workdir=/metprd/point_stat
 ${MKDIR} -p ${workdir}
 cd ${workdir}
 
