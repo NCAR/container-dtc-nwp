@@ -36,6 +36,8 @@ CALC_DATE=/scripts/calc_date.ksh
 LD_LIBRARY_PATH=/glade/p/ral/jnt/tools/MET_external_libs_intel/lib
 export LD_LIBRARY_PATH
 
+typeset -Z 2 FCST_TIME
+
 # Print run parameters/masks
 ${ECHO}
 ${ECHO} "met_point_verf_all.ksh  started at `${DATE}`"
