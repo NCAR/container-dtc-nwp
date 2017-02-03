@@ -28,6 +28,7 @@ export MET_CONFIG=/case_data/sandy_20121027/param/met_config
 export UNIPOST_EXEC=/wrf/UPPV3.1/bin
 export DATAROOT=/postprd
 export MODEL=ARW
+export ACCUM_TIME=3
 
 # Forecast hours to evaluate
 FCST_HR_BEG=0
@@ -36,6 +37,7 @@ FCST_HR_INC=3
 
 # Define FCST_TIME as 2-digits
 typeset -Z2 FCST_TIME
+typeset -Z2 ACCUM_TIME
 
 # Loop through the forecast hours
 FCST_TIME=$FCST_HR_BEG
@@ -49,8 +51,10 @@ while [ $FCST_TIME -le $FCST_HR_END ] ; do
   ./met_point_verf_all.ksh
 
   # Do qpf verification
-  export RAW_OBS=/case_data/sandy_20121027/obs_data/qpe
-  ./met_qpf_verf_all.ksh
+  if [ $FCST_TIME -ge $ACCUM_TIME ]; then
+    export RAW_OBS=/case_data/sandy_20121027/obs_data/qpe
+    ./met_qpf_verf_all.ksh
+  fi
 
   # Increment the forecast hour
   FCST_TIME=$(( $FCST_TIME + $FCST_HR_INC ))

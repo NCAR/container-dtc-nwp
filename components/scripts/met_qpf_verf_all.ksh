@@ -28,15 +28,15 @@
 #
 ##########################################################################
 
-MKDIR=/bin/mkdir
-ECHO=/bin/echo
-CUT=`which cut`
-DATE=/bin/date
+LS=/usr/bin/ls
+MKDIR=/usr/bin/mkdir
+ECHO=/usr/bin/echo
+CUT=/usr/bin/cut
+DATE=/usr/bin/date
 CALC_DATE=/scripts/calc_date.ksh
-LD_LIBRARY_PATH=/glade/p/ral/jnt/tools/MET_external_libs_intel/lib
-export LD_LIBRARY_PATH
 
 typeset -Z2 FCST_TIME
+typeset -Z2 ACCUM_TIME
 
 # Print run parameters
 ${ECHO}
@@ -60,12 +60,6 @@ if [ ! -d "${DATAROOT}" ]; then
   exit 1
 fi
 
-# Make sure $DATAROOT/postprd exists
-if [ ! -d "${DATAROOT}/postprd" ]; then
-  ${ECHO} "ERROR: DATAROOT/postprd, ${DATAROOT}/postprd does not exist"
-  exit 1
-fi
-
 # Make sure RAW_OBS directory exists
 if [ ! -d ${RAW_OBS} ]; then
   ${ECHO} "ERROR: RAW_OBS, ${RAW_OBS}, does not exist!"
@@ -80,95 +74,93 @@ ${MKDIR} -p ${pcp_combine_dir}
 cd ${workdir}
 
 export MODEL
-${ECHO} "MODEL=${MODEL}"
-
-# Loop through the forecast times
-#for FCST_TIME in ${FCST_TIME_LIST}; do
-
 export FCST_TIME
+export ACCUM_TIME
+${ECHO} "MODEL=${MODEL}"
+${ECHO} "FCST_TIME=${FCST_TIME}"
+${ECHO} "ACCUM_TIME=${ACCUM_TIME}"
+
+########################################################################
+# Compute VX date - only need to calculate once
+########################################################################
+
+# Compute the verification date
+VDATE=`     ${CALC_DATE} ${START_TIME} +${FCST_TIME}`
+VYYYYMMDD=` ${ECHO} ${VDATE} | ${CUT} -c1-8`
+VHH=`       ${ECHO} ${VDATE} | ${CUT} -c9-10`
+PVDATE=`    ${CALC_DATE} ${VDATE} -24`
+PVYYYYMMDD=`${ECHO} ${PVDATE} | ${CUT} -c1-8`
+${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
+
+########################################################################
+# Process each domain
+########################################################################
 
 # Loop through the domain list
 for DOMAIN in ${DOMAIN_LIST}; do
    
-    export DOMAIN
-    export GRID_VX
-    ${ECHO} "DOMAIN=${DOMAIN}"
-    ${ECHO} "GRID_VX=${GRID_VX}"
-    ${ECHO} "FCST_TIME=${FCST_TIME}"
+  export DOMAIN
+  export GRID_VX
+  ${ECHO} "DOMAIN=${DOMAIN}"
+  ${ECHO} "GRID_VX=${GRID_VX}"
 
-    # Compute the verification date
-    YYYYMMDD=`${ECHO} ${START_TIME} | ${CUT} -c1-8`
-    HH=`${ECHO} ${START_TIME} | ${CUT} -c9-10`
-    VDATE=`${CALC_DATE} ${START_TIME} +${FCST_TIME}`
-    VYYYYMMDD=`${ECHO} ${VDATE} | ${CUT} -c1-8`
-    VYYYY=`${ECHO} ${VDATE} | ${CUT} -c1-4`
-    VMM=`${ECHO} ${VDATE} | ${CUT} -c5-6`
-    VDD=`${ECHO} ${VDATE} | ${CUT} -c7-8`
-    VHH=`${ECHO} ${VDATE} | ${CUT} -c9-10`
-    ${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
+  # Specify the MET Grid-Stat configuration files to be used
+  GS_CONFIG_LIST="${MET_CONFIG}/GridStatConfig_${ACCUM_TIME}h"
 
-    PVDATE=`${CALC_DATE} ${VDATE} -24`
-    PVYYYYMMDD=`${ECHO} ${PVDATE} | ${CUT} -c1-8`
+  #######################################################################
+  # Run PCP-Combine
+  #######################################################################
+  # Run pcp_combine on 1-hourly HRRR model output to make appropriate accumulation times
+  #FCST_GRIB_FILE_DIR=${DATAROOT}/postprd/wrfprs_${DOMAIN}.${FCST_TIME}
+  FCST_GRIB_FILE_DIR=${DATAROOT}/postprd
+  if [ ! -e ${FCST_GRIB_FILE_DIR} ]; then
+    ${ECHO} "ERROR: ${FCST_GRIB_FILE_DIR} does not exist!"
+    exit 1
+  fi	 
 
-    # Specify the MET Grid-Stat and MODE configuration files to be used
-    GS_CONFIG_LIST="${MET_CONFIG}/GridStatConfig_${ACCUM_TIME}h"
+  FCST_FILE=${DATAROOT}/metprd/pcp_combine/wrfprs_${DOMAIN}_${START_TIME}_f${FCST_TIME}_APCP_${ACCUM_TIME}h.nc
+  PCP_COMBINE_ARGS="-sum ${YYYYMMDD}_${HH}0000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${FCST_GRIB_FILE_DIR} -pcprx \"wrfprs\" -name \"APCP_${ACCUM_TIME}\" ${FCST_FILE}"
 
-    #######################################################################
-    #
-    #  Run PCP-Combine
-    #
-    #######################################################################
-    # Run pcp_combine on 1-hourly HRRR model output to make appropriate accumulation times
-    #FCST_GRIB_FILE_DIR=${DATAROOT}/postprd/wrfprs_${DOMAIN}.${FCST_TIME}
-    FCST_GRIB_FILE_DIR=${DATAROOT}/postprd
-    if [ ! -e ${FCST_GRIB_FILE_DIR} ]; then
-       ${ECHO} "ERROR: ${FCST_GRIB_FILE_DIR} does not exist!"
-       exit 1
-    fi	 
+  # Run the PCP-Combine command
+  ${ECHO} "CALLING: ${MET_EXE_ROOT}/pcp_combine ${PCP_COMBINE_ARGS}"
 
-    FCST_FILE=${DATAROOT}/metprd/pcp_combine/wrfprs_${DOMAIN}_${START_TIME}_f${FCST_TIME}_APCP_${ACCUM_TIME}h.nc
-    PCP_COMBINE_ARGS="-sum ${YYYYMMDD}_${HH}0000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${FCST_GRIB_FILE_DIR} -pcprx \"wrfprs\" -name \"APCP_${ACCUM_TIME}\" ${FCST_FILE}"
+  ${MET_EXE_ROOT}/pcp_combine -sum ${YYYYMMDD}_${HH}0000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${FCST_GRIB_FILE_DIR} -pcprx "wrfprs" -name "APCP_${ACCUM_TIME}" ${FCST_FILE}
 
-    # Run the PCP-Combine command
-    ${ECHO} "CALLING: ${MET_EXE_ROOT}/pcp_combine ${PCP_COMBINE_ARGS}"
+  error=$?
+  if [ ${error} -ne 0 ]; then
+    ${ECHO} "${MET_EXE_ROOT}/pcp_combine crashed!  Exit status=${error}"
+    exit ${error}
+  fi
 
-    ${MET_EXE_ROOT}/pcp_combine -sum ${YYYYMMDD}_${HH}0000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${FCST_GRIB_FILE_DIR} -pcprx "wrfprs" -name "APCP_${ACCUM_TIME}" ${FCST_FILE}
+  # Create a PCP-COMBINE output file name
+  OBS_FILE=${pcp_combine_dir}/GaugeCorr_QPE_${ACCUM_TIME}H_00.00_${VYYYYMMDD}-${VHH}0000.nc
 
-    error=$?
-    if [ ${error} -ne 0 ]; then
-        ${ECHO} "${MET_EXE_ROOT}/pcp_combine crashed!  Exit status=${error}"
-        exit ${error}
-    fi
+  if [ ! -e ${OBS_FILE} ]; then
+    # Run pcp_combine on 1-hourly MRMS observations to make appropriate accumulation times
+    RAW_OBS_DIR=${RAW_OBS}/${VYYYYMMDD}
+    if [ ! -e ${RAW_OBS_DIR} ]; then
+      ${ECHO} "ERROR: ${RAW_OBS_DIR} does not exist!"
+    exit 1
+  fi	 
+  PREV_RAW_OBS_DIR=${RAW_OBS}/${PVYYYYMMDD}
+  if [ ! -e ${PREV_RAW_OBS_DIR} ]; then
+    ${ECHO} "ERROR: ${PREV_RAW_OBS_DIR} does not exist!"
+    exit 1
+  fi	 
 
-    # Create a PCP-COMBINE output file name
-    OBS_FILE=${pcp_combine_dir}/GaugeCorr_QPE_${ACCUM_TIME}H_00.00_${VYYYYMMDD}-${VHH}0000.nc
+  PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${RAW_OBS_DIR} -pcpdir ${PREV_RAW_OBS_DIR} -field 'name=\"GaugeCorrQPE01H\"; level=\"L0\";' -name \"APCP_${ACCUM_TIME}\" ${OBS_FILE}"
 
-    if [ ! -e ${OBS_FILE} ]; then
-      # Run pcp_combine on 1-hourly MRMS observations to make appropriate accumulation times
-      RAW_OBS_DIR=${RAW_OBS}/${VYYYYMMDD}
-      if [ ! -e ${RAW_OBS_DIR} ]; then
-         ${ECHO} "ERROR: ${RAW_OBS_DIR} does not exist!"
-         exit 1
-      fi	 
-      PREV_RAW_OBS_DIR=${RAW_OBS}/${PVYYYYMMDD}
-      if [ ! -e ${PREV_RAW_OBS_DIR} ]; then
-         ${ECHO} "ERROR: ${PREV_RAW_OBS_DIR} does not exist!"
-         exit 1
-      fi	 
+  # Run the PCP-Combine command
+  ${ECHO} "CALLING: ${MET_EXE_ROOT}/pcp_combine ${PCP_COMBINE_ARGS}"
 
-      PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${RAW_OBS_DIR} -pcpdir ${PREV_RAW_OBS_DIR} -field 'name=\"GaugeCorrQPE01H\"; level=\"L0\";' -name \"APCP_${ACCUM_TIME}\" ${OBS_FILE}"
+  ${MET_EXE_ROOT}/pcp_combine -sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${RAW_OBS_DIR} -pcpdir ${PREV_RAW_OBS_DIR} -field 'name="GaugeCorrQPE01H"; level="L0";' -name "APCP_${ACCUM_TIME}" ${OBS_FILE}
 
-      # Run the PCP-Combine command
-      ${ECHO} "CALLING: ${MET_EXE_ROOT}/pcp_combine ${PCP_COMBINE_ARGS}"
-
-      ${MET_EXE_ROOT}/pcp_combine -sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} -pcpdir ${RAW_OBS_DIR} -pcpdir ${PREV_RAW_OBS_DIR} -field 'name="GaugeCorrQPE01H"; level="L0";' -name "APCP_${ACCUM_TIME}" ${OBS_FILE}
-
-      error=$?
-      if [ ${error} -ne 0 ]; then
-          ${ECHO} "${MET_EXE_ROOT}/pcp_combine crashed!  Exit status=${error}"
-          exit ${error}
-      fi
-    fi 
+  error=$?
+  if [ ${error} -ne 0 ]; then
+    ${ECHO} "${MET_EXE_ROOT}/pcp_combine crashed!  Exit status=${error}"
+    exit ${error}
+  fi
+fi 
 
     #######################################################################
     #
@@ -203,7 +195,6 @@ for DOMAIN in ${DOMAIN_LIST}; do
     done
 
 done
-#done
 
 ##########################################################################
 
