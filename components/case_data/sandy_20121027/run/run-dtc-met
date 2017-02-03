@@ -42,7 +42,7 @@ FCST_TIME=$FCST_HR_BEG
 while [ $FCST_TIME -le $FCST_HR_END ] ; do
 
   echo "FCST_TIME = $FCST_TIME"
-  export FCST_TIME=${FCST_TIME}
+  export FCST_TIME
 
   # Do point verification
   export RAW_OBS=/case_data/sandy_20121027/obs_data/prepbufr
