@@ -16,7 +16,7 @@
 #    to running this script.
 #
 #             START_TIME = The cycle time to use for the initial time.
-#              FCST_TIME = The three-digit forecasts that is to be verified.
+#              FCST_TIME = The two-digit forecast that is to be verified.
 #             ACCUM_TIME = The two-digit accumulation time: 03 or 24.
 #            BUCKET_TIME = The accumulation time in the model (bucket): 6.
 #            DOMAIN_LIST = A list of domains to be verified.
@@ -36,7 +36,7 @@ CALC_DATE=/scripts/calc_date.ksh
 LD_LIBRARY_PATH=/glade/p/ral/jnt/tools/MET_external_libs_intel/lib
 export LD_LIBRARY_PATH
 
-typeset -Z 2 FCST_TIME
+typeset -Z2 FCST_TIME
 
 # Print run parameters
 ${ECHO}
