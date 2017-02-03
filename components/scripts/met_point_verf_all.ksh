@@ -20,7 +20,6 @@
 #            DOMAIN_LIST = A list of domains to be verified.
 #           MET_EXE_ROOT = The full path of the MET executables.
 #             MET_CONFIG = The full path of the MET configuration files.
-#           UNIPOST_EXEC = The full path of the UPP executables.
 #               DATAROOT = Top-level data directory of WRF output.
 #                RAW_OBS = Directory containing observations to be used.
 #                  MODEL = The model being evaluated.
@@ -48,7 +47,6 @@ ${ECHO} "   DOMAIN_LIST = ${DOMAIN_LIST}"
 ${ECHO} "       GRID_VX = ${GRID_VX}"
 ${ECHO} "  MET_EXE_ROOT = ${MET_EXE_ROOT}"
 ${ECHO} "    MET_CONFIG = ${MET_CONFIG}"
-${ECHO} "  UNIPOST_EXEC = ${UNIPOST_EXEC}"
 ${ECHO} "      DATAROOT = ${DATAROOT}"
 ${ECHO} "       RAW_OBS = ${RAW_OBS}"
 ${ECHO} "         MODEL = ${MODEL}"
