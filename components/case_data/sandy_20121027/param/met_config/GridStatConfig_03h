@@ -17,7 +17,7 @@ model = "${MODEL}";
 // Verification grid
 //
 regrid = {
-   to_grid    = ${RGD};
+   to_grid    = ${GRID_VX};
    vld_thresh = 0.5;
    method     = BUDGET;
    width      = 2;
