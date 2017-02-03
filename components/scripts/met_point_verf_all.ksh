@@ -16,24 +16,24 @@
 #    to running this script.
 #
 #             START_TIME = The cycle time to use for the initial time.
-#             FCST_TIME  = The two-digit forecast that is to be verified.
+#              FCST_TIME = The two-digit forecast that is to be verified.
 #            DOMAIN_LIST = A list of domains to be verified.
+#               GRID_VX  = 
 #           MET_EXE_ROOT = The full path of the MET executables.
 #             MET_CONFIG = The full path of the MET configuration files.
-#               DATAROOT = Top-level data directory of WRF output.
+#               DATAROOT = Directory containing /postprd and /metprd.
 #                RAW_OBS = Directory containing observations to be used.
 #                  MODEL = The model being evaluated.
 #
 ##########################################################################
 
-LS=/bin/ls
-MKDIR=/bin/mkdir
-ECHO=/bin/echo
-CUT=`which cut`
-DATE=/bin/date
+LS=/usr/bin/ls
+MKDIR=/usr/bin/mkdir
+ECHO=/usr/bin/echo
+CUT=/usr/bin/cut
+DATE=/usr/bin/date
 CALC_DATE=/scripts/calc_date.ksh
-LD_LIBRARY_PATH=/glade/p/ral/jnt/tools/MET_external_libs_intel/lib
-export LD_LIBRARY_PATH
+RUN_CMD=/scripts/run_command.ksh
 
 typeset -Z2 FCST_TIME
 
@@ -63,15 +63,14 @@ if [ ! -d ${RAW_OBS} ]; then
   exit 1
 fi
 
-# Go to working directory
-workdir=/metprd/point_stat
-${MKDIR} -p ${workdir}
-cd ${workdir}
+# Create output directories
+PS_DIR=${DATAROOT}/metprd/point_stat
+${MKDIR} -p ${PS_DIR}
+PB2NC_DIR=${DATAROOT}/metprd/pb2nc
+${MKDIR} -p ${PB2NC_DIR}
 
 export MODEL
 export FCST_TIME
-${ECHO} "MODEL=${MODEL}"
-${ECHO} "FCST_TIME=${FCST_TIME}"
 
 ########################################################################
 # Compute VX date - only need to calculate once
@@ -87,12 +86,8 @@ ${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
 # Run pb2nc on prepbufr obs file - only need to run once
 ########################################################################
 
-# Go to prepbufr dir
-pb2nc=/metprd/pb2nc
-${MKDIR} -p ${pb2nc}
-
-# Create a PB2NC output file name
-OBS_FILE="${pb2nc}/prepbufr.ndas.${VYYYYMMDD}.t${VHH}z.nc"
+# Check for pb2nc output file name
+OBS_FILE="${PB2NC_DIR}/prepbufr.ndas.${VYYYYMMDD}.t${VHH}z.nc"
 
 if [ ! -e ${OBS_FILE} ]; then
 
@@ -106,7 +101,6 @@ if [ ! -e ${OBS_FILE} ]; then
   fi
 
   # Process time information -- NDAS specific
-  # For retro NDAS vx, use "late" files, which are tm09 and tm12.
     if [[ ${VHH} == "00" || ${VHH} == "06" || ${VHH} == "12" || ${VHH} == "18" ]]; then
     TMMARK="tm12"
   elif [[ ${VHH} == "03" || ${VHH} == "09" || ${VHH} == "15" || ${VHH} == "21" ]]; then
@@ -129,128 +123,66 @@ if [ ! -e ${OBS_FILE} ]; then
   fi
 
   # Call PB2NC
-  echo "CALLING: ${MET_EXE_ROOT}/pb2nc ${PB_FILE} ${OBS_FILE} ${CONFIG_PB2NC} -v 2"
-
-  ${MET_EXE_ROOT}/pb2nc ${PB_FILE} ${OBS_FILE} ${CONFIG_PB2NC} -v 2
+  ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/pb2nc \
+             ${PB_FILE} ${OBS_FILE} ${CONFIG_PB2NC} -v 2
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
 
 fi
 
 ########################################################################
-# Run point stat for each domain
+# Run point_stat for each domain
 ########################################################################
 
 # Loop through the domain list
 for DOMAIN in ${DOMAIN_LIST}; do
 
-   export DOMAIN
-   export ${GRID_VX}
-   ${ECHO} "DOMAIN=${DOMAIN}"
-   ${ECHO} "GRID_VX=${GRID_VX}"
-   ${ECHO} "FCST_TIME=${FCST_TIME}"
+  export DOMAIN
+  export ${GRID_VX}
+  ${ECHO} "DOMAIN=${DOMAIN}"
 
-   # Specify the MET Point-Stat configuration files to be used
-   CONFIG_ADPUPA="${MET_CONFIG}/PointStatConfig_ADPUPA"
-   CONFIG_ADPSFC="${MET_CONFIG}/PointStatConfig_ADPSFC"
-   CONFIG_ADPSFC_MPR="${MET_CONFIG}/PointStatConfig_ADPSFC_MPR"
-   CONFIG_WINDS="${MET_CONFIG}/PointStatConfig_WINDS"
+  # Get the forecast to verify
+  FCST_FILE=${DATAROOT}/postprd/wrfprs_${DOMAIN}.${FCST_TIME}
 
-   # Make sure the Point-Stat configuration files exists
-   if [ ! -e ${CONFIG_ADPUPA} ]; then
-       ${ECHO} "ERROR: ${CONFIG_ADPUPA} does not exist!"
+  if [ ! -e ${FCST_FILE} ]; then
+    ${ECHO} "ERROR: Could not find UPP output file: ${FCST_FILE}"
+    exit 1
+  fi
+
+  #######################################################################
+  # Run Point-Stat
+  #######################################################################
+
+  # Specify the MET Point-Stat configuration files to be used
+  PS_CONFIG_LIST="${MET_CONFIG}/PointStatConfig_ADPUPA \
+                  ${MET_CONFIG}/PointStatConfig_ADPSFC \
+                  ${MET_CONFIG}/PointStatConfig_ADPSFC_MPR \
+                  ${MET_CONFIG}/PointStatConfig_WINDS"
+
+  for CONFIG_FILE in ${PS_CONFIG_LIST}; do
+
+    # Only verify ADPUPA for 00 and 12
+    if [[ ${CONFIG_FILE =~ "ADPUPA" && ${VHH} != "00" && ${VHH} != "12" ]]; then
+      continue;
+    fi
+
+    # Make sure the configuration file exists
+    if [ ! -e ${CONFIG_FILE} ]; then
+      ${ECHO} "ERROR: ${CONFIG_FILE} does not exist!"
        exit 1
-   fi
-   if [ ! -e ${CONFIG_ADPSFC} ]; then
-       ${ECHO} "ERROR: ${CONFIG_ADPSFC} does not exist!"
-       exit 1
-   fi
-   if [ ! -e ${CONFIG_ADPSFC_MPR} ]; then
-       ${ECHO} "ERROR: ${CONFIG_ADPSFC_MPR} does not exist!"
-       exit 1
-   fi
-   if [ ! -e ${CONFIG_WINDS} ]; then
-       ${ECHO} "ERROR: ${CONFIG_WINDS} does not exist!"
-       exit 1
-   fi
+    fi
 
-   # Check the RAP prepbufr observation file (created from previous command to run pb2nc)
-   ${ECHO} "OBS_FILE: ${OBS_FILE}"
+    ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/point_stat \
+               ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
+               -outdir ${PS_DIR} -v 2
+    if [ $? -ne 0 ]; then
+      exit 1
+    fi
 
-   if [ ! -e ${OBS_FILE} ]; then
-     ${ECHO} "ERROR: Could not find observation file: ${OBS_FILE}"
-     exit 1
-   fi
+  done # for CONFIG_FILE
 
-   # Get the forecast to verify
-   FCST_FILE=${DATAROOT}/wrfprs_${DOMAIN}.${FCST_TIME}
-
-   if [ ! -e ${FCST_FILE} ]; then
-     ${ECHO} "ERROR: Could not find UPP output file: ${FCST_FILE}"
-     exit 1
-   fi
-
-   #######################################################################
-   #
-   #  Run Point-Stat
-   #
-   #######################################################################
-
-   # Verify upper air variables only at 00Z and 12Z
-   if [ "${VHH}" == "00" -o "${VHH}" == "12" ]; then
-     CONFIG_FILE=${CONFIG_ADPUPA}
-
-     /usr/bin/time ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
-       -outdir . -v 2
-
-     error=$?
-     if [ ${error} -ne 0 ]; then
-       ${ECHO} "ERROR: For ${MODEL}, ${MET_EXE_ROOT}/point_stat ${CONFIG_FILE} crashed  Exit status: ${error}"
-       exit ${error}
-     fi
-   fi
-
-   # Verify surface variables for each forecast hour
-   CONFIG_FILE=${CONFIG_ADPSFC}
-
-   ${ECHO} "CALLING: ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} -outdir . -v 2"
-
-   /usr/bin/time ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
-      -outdir . -v 2
-
-   error=$?
-   if [ ${error} -ne 0 ]; then
-     ${ECHO} "ERROR: For ${MODEL}, ${MET_EXE_ROOT}/point_stat ${CONFIG_FILE} crashed  Exit status: ${error}"
-     exit ${error}
-   fi
-
-   # Verify surface variables for each forecast hour - MPR output
-   CONFIG_FILE=${CONFIG_ADPSFC_MPR}
-
-   ${ECHO} "CALLING: ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} -outdir . -v 2"
-
-   /usr/bin/time ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
-     -outdir . -v 2
-
-   error=$?
-   if [ ${error} -ne 0 ]; then
-     ${ECHO} "ERROR: For ${MODEL}, ${MET_EXE_ROOT}/point_stat ${CONFIG_FILE} crashed  Exit status: ${error}"
-     exit ${error}
-   fi
-
-   # Verify winds for each forecast hour
-   CONFIG_FILE=${CONFIG_WINDS}
-
-   ${ECHO} "CALLING: ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} -outdir . -v 2"
-
-   /usr/bin/time ${MET_EXE_ROOT}/point_stat ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
-     -outdir . -v 2
-
-   error=$?
-   if [ ${error} -ne 0 ]; then
-     ${ECHO} "ERROR: For ${MODEL}, ${MET_EXE_ROOT}/point_stat ${CONFIG_FILE} crashed  Exit status: ${error}"
-     exit ${error}
-   fi
-
-done
+done # for DOMAIN
 
 ##########################################################################
 
