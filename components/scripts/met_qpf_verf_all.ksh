@@ -72,7 +72,7 @@ fi
 # Create output directories
 GS_DIR=${DATAROOT}/metprd/grid_stat
 ${MKDIR} -p ${GS_DIR}
-PCP_COMBINE_DIR=${DATAROOT}/metprd/${PCP_COMBINE}
+PCP_COMBINE_DIR=${DATAROOT}/metprd/pcp_combine
 ${MKDIR} -p ${PCP_COMBINE_DIR}
 
 export MODEL
