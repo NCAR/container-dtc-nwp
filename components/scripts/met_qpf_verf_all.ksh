@@ -116,7 +116,7 @@ if [ ! -e ${OBS_FILE} ]; then
 
   PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} \
                     -pcpdir ${RAW_OBS_DIR} ${PRV_DIR_ARGS} \
-                    -name \"APCP_${ACCUM_TIME}\" ${OBS_FILE}"
+                    -name APCP_${ACCUM_TIME} ${OBS_FILE}"
 
   # Call pcp_combine 
   ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/pcp_combine ${PCP_COMBINE_ARGS}
@@ -150,7 +150,8 @@ for DOMAIN in ${DOMAIN_LIST}; do
     fi	 
 
     # Get the current and previous post-processed files
-    PRV_FCST_TIME=`${CALC_DATE} ${VDATE} -${ACCUM_TIME} -fmt %H%M%S`
+    typeset -Z2 PRV_FCST_TIME
+    PRV_FCST_TIME=$(( $FCST_TIME - $ACCUM_TIME ))
     CUR_POST_FILE=${POSTPRD_DIR}/wrfprs_${DOMAIN}.${FCST_TIME}
     PRV_POST_FILE=${POSTPRD_DIR}/wrfprs_${DOMAIN}.${PRV_FCST_TIME}
 
@@ -158,7 +159,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
     ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/pcp_combine -subtract \
                ${CUR_POST_FILE} ${FCST_TIME} \
                ${PRV_POST_FILE} ${PRV_FCST_TIME} \
-               ${FCST_FILE} -v 2
+               ${FCST_FILE} -name APCP_${ACCUM_TIME} -v 2
     if [ $? -ne 0 ]; then
       exit 1
     fi
@@ -179,7 +180,7 @@ for DOMAIN in ${DOMAIN_LIST}; do
        exit 1
     fi
 
-    ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/grid_data \
+    ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/grid_stat \
                ${FCST_FILE} ${OBS_FILE} ${CONFIG_FILE} \
                -outdir ${GS_DIR} -v 2
     if [ $? -ne 0 ]; then
