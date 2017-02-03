@@ -105,14 +105,17 @@ if [ ! -e ${OBS_FILE} ]; then
     ${ECHO} "ERROR: ${RAW_OBS_DIR} does not exist!"
   exit 1
   fi
+
+  # Only point to previous date directory if it exists
   PRV_RAW_OBS_DIR=${RAW_OBS}/${PVYYYYMMDD}
-  if [ ! -e ${PRV_RAW_OBS_DIR} ]; then
-    ${ECHO} "ERROR: ${PRV_RAW_OBS_DIR} does not exist!"
-    exit 1
+  if [ -e ${PRV_RAW_OBS_DIR} ]; then
+    PRV_DIR_ARGS="-pcpdir ${PRV_RAW_OBS_DIR}"
+  else
+    PRV_DIR_ARGS=""
   fi
 
   PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} \
-                    -pcpdir ${RAW_OBS_DIR} -pcpdir ${PRV_RAW_OBS_DIR} \
+                    -pcpdir ${RAW_OBS_DIR} ${PRV_DIR_ARGS} \
                     -name \"APCP_${ACCUM_TIME}\" ${OBS_FILE}"
 
   # Call pcp_combine 

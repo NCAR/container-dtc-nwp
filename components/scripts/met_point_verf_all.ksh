@@ -163,8 +163,8 @@ for DOMAIN in ${DOMAIN_LIST}; do
   for CONFIG_FILE in ${PS_CONFIG_LIST}; do
 
     # Only verify ADPUPA for 00 and 12
-    if [[ ${CONFIG_FILE =~ "ADPUPA" && ${VHH} != "00" && ${VHH} != "12" ]]; then
-      continue;
+    if [[ ${CONFIG_FILE} =~ "ADPUPA" && ${VHH} != "00" && ${VHH} != "12" ]]; then
+      continue
     fi
 
     # Make sure the configuration file exists
