@@ -37,7 +37,8 @@ RUN echo export LDFLAGS="-lm" >> /etc/bashrc \
 # Build WRF first
 # 
 # input 34 and 1 to configure script alternative line = && echo -e "34\r1\r" | ./configure
-RUN mkdir netcdf_links \
+RUN pwd \ 
+ && mkdir netcdf_links \
  && ln -sf /usr/include/openmpi-x86_64/ netcdf_links/include \
  && ln -sf /usr/lib64/openmpi/lib netcdf_links/lib \
  && export NETCDF=/wrf/netcdf_links \
