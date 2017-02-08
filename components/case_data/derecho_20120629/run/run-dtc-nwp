@@ -6,7 +6,7 @@
 # ./run-dtc-nwp -np 1 -skip wps -namelist /path/to/namelist -skip real
 
 #Initalize options
-num_procs=1
+num_procs=4
 skip_wps=false
 skip_real=false
 skip_wrf=false
@@ -278,9 +278,9 @@ echo Running wrf.exe
 
 # Command for openmpi wrf in Docker world
 cp namelist.nocolons namelist.input
-#mpirun --allow-run-as-root -np $num_procs ./wrf.exe
+mpirun --allow-run-as-root -np $num_procs ./wrf.exe
 # Command for serial wrf in Docker world
-./wrf.exe
+#./wrf.exe
 
 # Check success
   ls -ls $WRFPRD_DIR/wrfo*
