@@ -125,6 +125,7 @@ RUN cd ./UPPV3.1 \
 ENV LD_LIBRARY_PATH /usr/lib64/lib
 ENV PATH  /usr/lib64/bin:$PATH
 #
+WORKDIR /wrf
 # copy in a couple custom scripts
 COPY docker-clean /wrf
 RUN chmod +x /wrf/docker-clean
