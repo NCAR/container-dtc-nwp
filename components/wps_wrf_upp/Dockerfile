@@ -110,7 +110,7 @@ RUN pwd \
  && ./configure <<< $'32\r1\r' \
 # && echo -e "32\r1\r" | ./configure
 # && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
- && /bin/csh ./compile em_real > compile_wrf.log 2>&1
+ && /bin/csh ./compile io > compile_wrf_io.log 2>&1
 # && /bin/csh ./compile em_real <<< $'y\r'
 #
 # Build WPS second
