@@ -113,7 +113,7 @@ RUN pwd \
  && /bin/csh ./compile io > compile_wrf_io.log 2>&1
 # && /bin/csh ./compile em_real <<< $'y\r'
 #
-# Build UPP third
+# Build UPP second
 #
 RUN cd ./UPPV3.1 \
  && export NETCDF=/wrf/netcdf_links \
