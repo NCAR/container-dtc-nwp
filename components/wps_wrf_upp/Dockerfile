@@ -76,9 +76,9 @@ WORKDIR /wrf_serial
 #
 # Download original sources
 #
-RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zxC /wrf \
- && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV${WRF_VERSION}.TAR.gz | tar zxC /wrf \
- && curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /wrf
+RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zxC /wrf_serial \
+ && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV${WRF_VERSION}.TAR.gz | tar zxC /wrf_serial \
+ && curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /wrf_serial
 #
 
 # Set environment for interactive container shells
