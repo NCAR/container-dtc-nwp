@@ -17,8 +17,11 @@ cd ./container-dtc-nwp/components
 # Build image for WPSGEOG static data
 cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
 
-# Build image for input test case data
+# Build image for input Sandy test case data
 cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
+
+# Build image for input Derecho test case data                                                                                         
+cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..  
 
 # Build image which compiles WPS, WRF, and UPP from source
 cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
@@ -39,6 +42,7 @@ cd scripts ; docker build -t dtc-scripts . ; cd ..
 
 docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
 docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy
+docker create -v /case_data/derecho_20120629 --name derecho dtc-nwp-derecho
 docker create -v /scripts --name scripts dtc-scripts
 
 #
