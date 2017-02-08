@@ -96,13 +96,13 @@ export inFormat="netcdf"
 export outFormat="grib"
 
 # Set date/time information
-export startdate=2012102712
+export startdate=2012062912
 export fhr=00
-export lastfhr=06
-export incrementhr=01
+export lastfhr=24
+export incrementhr=03
 
 # Set domain lists
-export domain_list="d01"
+export domain_list="d01 d02"
 
 # Set run command: 
 
