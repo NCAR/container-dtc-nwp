@@ -14,7 +14,7 @@
  j_parent_start    =   1,  135,
  e_we              = 505, 805,
  e_sn              = 380,  629,
- geog_data_res     = '2m','30s',
+ geog_data_res     = '2deg+10m+2deg+10m','2deg+10m',
  dx = 12000,
  dy = 12000,
  map_proj = 'lambert',
