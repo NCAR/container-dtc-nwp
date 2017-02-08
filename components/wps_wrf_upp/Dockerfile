@@ -113,18 +113,6 @@ RUN pwd \
  && /bin/csh ./compile io > compile_wrf_io.log 2>&1
 # && /bin/csh ./compile em_real <<< $'y\r'
 #
-# Build WPS second
-#
-RUN pwd \
- && cd ./WPS \
- && export NETCDF=/wrf/netcdf_links \
- && export JASPERINC=/usr/include/jasper \
- && export JASPERLIB=/usr/lib64 \
-# input 1 to configure script (gfortran for serial build)
- && ./configure <<< $'1\r' \
- && sed -i -e 's/-L$(NETCDF)\/lib/-L$(NETCDF)\/lib -lnetcdff /' ./configure.wps \
- && /bin/csh ./compile > compile_wps.log 2>&1
-#
 # Build UPP third
 #
 RUN cd ./UPPV3.1 \
