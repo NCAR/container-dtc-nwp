@@ -34,15 +34,15 @@
  time_step                           = 48,
  time_step_fract_num                 = 0,
  time_step_fract_den                 = 1,
- max_dom                             = 2,
- e_we                                = 505,  805,
- e_sn                                = 380,  629,
+ max_dom                             = 1,
+ e_we                                = 50,  805,
+ e_sn                                = 50,  629,
  e_vert                              = 51,  51,
  p_top_requested                     = 1000,
  num_metgrid_levels                  = 27,
  num_metgrid_soil_levels             = 4,
- dx                                  = 12000,  3000,
- dy                                  = 12000,  3000,
+ dx                                  = 40000,  3000,
+ dy                                  = 40000,  3000,
  grid_id                             = 1,     2,
  parent_id                           = 0,     1,
  i_parent_start                      = 1,     242,
@@ -52,6 +52,11 @@
  feedback                            = 1,
  smooth_option                       = 0
  /
+ max_dom                             = 2,
+ e_we                                = 505,  805,
+ e_sn                                = 380,  629,
+ dx                                  = 12000,  3000,
+ dy                                  = 12000,  3000,
 
  &physics
  mp_physics                          = 8,     8,
