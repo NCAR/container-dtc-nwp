@@ -1,0 +1,183 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Point-Stat configuration file.
+//
+// For additional information, see the MET_BASE/data/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+model = "${MODEL}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+   to_grid    = NONE;
+   vld_thresh = 0.5;
+   method     = NEAREST;
+   width      = 1;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+   wind_thresh  = [ NA ];
+   message_type = [ "ADPSFC" ];
+
+   field = [
+      {
+        name       = "TMP";
+        level      = [ "Z2" ];
+        cat_thresh = [ >0.0 ];
+      },
+
+      {
+        name       = "DPT";
+        level      = [ "Z2" ];
+        cat_thresh = [ >0.0 ];
+      },
+
+      {
+        name       = "HGT";
+        level      = [ "Z0" ];
+        cat_thresh = [ >0.0 ];
+      },
+
+      {
+        name       = "UGRD";
+        level      = [ "Z10" ];
+        cat_thresh = [ >0.0 ];
+      },
+
+      {
+        name       = "VGRD";
+        level      = [ "Z10" ];
+        cat_thresh = [ >0.0 ];
+      },
+
+      {
+        name       = "WIND";
+        level      = [ "Z10" ];
+        cat_thresh = [ >0.0 ];
+      },
+
+      {
+        name       = "PRMSL";
+        level      = [ "Z0" ];
+        cat_thresh = [ >0.0 ];
+      }
+   ];
+
+};
+obs = fcst;
+obs = { wind_thresh = >2.572; };
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+   beg = -2700;
+   end =  2700;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid = [ "FULL" ];
+   poly = [ "MET_BASE/poly/APL.poly",
+            "MET_BASE/poly/GMC.poly",
+            "MET_BASE/poly/GRB.poly",
+            "MET_BASE/poly/LMV.poly",
+            "MET_BASE/poly/MDW.poly",
+            "MET_BASE/poly/NEC.poly",
+            "MET_BASE/poly/NMT.poly",
+            "MET_BASE/poly/NPL.poly",
+            "MET_BASE/poly/NWC.poly",
+            "MET_BASE/poly/SEC.poly",
+            "MET_BASE/poly/SMT.poly",
+            "MET_BASE/poly/SPL.poly",
+            "MET_BASE/poly/SWC.poly",
+            "MET_BASE/poly/SWD.poly",
+            "MET_BASE/poly/EAST.poly",
+            "MET_BASE/poly/WEST.poly",
+            "MET_BASE/poly/CONUS.poly" ];
+   sid  = "";
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.01 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   vld_thresh = 1.0;
+
+   type = [
+      {
+         method = BILIN;
+         width  = 2;
+      }
+   ];
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   fho    = NONE;
+   ctc    = NONE;
+   cts    = NONE;
+   mctc   = NONE;
+   mcts   = NONE;
+   cnt    = STAT;
+   sl1l2  = STAT;
+   sal1l2 = NONE;
+   vl1l2  = STAT;
+   val1l2 = NONE;
+   pct    = NONE;
+   pstd   = NONE;
+   pjc    = NONE;
+   prc    = NONE;
+   mpr    = NONE;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+obs_quality    = [];
+duplicate_flag = SINGLE;
+rank_corr_flag = FALSE;
+tmp_dir        = "/tmp";
+output_prefix  = "${MODEL}_F${FCST_TIME}_ADPSFC";
+version        = "V5.2";
+
+////////////////////////////////////////////////////////////////////////////////
