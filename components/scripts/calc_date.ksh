@@ -3,11 +3,13 @@
 DATE=date
 
 usage() {
+  echo
   echo "Usage: $0 beg +|-inc [-fmt str]"
   echo "  where \"beg\"      in YYYYMMDD, YYYYMMDDHH, YYYYMMDD_HH, or YYYYMMDD_HHMMSS format"
   echo "        \"+|-\"      for addition or subtraction"
   echo "        \"inc\"      in HH[MM[SS]] format"
   echo "        \"-fmt str\" for the output time format"
+  echo
   exit 1
 }
 
@@ -52,7 +54,7 @@ parse_yyyymmdd_hhmmss() {
 # Make sure there are exactly 2 arguments
 if [ $# -lt 2 ]; then
   echo "ERROR: Incorrect number of arguments."
-  usage()
+  usage
   exit 1
 fi
 
