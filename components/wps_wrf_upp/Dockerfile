@@ -17,7 +17,6 @@ WORKDIR /wrf_serial
 # Download original sources
 #
 RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zxC /wrf_serial \
- && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV${WRF_VERSION}.TAR.gz | tar zxC /wrf_serial \
  && curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /wrf_serial
 #
 
@@ -46,10 +45,9 @@ RUN pwd \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
  && cd ./WRFV3 \
-# input 32 and 1 to configure script (gfortran for serial build)
+# input 34 and 1 to configure script alternative line = && echo -e "32\r1\r" | ./configure
  && ./configure <<< $'32\r1\r' \
-# && echo -e "32\r1\r" | ./configure
- && /bin/csh ./compile io > compile_wrf_io.log 2>&1
+ && /bin/csh ./compile em_real > compile_wrf_arw_opt32.1.log 2>&1
 #
 # Build UPP second
 #
@@ -65,6 +63,7 @@ ENV PATH  /usr/lib64/bin:$PATH
 #
 
 #PARALLEL BUILD
+#
 # now get 3rd party EPEL builds of netcdf and openmpi dependencies
 RUN yum -y install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64
 #
@@ -92,7 +91,6 @@ RUN echo export LDFLAGS="-lm" >> /etc/bashrc \
 #
 # Build WRF first
 # 
-# input 34 and 1 to configure script alternative line = && echo -e "34\r1\r" | ./configure
 RUN pwd \ 
  && mkdir netcdf_links \
  && ln -sf /usr/include/openmpi-x86_64/ netcdf_links/include \
@@ -101,9 +99,8 @@ RUN pwd \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
  && cd ./WRFV3 \
-# input 34 and 1 to configure script (gfortran dmpar build)
+# input 34 and 1 to configure script alternative line = && echo -e "34\r1\r" | ./configure
  && ./configure <<< $'34\r1\r' \
-# && echo -e "34\r1\r" | ./configure
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
 #
@@ -125,7 +122,25 @@ ENV PATH  /usr/lib64/openmpi/bin:$PATH
 # copy in a couple custom scripts
 #
 COPY docker-clean /wrf
-RUN chmod +x /wrf/docker-clean
 COPY run-wps-wrf-upp /wrf
-RUN chmod +x /wrf/run-wps-wrf-upp
+RUN chmod +x /wrf/docker-clean \
+ && chmod +x /wrf/run-wps-wrf-upp
+#
+# set up ssh configuration
+#
+COPY ssh_config /root/.ssh/config
+COPY slave /wrf/slave
+RUN yum install -y openssh-clients openssh-server net-tools \
+    && yum clean all \
+    && mkdir -p /var/run/sshd \
+    && ssh-keygen -A \
+    && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
+    && sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/g' /etc/ssh/sshd_config \
+    && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config \
+    && ssh-keygen -f /root/.ssh/id_rsa -t rsa -N '' \
+    && chmod 600 /root/.ssh/config \
+    && chmod 700 /root/.ssh \
+    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
+    && chmod +x /wrf/slave
+
 CMD ["/wrf/run-wps-wrf-upp"]
