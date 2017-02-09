@@ -24,13 +24,13 @@ RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zx
 # Set environment for interactive container shells
 #
 RUN echo export LDFLAGS="-lm" >> /etc/bashrc \ 
- && echo export NETCDF=/wrf/netcdf_links >> /etc/bashrc \
+ && echo export NETCDF=/wrf_serial/netcdf_links >> /etc/bashrc \
  && echo export JASPERINC=/usr/include/jasper/ >> /etc/bashrc \
  && echo export JASPERLIB=/usr/lib64/ >> /etc/bashrc \
  && echo export LD_LIBRARY_PATH="/usr/lib64" >> /etc/bashrc \
  && echo export PATH="/usr/lib64/bin:$PATH" >> /etc/bashrc \
  && echo setenv LDFLAGS "-lm" >> /etc/csh.cshrc \
- && echo setenv NETCDF "/wrf/netcdf_links" >> /etc/csh.cshrc \
+ && echo setenv NETCDF "/wrf_serial/netcdf_links" >> /etc/csh.cshrc \
  && echo setenv JASPERINC "/usr/include/jasper/" >> /etc/csh.cshrc \
  && echo setenv JASPERLIB "/usr/lib64/" >> /etc/csh.cshrc \
  && echo setenv LD_LIBRARY_PATH "/usr/lib64" >> /etc/csh.cshrc \
@@ -42,21 +42,19 @@ RUN pwd \
  && mkdir netcdf_links \
  && ln -sf /usr/include/ netcdf_links/include \
  && ln -sf /usr/lib64 netcdf_links/lib \
- && export NETCDF=/wrf/netcdf_links \
+ && export NETCDF=/wrf_serial/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
  && cd ./WRFV3 \
 # input 32 and 1 to configure script (gfortran for serial build)
  && ./configure <<< $'32\r1\r' \
 # && echo -e "32\r1\r" | ./configure
-# && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
  && /bin/csh ./compile io > compile_wrf_io.log 2>&1
-# && /bin/csh ./compile em_real <<< $'y\r'
 #
 # Build UPP second
 #
 RUN cd ./UPPV3.1 \
- && export NETCDF=/wrf/netcdf_links \
+ && export NETCDF=/wrf_serial/netcdf_links \
 # input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
  && sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/' ./configure.upp \
