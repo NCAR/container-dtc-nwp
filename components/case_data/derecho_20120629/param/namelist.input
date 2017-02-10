@@ -47,7 +47,7 @@
  grid_id                             = 1, 2,
  parent_id                           = 0, 1,
  i_parent_start                      = 0, 55,
- j_parent_start                      = 0, 50,
+ j_parent_start                      = 0, 40,
  parent_grid_ratio                   = 1, 4,
  parent_time_step_ratio              = 1, 4,
  feedback                            = 1,
