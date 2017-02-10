@@ -10,19 +10,19 @@
 &geogrid
  parent_id         =   1,   1,
  parent_grid_ratio =   1,   4,
- i_parent_start    =   1,  40,
- j_parent_start    =   1,  30,
+ i_parent_start    =   1,  55,
+ j_parent_start    =   1,  50,
  e_we              = 101, 49,
  e_sn              = 76,  49,
  geog_data_res     = '2deg+10m+2deg+10m','2deg+10m',
  dx = 12000,
  dy = 12000,
  map_proj = 'lambert',
- ref_lat   =  37.60
- ref_lon   = -85.90
- truelat1  =  37.60,
- truelat2  =  37.60,
- stand_lon = -85.90,
+ ref_lat   =  40.60
+ ref_lon   = -84.90
+ truelat1  =  39.60,
+ truelat2  =  40.60,
+ stand_lon = -84.90,
  geog_data_path = '/WPS_GEOG/',
  opt_geogrid_tbl_path = '/wrf/WPS/geogrid',
 /
