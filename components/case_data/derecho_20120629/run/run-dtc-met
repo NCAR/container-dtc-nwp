@@ -20,12 +20,12 @@ cd $METPRD_DIR
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
 cp $SCRIPT_DIR/met_point_verf_all.ksh .
 
-# Constants for the 2012102712 case
-export START_TIME=2012102712
+# Constants for the 2012062912 case
+export START_TIME=2012062912
 export DOMAIN_LIST=d01
 export GRID_VX=FCST
 export MET_EXE_ROOT=/usr/local/bin
-export MET_CONFIG=/case_data/sandy_20121027/param/met_config
+export MET_CONFIG=/case_data/derecho_20120629/param/met_config
 export UNIPOST_EXEC=/wrf/UPPV3.1/bin
 export DATAROOT=/
 export MODEL=ARW
@@ -34,7 +34,7 @@ export BUCKET_TIME=1
 
 # Forecast hours to evaluate
 FCST_HR_BEG=0
-FCST_HR_END=6
+FCST_HR_END=24
 FCST_HR_INC=3
 
 # Define times as 2-digits
@@ -50,7 +50,7 @@ while [ $FCST_TIME -le $FCST_HR_END ] ; do
   export FCST_TIME
 
   # Do point verification
-  export RAW_OBS=/case_data/sandy_20121027/obs_data/prepbufr
+  export RAW_OBS=/case_data/derecho_20120629/obs_data/prepbufr
   ./met_point_verf_all.ksh
 
   # Do qpf verification
@@ -59,7 +59,7 @@ while [ $FCST_TIME -le $FCST_HR_END ] ; do
     echo "BUCKET_TIME = $BUCKET_TIME"
     export ACCUM_TIME
     export BUCKET_TIME
-    export RAW_OBS=/case_data/sandy_20121027/obs_data/qpe
+    export RAW_OBS=/case_data/derecho_20120629/obs_data/qpe
     ./met_qpf_verf_all.ksh
   fi
 
