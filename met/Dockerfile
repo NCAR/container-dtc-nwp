@@ -7,10 +7,26 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 ENV MET_VERSION 5.2
 ENV MET_RELEASE_DATE 20160815
 
+#
+# Compilers
+#
 ENV CC  /usr/bin/gcc
 ENV CXX /usr/bin/g++
 ENV FC  /usr/bin/gfortran
 ENV F77 /usr/bin/gfortran
+
+#
+# Package URL's
+#
+ENV HDF4_URL    http://www.hdfgroup.org/ftp/HDF/releases/HDF4.2r3/src/HDF4.2r3.tar.gz
+ENV HDFEOS_URL  ftp://edhs1.gsfc.nasa.gov/edhs/hdfeos/previous_releases/HDF-EOS2.16v1.00.tar.Z
+
+ENV BUFRLIB_URL http://www.dtcenter.org/met/users/support/online_tutorial/METv5.0/compilation/tar_files/BUFRLIB_v10-2-3.tar
+ENV GSFONT_URL  http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/ghostscript-fonts-std-8.11.tar.gz
+
+ENV MET_URL     http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
+ENV PATCH_URL   http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz
+ENV DATA_URL    http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz
 
 #
 # Install required packages
@@ -20,6 +36,7 @@ RUN yum -y update \
                    libpng-devel jasper jasper-devel zlib zlib-devel \
                    cairo-devel freetype-devel epel-release \
                    hostname m4 make tar tcsh time wget which \
+                   flex flex-devel bison bison-devel \
  && yum -y install g2clib-devel netcdf-cxx-devel gsl-devel \
  && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf
 
@@ -29,17 +46,18 @@ RUN yum -y update \
 WORKDIR /met
 
 #
-# Set environment for interactive bash and csh container shells
+# Environment for interactive bash and csh container shells
 #
 RUN echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
- && echo setenv MET_FONT_DIR /met/external_libs/fonts >> /etc/csh.cshrc
+ && echo setenv MET_FONT_DIR /met/external_libs/fonts >> /etc/csh.cshrc \
+ && echo export LD_LIBRARY_PATH=/usr/local/lib >> /etc/bashrc \
+ && echo setenv LD_LIBRARY_PATH /usr/local/lib >> /etc/csh.cshrc
 
 #
 # Download BUFRLIB and GhostScript fonts
 #
 RUN mkdir -p /met/external_libs/BUFRLIB \
  && cd /met/external_libs/BUFRLIB \
- && BUFRLIB_URL=http://www.dtcenter.org/met/users/support/online_tutorial/METv5.0/compilation/tar_files/BUFRLIB_v10-2-3.tar \
  && echo "Downloading BUFRLIB from ${BUFRLIB_URL}" \
  && curl -SL ${BUFRLIB_URL} | tar xC /met/external_libs/BUFRLIB \
  && cat preproc.sh | sed 's/cpp /cpp -traditional-cpp /g' > preproc_patch.sh \
@@ -52,24 +70,46 @@ RUN mkdir -p /met/external_libs/BUFRLIB \
  && ar crv libbufr.a *.o >> ${LOG_FILE} \
  && rm -f /usr/lib/libbufr.a \
  && cp  *.a /usr/lib \
- && GSFONT_URL=http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/ghostscript-fonts-std-8.11.tar.gz \
  && echo "Downloading GhostScript fonts from ${GSFONT_URL}" \
  && curl -SL ${GSFONT_URL} | tar zxC /met/external_libs
 
 #
+# Download HDF4 and HDFEOS
+#
+RUN echo "Downloading HDF4.2r3 from ${HDF4_URL}" \
+ && curl -SL ${HDF4_URL} | tar zxC /met/external_libs \
+ && cd /met/external_libs/HDF4.2r3 \
+ && LOG_FILE=/met/external_libs/HDF4.2r3/configure.log \
+ && echo "Configuring HDF4.2r3 and writing log file ${LOG_FILE}" \
+ && ./configure --prefix=/met/external_libs/HDF4.2r3 --disable-netcdf > ${LOG_FILE} \
+ && cat mfhdf/hdiff/Makefile | sed 's/LIBS = -ljpeg -lz/LIBS = -ljpeg -lz -lm/g' > Makefile_NEW \
+ && mv -f Makefile_NEW mfhdf/hdiff/Makefile \
+ && LOG_FILE=/met/external_libs/HDF4.2r3/make_install.log \
+ && echo "Compiling HDF4.2r3 and writing log file ${LOG_FILE}" \
+ && make install > ${LOG_FILE} \
+ && echo "Downloading hdfeos from ${HDFEOS_URL}" \
+ && curl -SL ${HDFEOS_URL} | tar zxC /met/external_libs \
+ && cd /met/external_libs/hdfeos \
+ && LOG_FILE=/met/external_libs/hdfeos/configure.log \
+ && echo "Configuring hdfeos and writing log file ${LOG_FILE}" \
+ && ./configure --prefix=/met/external_libs/hdfeos --with-hdf4=/met/external_libs/HDF4.2r3 CC=/met/external_libs/HDF4.2r3/bin/h4cc > ${LOG_FILE} \
+ && LOG_FILE=/met/external_libs/hdfeos/make_install.log \
+ && echo "Compiling hdfeos and writing log file ${LOG_FILE}" \
+ && make install > ${LOG_FILE}
+
+#
 # Download and compile MET source code and patches
 #
-RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz \
- && echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
+RUN echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
  && curl -SL ${MET_URL} | tar zxC /met \
- && PATCH_URL=http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz \
  && echo "Downloading met-${MET_VERSION} patches from ${PATCH_URL}" \
  && curl -SL ${PATCH_URL} | tar zxC /met/met-${MET_VERSION} \
  && cd /met/met-${MET_VERSION} \
  && LOG_FILE=/met/met-${MET_VERSION}/configure.log \
  && echo "Configuring met-${MET_VERSION} and writing log file ${LOG_FILE}" \
- && ./configure --enable-grib2 --enable-mode_graphics \
-    MET_BUFRLIB=/met/external_libs/BUFRLIB \
+ && ./configure --enable-grib2 --enable-mode_graphics --enable-modis \
+    MET_HDF=/met/external_libs/HDF4.2r3 \
+    MET_HDFEOS=/met/external_libs/hdfeos \
     MET_FREETYPEINC=/usr/include/freetype2 MET_FREETYPELIB=/usr/lib \
     MET_CAIROINC=/usr/include/cairo MET_CAIROLIB=/usr/lib > ${LOG_FILE} \
  && LOG_FILE=/met/met-${MET_VERSION}/make_install.log \
@@ -82,7 +122,6 @@ RUN MET_URL=http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_V
 #
 # Pull input data for the online tutorial
 #
-RUN DATA_URL=http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz \
- && echo "Downloading input data for the met-${MET_VERSION} online tutorial from ${DATA_URL}" \
+RUN echo "Downloading input data for the met-${MET_VERSION} online tutorial from ${DATA_URL}" \
  && curl -SL ${DATA_URL} | tar zxC /met/met-${MET_VERSION} data
 
