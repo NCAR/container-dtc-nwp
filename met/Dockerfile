@@ -4,8 +4,8 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 # 
 # This Dockerfile compiles MET from source during "docker build" step
 #
-ENV MET_VERSION 5.2
-ENV MET_RELEASE_DATE 20160815
+ENV MET_VERSION 6.0 
+ENV MET_RELEASE_DATE 20170403
 
 #
 # Compilers
@@ -18,15 +18,18 @@ ENV F77 /usr/bin/gfortran
 #
 # Package URL's
 #
-ENV HDF4_URL    http://www.hdfgroup.org/ftp/HDF/releases/HDF4.2r3/src/HDF4.2r3.tar.gz
-ENV HDFEOS_URL  ftp://edhs1.gsfc.nasa.gov/edhs/hdfeos/previous_releases/HDF-EOS2.16v1.00.tar.Z
+ENV HDF4_URL       http://www.hdfgroup.org/ftp/HDF/releases/HDF4.2r3/src/HDF4.2r3.tar.gz
+ENV HDFEOS_URL     ftp://edhs1.gsfc.nasa.gov/edhs/hdfeos/previous_releases/HDF-EOS2.16v1.00.tar.Z
 
-ENV BUFRLIB_URL http://www.dtcenter.org/met/users/support/online_tutorial/METv5.0/compilation/tar_files/BUFRLIB_v10-2-3.tar
-ENV GSFONT_URL  http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/ghostscript-fonts-std-8.11.tar.gz
+ENV NETCDF4C_URL   https://github.com/Unidata/netcdf-c/archive/v4.4.1.1.zip
+ENV NETCDF4CXX_URL https://github.com/Unidata/netcdf-cxx4/archive/v4.3.0.tar.gz
 
-ENV MET_URL     http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
-ENV PATCH_URL   http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz
-ENV DATA_URL    http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz
+ENV BUFRLIB_URL    http://www.dtcenter.org/met/users/support/online_tutorial/METv5.0/compilation/tar_files/BUFRLIB_v10-2-3.tar
+ENV GSFONT_URL     http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/ghostscript-fonts-std-8.11.tar.gz
+
+ENV MET_URL        http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
+ENV PATCH_URL      http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz
+ENV DATA_URL       http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz
 
 #
 # Install required packages
@@ -36,8 +39,8 @@ RUN yum -y update \
                    libpng-devel jasper jasper-devel zlib zlib-devel \
                    cairo-devel freetype-devel epel-release \
                    hostname m4 make tar tcsh time wget which \
-                   flex flex-devel bison bison-devel \
- && yum -y install g2clib-devel netcdf-cxx-devel gsl-devel \
+                   flex flex-devel bison bison-devel unzip \
+ && yum -y install g2clib-devel hdf5-devel.x86_64 gsl-devel \
  && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf
 
 #
@@ -74,6 +77,33 @@ RUN mkdir -p /met/external_libs/BUFRLIB \
  && curl -SL ${GSFONT_URL} | tar zxC /met/external_libs
 
 #
+# NetCDF4 (c and c++)
+#
+RUN mkdir -p /met/external_libs \
+ && cd /met/external_libs \
+ && echo "Downloading netcdf-c-4.4.1.1 from ${NETCDF4C_URL}" \
+ && wget ${NETCDF4C_URL} \
+ && unzip v4.4.1.1.zip \
+ && cd netcdf-c-4.4.1.1 \
+ && LOG_FILE=/met/external_libs/netcdf-c-4.4.1.1/configure.log \
+ && echo "Configuring netcdf-c-4.4.1.1 and writing log file ${LOG_FILE}" \
+ && ./configure > ${LOG_FILE} \
+ && LOG_FILE=/met/external_libs/netcdf-c-4.4.1.1/make_install.log \
+ && echo "Compiling netcdf-c-4.4.1.1 and writing log file ${LOG_FILE}" \
+ && make install > ${LOG_FILE} \
+ && echo "Downloading  from ${NETCDF4CXX_URL}" \
+ && cd /met/external_libs \
+ && wget ${NETCDF4CXX_URL} \
+ && tar -xzf v4.3.0.tar.gz \
+ && cd netcdf-cxx4-4.3.0 \
+ && LOG_FILE=/met/external_libs/netcdf-cxx4-4.3.0/configure.log \
+ && echo "Configuring netcdf-cxx4-4.3.0 and writing log file ${LOG_FILE}" \
+ && ./configure > ${LOG_FILE} \
+ && LOG_FILE=/met/external_libs/netcdf-cxx4-4.3.0/make_install.log \
+ && echo "Compiling netcdf-cxx4-4.3.0 and writing log file ${LOG_FILE}" \
+ && make install > ${LOG_FILE}
+
+#
 # Download HDF4 and HDFEOS
 #
 RUN echo "Downloading HDF4.2r3 from ${HDF4_URL}" \
@@ -107,7 +137,7 @@ RUN echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
  && cd /met/met-${MET_VERSION} \
  && LOG_FILE=/met/met-${MET_VERSION}/configure.log \
  && echo "Configuring met-${MET_VERSION} and writing log file ${LOG_FILE}" \
- && ./configure --enable-grib2 --enable-mode_graphics --enable-modis \
+ && ./configure --enable-grib2 --enable-mode_graphics --enable-modis --enable-lidar2nc \
     MET_HDF=/met/external_libs/HDF4.2r3 \
     MET_HDFEOS=/met/external_libs/hdfeos \
     MET_FREETYPEINC=/usr/include/freetype2 MET_FREETYPELIB=/usr/lib \
