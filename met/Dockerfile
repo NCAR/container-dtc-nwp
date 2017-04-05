@@ -56,6 +56,8 @@ RUN echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
  && echo export LD_LIBRARY_PATH=/usr/local/lib >> /etc/bashrc \
  && echo setenv LD_LIBRARY_PATH /usr/local/lib >> /etc/csh.cshrc
 
+ENV LD_LIBRARY_PATH /usr/local/lib
+
 #
 # Download BUFRLIB and GhostScript fonts
 #
