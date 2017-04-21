@@ -12,9 +12,17 @@
 # These are manual steps to build your personal docker MET container image.
 #
 
+# By cloning the repository
 git clone https://github.com/NCAR/container-dtc-met
 cd ./container-dtc-met/met
 git checkout tags/met-6.0
+
+# By pulling a released tar file
+wget https://github.com/NCAR/container-dtc-met/archive/6.0.tar.gz
+tar -xvzf 6.0.tar.gz
+cd container-dtc-met-6.0/met
+
+# Execute the docker build
 docker build -t met-6.0-tutorial .
 
 #
