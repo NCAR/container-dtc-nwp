@@ -2,7 +2,7 @@ FROM centos:latest
 
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 
-ENV METVIEWER_VERSION 2.1
+ENV METVIEWER_VERSION 2.2
 
 ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METViewer-${METVIEWER_VERSION}.tar.gz
 
