@@ -36,8 +36,8 @@ RUN Rscript -e "install.packages('boor')" \
 #
 ENV CATALINA_HOME /opt/tomcat
 
-RUN wget http://ftp.wayne.edu/apache/tomcat/tomcat-8/v8.5.20/bin/apache-tomcat-8.5.20.tar.gz \
-	&& tar -xvf apache-tomcat-8.5.20.tar.gz \
+RUN wget http://ftp.wayne.edu/apache/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.tar.gz \
+	&& tar -xvf apache-tomcat-8.5.23.tar.gz \
 	&& rm apache-tomcat*.tar.gz \
 	&& mv apache-tomcat* ${CATALINA_HOME} \
 	&& chmod +x ${CATALINA_HOME}/bin/*sh
