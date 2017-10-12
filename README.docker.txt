@@ -1,7 +1,7 @@
 #
 # Note:  Not intended to be run on super computers or clusters where docker engine may not be running.
-# these are tutorial steps for learning on a personal workstation or laptop where Docker engine
-# has been installed and running.
+# These are tutorial steps for learning on a personal workstation or laptop where Docker engine has
+# been installed and running.
 #
 # You can obtain Docker (current Mac and Windows 10 users) at:
 #   https://www.docker.com/products/overview
@@ -11,32 +11,32 @@
 #
 # These are manual steps to build your personal docker MySql and METViewer container images.
 #
-
 git clone https://github.com/NCAR/container-dtc-metviewer
-cd ...../container-dtc-metviewer/MySQL
+
+# From container-dtc-metviewer/MySQL, build MySQL image.
+cd container-dtc-metviewer/MySQL
 docker build -t mysql_mv .
 
-cd ...../container-dtc-metviewer/METViewer
+# From container-dtc-metviewer/METViewer, build METViewer image.
+cd ../METViewer
 docker build -t metviewer .
 
-#
 # Rather than writing the METViewer output and MySQL tables in the docker environment, we will write it to your
-# local machine.  Create a directory for the  output and define it as an environment variable:
-#
+# local machine.  Create a directory for the output and define it as an environment variable:
+
 setenv MYSQL_DIR /path/for/mysql/tables # c-shell syntax
 export MYSQL_DIR=/path/for/mysql/tables # bash syntax
 
 setenv METVIEWER_DIR /path/for/metviewer/output # c-shell syntax
 export METVIEWER_DIR=/path/for/metviewer/output # bash syntax
 
-# Set the  directory that contains MET or VSDB data
+# Set the data directory which contains MET or VSDB data.
 setenv METVIEWER_DATA /path/for/data # c-shell syntax
 export METVIEWER_DATA=/path/for/data # bash syntax
 
-# Once variables are set, run the following commands to create and start containers.
+# From container-dtc-metviewer, start the containers.
 # It also opens up a shell in the docker environment and point to METViewer home directory
-
-cd ...../container-dtc-metviewer/
+cd ..
 docker-compose run --rm --service-ports metviewer
 
 # You can access all METViewer modules in /METViewer/bin
