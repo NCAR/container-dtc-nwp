@@ -41,5 +41,5 @@ docker-compose run --rm --service-ports metviewer
 
 # You can access all METViewer modules in /METViewer/bin
 # MET and/or VSDB output are in /data directory
-# You can use METViewer web application using your URL http://localhost:8080
+# You can use METViewer web application using your URL http://localhost:8080/metviewer/metviewer1.jsp
 # MySQL database can be accessed with this command : mysql -h mysql_mv -uroot -pmvuser
