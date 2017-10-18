@@ -30,7 +30,11 @@ cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
 # cd ncl ; docker build -t dtc-nwp-ncl . ; cd ..
 
 # Build image which compiles MET from source
-cd met ; docker build -t dtc-met . ; cd ..
+cd met/met ; docker build -t dtc-met . ; cd ../..
+
+# Build images for METViewer
+cd metviewer/MySQL     ; docker build -t dtc-mysql .     ; cd ../..
+cd metviewer/METViewer ; docker build -t dtc-metviewer . ; cd ../..
 
 # Build image for utility scripts
 cd scripts ; docker build -t dtc-scripts . ; cd ..
