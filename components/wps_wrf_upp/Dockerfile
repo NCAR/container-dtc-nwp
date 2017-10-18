@@ -2,7 +2,8 @@ FROM centos:latest
 MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
-ENV WRF_VERSION 3.7.1
+ENV WRF_VERSION 3.9.1.1
+ENV WPS_VERSION 3.9.1
 ENV UPP_VERSION 3.1.1
 
 #SERIAL BUILD
@@ -51,7 +52,7 @@ RUN pwd \
 #
 # Build UPP second
 #
-RUN cd ./UPPV3.1 \
+RUN cd ./UPPV3.1.1 \
  && export NETCDF=/wrf_serial/netcdf_links \
 # input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
@@ -72,7 +73,7 @@ WORKDIR /wrf
 # Download original sources
 #
 RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV$WRF_VERSION.TAR.gz | tar zxC /wrf \
- && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV$WRF_VERSION.TAR.gz | tar zxC /wrf
+ && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV$WPS_VERSION.TAR.gz | tar zxC /wrf
 #
 # Set environment for interactive container shells
 #
