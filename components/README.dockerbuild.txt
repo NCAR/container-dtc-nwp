@@ -26,8 +26,8 @@ cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..
 # Build image which compiles WPS, WRF, and UPP from source
 cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
 
-# FUTURE WORK
-# cd ncl ; docker build -t dtc-nwp-ncl . ; cd ..
+# Build image for NCL
+cd ncl ; docker build -t dtc-ncl . ; cd ..
 
 # Build image which compiles MET from source
 cd met/met ; docker build -t dtc-met . ; cd ../..

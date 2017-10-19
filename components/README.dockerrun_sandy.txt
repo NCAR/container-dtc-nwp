@@ -5,6 +5,9 @@ docker run -it --volumes-from wps_geog --volumes-from sandy \
  -v ~/wrfprd:/wrfprd -v ~/postprd:/postprd \
  --name run-dtc-nwp-sandy dtc-nwp /case_data/sandy_20121027/run/run-dtc-nwp
 
+# Run NCL to generate plots from WRF output 
+docker run --rm  -it -v ~/wrfprd:/wrfprd dtc-ncl
+
 #
 # Run MET script in docker-space.
 #
