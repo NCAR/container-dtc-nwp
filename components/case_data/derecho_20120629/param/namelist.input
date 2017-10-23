@@ -86,7 +86,7 @@
  cudt                                = 0, 0,
  surface_input_source                = 1,
  num_soil_layers                     = 9,
- num_land_cat                        = 24,
+ num_land_cat                        = 21,
  maxiens                             = 1,
  maxens                              = 3,
  maxens2                             = 3,
