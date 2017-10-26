@@ -1,5 +1,5 @@
 db:
-    image: mysql:latest
+    image: mysql_mv
     container_name: mysql_mv
     ports:
         - "6603:3306"
