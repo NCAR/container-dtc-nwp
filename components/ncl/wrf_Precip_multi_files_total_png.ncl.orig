@@ -8,14 +8,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 begin
 ;
 ; Make a list of all files we are interested in
-; DATADir = "/wrfprd/"
-  DATADir = "./"
- domains = (/"d01", "d02"/)
-  ndoms   = dimsizes(domains)
-
-do id = 0,ndoms-1
-
-  FILES = systemfunc (" ls -1 " + DATADir + "wrfout_"+domains(id)+"*" )
+  DATADir = "/wrfprd/"
+  FILES = systemfunc (" ls -1 " + DATADir + "wrfout_d02* ")
   numFILES = dimsizes(FILES)
   print("numFILES = " + numFILES)
   print(FILES)
@@ -27,7 +21,7 @@ do id = 0,ndoms-1
  type = "png"
 ; type = "ps"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,DATADir + "plt_Precip_multi_total_"+domains(id)+"_")
+  wks = gsn_open_wks(type,DATADir + "plt_Precip_multi_total")
 
 
 ; Set some basic resources
@@ -72,7 +66,7 @@ do id = 0,ndoms-1
   ; Calculate tendency values 
   ; We know our data is available every 3 hours, so setting tend_int to 1 gives 
   ; tendencies for 3 hours, setting it to 2, gives 6hourly tendencies                               
-  tend_int = 1
+  tend_int = 2
   rain_exp_tend(tend_int:ntimes-1:tend_int,:,:) = rain_exp(tend_int:ntimes-1:tend_int,:,:) - rain_exp(0:ntimes-2:tend_int,:,:)
   rain_con_tend(tend_int:ntimes-1:tend_int,:,:) = rain_con(tend_int:ntimes-1:tend_int,:,:) - rain_con(0:ntimes-2:tend_int,:,:)
   rain_tot_tend(tend_int:ntimes-1:tend_int,:,:) = rain_tot(tend_int:ntimes-1:tend_int,:,:) - rain_tot(0:ntimes-2:tend_int,:,:)
@@ -142,15 +136,5 @@ do id = 0,ndoms-1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   end do        ; END OF TIME LOOP
-
-delete(slp)
-delete(rain_exp)
-delete(rain_con)
-delete(rain_tot)
-delete(rain_exp_tend)
-delete(rain_con_tend)
-delete(rain_tot_tend)
-
-end do ; end of domain loop
 
 end

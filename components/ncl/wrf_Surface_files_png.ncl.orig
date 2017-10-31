@@ -9,14 +9,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 begin
 ;
 ; Make a list of all files we are interested in
-; DATADir = "/wrfprd/"
-  DATADir = "./"
-  domains = (/"d01", "d02"/)
-  ndoms   = dimsizes(domains)
-
-do id = 0,ndoms-1
-
-  FILES = systemfunc (" ls -1 " + DATADir + "wrfout_"+domains(id)+"*" )
+  DATADir = "/wrfprd/"
+  FILES = systemfunc (" ls -1 " + DATADir + "wrfout_d02* ")
   numFILES = dimsizes(FILES)
   print("numFILES = " + numFILES)
   print(FILES)
@@ -28,7 +22,7 @@ do id = 0,ndoms-1
 ; type = "ps"
  type = "png"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,DATADir + "plt_Surface_multi_"+domains(id)+"_")
+  wks = gsn_open_wks(type,DATADir + "plt_Surface_multi")
 
 ; Set some basic resources
   res = True
@@ -41,6 +35,7 @@ do id = 0,ndoms-1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   a = addfiles(FILES+".nc","r")
+
   times = wrf_user_getvar(a,"times",-1)  ; get all times in the file
   ntimes = dimsizes(times)         ; number of times in the file
 
@@ -64,7 +59,7 @@ do id = 0,ndoms-1
     v10@units = "kts"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  do it = 0,ntimes-1,1             ; TIME LOOP
+  do it = 0,ntimes-1,2             ; TIME LOOP
 
     print("Working on time: " + times(it) )
     res@TimeLabel = times(it)   ; Set Valid time to use on plots
@@ -72,7 +67,7 @@ do id = 0,ndoms-1
     ; Plotting options for T                
       opts = res                         
       opts@cnFillOn = True  
-      opts@ContourParameters = (/ 75.,100., 2./)
+      opts@ContourParameters = (/ -20., 90., 5./)
       opts@gsnSpreadColorEnd = -3  ; End third from the last color in color map
       contour_tc = wrf_contour(a[it],wks,tf2(it,:,:),opts)
       delete(opts)
@@ -103,17 +98,5 @@ do id = 0,ndoms-1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   end do        ; END OF TIME LOOP
-
-delete(slp)
-delete(tc)
-delete(u)
-delete(v)
-delete(td2)
-delete(tc2)
-delete(u10)
-delete(v10)
-delete(tf2)
-
-end do ; end of domain loop
 
 end
