@@ -2,7 +2,7 @@
 export NCARG_ROOT=/usr/local
 #
 #
-cd /wrfprd
+cd /nclprd
 for nclscript in `ls -1 /nclscripts/*png.ncl`
 do
 	ncl $nclscript
@@ -25,12 +25,8 @@ rm -f plt_Precip_multi_total*.jpg
 #rm -f plt_Precip_multi_total*.png
 
 convert -delay 30 plt_dbz1*.jpg DBZ1_d01.gif
+rm -f plt_dbz1*.jpg
 
 ls -alh *gif
-
-# include commands to open up animated gifs? platform dependent
-# open -a Safari Surface_multi_*
-# open -a Safari DBZ1_d01.gif
-# open -a Safari Precip_total_*
 
 echo Done.

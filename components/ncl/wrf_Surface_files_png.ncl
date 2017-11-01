@@ -11,6 +11,7 @@ begin
 ; Make a list of all files we are interested in
 ; DATADir = "/wrfprd/"
   DATADir = "./"
+  PLTDir = "/nclprd/"
   domains = (/"d01", "d02"/)
   ndoms   = dimsizes(domains)
 
@@ -28,7 +29,7 @@ do id = 0,ndoms-1
 ; type = "ps"
  type = "png"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,DATADir + "plt_Surface_multi_"+domains(id)+"_")
+  wks = gsn_open_wks(type,PLTDir + "plt_Surface_multi_"+domains(id)+"_")
 
 ; Set some basic resources
   res = True
@@ -92,7 +93,7 @@ do id = 0,ndoms-1
     ; Plotting options for Wind Vectors                 
       opts = res         
       opts@FieldTitle = "Wind"       ; overwrite Field Title
-      opts@NumVectors = 47           ; density of wind barbs
+      opts@NumVectors = 30           ; density of wind barbs
       vector = wrf_vector(a[it],wks,u10(it,:,:),v10(it,:,:),opts)
       delete(opts)
   

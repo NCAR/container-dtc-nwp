@@ -15,7 +15,9 @@ begin
 ; type = "ps"
 ; type = "ncgm"
   type = "png"
-  wks = gsn_open_wks(type,"wps_show_dom")
+
+  PLTDir = "/nclprd/"
+  wks = gsn_open_wks(type,PLTDir+"wps_show_dom")
 
 ; read the following namelist file
   filename = "./namelist.wps"

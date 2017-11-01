@@ -11,6 +11,7 @@ begin
 ; Make a list of all files we are interested in
 ; DATADir = "/wrfprd/"
   DATADir = "./"
+  PLTDir = "/nclprd/"
   FILES = systemfunc (" ls -1 " + DATADir + "wrfout_d01* ")
   numFILES = dimsizes(FILES)
   print("numFILES = " + numFILES)
@@ -23,7 +24,7 @@ begin
 ; type = "ps"
  type = "png"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,"plt_dbz1")
+  wks = gsn_open_wks(type,PLTDIR+"plt_dbz1")
   gsn_define_colormap(wks,"WhViBlGrYeOrReWh")       ; Overwrite the standard color map
 
 ; Set some basic resources

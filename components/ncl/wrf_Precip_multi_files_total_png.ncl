@@ -10,7 +10,8 @@ begin
 ; Make a list of all files we are interested in
 ; DATADir = "/wrfprd/"
   DATADir = "./"
- domains = (/"d01", "d02"/)
+  PLTDir = "/nclprd/"
+  domains = (/"d01", "d02"/)
   ndoms   = dimsizes(domains)
 
 do id = 0,ndoms-1
@@ -27,7 +28,7 @@ do id = 0,ndoms-1
  type = "png"
 ; type = "ps"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,DATADir + "plt_Precip_multi_total_"+domains(id)+"_")
+  wks = gsn_open_wks(type,PLTDir + "plt_Precip_multi_total_"+domains(id)+"_")
 
 
 ; Set some basic resources
