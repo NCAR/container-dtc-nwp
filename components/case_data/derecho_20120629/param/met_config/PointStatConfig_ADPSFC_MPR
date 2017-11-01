@@ -33,47 +33,13 @@ fcst = {
    message_type = [ "ADPSFC" ];
 
    field = [
-      {
-        name       = "TMP";
-        level      = [ "Z2" ];
-        cat_thresh = [ >0.0 ];
-      },
-
-      {
-        name       = "DPT";
-        level      = [ "Z2" ];
-        cat_thresh = [ >0.0 ];
-      },
-
-      {
-        name       = "HGT";
-        level      = [ "Z0" ];
-        cat_thresh = [ >0.0 ];
-      },
-
-      {
-        name       = "UGRD";
-        level      = [ "Z10" ];
-        cat_thresh = [ >0.0 ];
-      },
-
-      {
-        name       = "VGRD";
-        level      = [ "Z10" ];
-        cat_thresh = [ >0.0 ];
-      },
-
-      {
-        name       = "WIND";
-        level      = [ "Z10" ];
-        cat_thresh = [ >0.0 ];
-      },
-
-      {
-        name       = "PRMSL";
-        level      = [ "Z0" ];
-        cat_thresh = [ >0.0 ];
-      }
+      { name = "TMP";   level = [ "Z2" ];  },
+      { name = "DPT";   level = [ "Z2" ];  },
+      { name = "HGT";   level = [ "Z0" ];  },
+      { name = "UGRD";  level = [ "Z10" ]; },
+      { name = "VGRD";  level = [ "Z10" ]; },
+      { name = "WIND";  level = [ "Z10" ]; },
+      { name = "PRMSL"; level = [ "Z0" ];  }
    ];
 
 };
@@ -97,23 +63,7 @@ obs_window = {
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "MET_BASE/poly/APL.poly",
-            "MET_BASE/poly/GMC.poly",
-            "MET_BASE/poly/GRB.poly",
-            "MET_BASE/poly/LMV.poly",
-            "MET_BASE/poly/MDW.poly",
-            "MET_BASE/poly/NEC.poly",
-            "MET_BASE/poly/NMT.poly",
-            "MET_BASE/poly/NPL.poly",
-            "MET_BASE/poly/NWC.poly",
-            "MET_BASE/poly/SEC.poly",
-            "MET_BASE/poly/SMT.poly",
-            "MET_BASE/poly/SPL.poly",
-            "MET_BASE/poly/SWC.poly",
-            "MET_BASE/poly/SWD.poly",
-            "MET_BASE/poly/EAST.poly",
-            "MET_BASE/poly/WEST.poly",
-            "MET_BASE/poly/CONUS.poly" ];
+   poly = [ ];
    sid  = "";
 };
 
