@@ -38,7 +38,7 @@ RUN yum -y update \
  && yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 \
                    libpng-devel jasper jasper-devel zlib zlib-devel \
                    cairo-devel freetype-devel epel-release \
-                   hostname m4 make tar tcsh time wget which \
+                   hostname m4 make tar tcsh ksh time wget which \
                    flex flex-devel bison bison-devel unzip \
  && yum -y install g2clib-devel hdf5-devel.x86_64 gsl-devel \
  && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf
