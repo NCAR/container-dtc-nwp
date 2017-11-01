@@ -157,7 +157,7 @@ output_flag = {
 ////////////////////////////////////////////////////////////////////////////////
 
 obs_quality    = [];
-duplicate_flag = SINGLE;
+duplicate_flag = UNIQUE;
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
 output_prefix  = "${MODEL}_F${FCST_TIME}_WINDS";
