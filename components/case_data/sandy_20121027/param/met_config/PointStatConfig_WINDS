@@ -161,6 +161,5 @@ duplicate_flag = SINGLE;
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
 output_prefix  = "${MODEL}_F${FCST_TIME}_WINDS";
-version        = "V5.2";
 
 ////////////////////////////////////////////////////////////////////////////////
