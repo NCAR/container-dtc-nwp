@@ -15,12 +15,9 @@ metviewer:
     ports:
     - "8080:8080"
     volumes:
+      - ${PROJ_DIR}/scripts:/scripts
       - ${PROJ_DIR}/metprd:/data
-      - ${PROJ_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
-      - ${PROJ_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
-      - ${PROJ_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
-      - ${PROJ_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
+      - ${PROJ_DIR}/metviewer/output:/opt/tomcat/webapps/metviewer_output
     links:
       - db:mysql_mv
-
 #
