@@ -27,9 +27,6 @@ docker run -it --volumes-from scripts --volumes-from derecho \
 #
 # Run docker compose to launch METViewer.
 #
-setenv METVIEWER_DATA ${PROJ_DIR}/metprd
-setenv METVIEWER_DIR  ${PROJ_DIR}/metviewer
-setenv MYSQL_DIR      ${PROJ_DIR}/metviewer/mysql
 cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 docker-compose run --rm --service-ports metviewer
 

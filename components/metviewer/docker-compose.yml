@@ -4,7 +4,7 @@ db:
     ports:
         - "6603:3306"
     volumes:
-        - ${MYSQL_DIR}:/var/lib/mysql
+        - ${PROJ_DIR}/metviewer/mysql:/var/lib/mysql
 
     environment: 
         MYSQL_ROOT_PASSWORD: mvuser
@@ -15,12 +15,12 @@ metviewer:
     ports:
     - "8080:8080"
     volumes:
-      - ${METVIEWER_DATA}:/data
-      - ${METVIEWER_DIR}/metviewer_output/xml:/opt/tomcat/webapps/metviewer_output/xml
-      - ${METVIEWER_DIR}/metviewer_output/plots:/opt/tomcat/webapps/metviewer_output/plots
-      - ${METVIEWER_DIR}/metviewer_output/data:/opt/tomcat/webapps/metviewer_output/data
-      - ${METVIEWER_DIR}/metviewer_output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
+      - ${PROJ_DIR}/metprd:/data
+      - ${PROJ_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
+      - ${PROJ_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
+      - ${PROJ_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
+      - ${PROJ_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
     links:
       - db:mysql_mv
-   
+
 #
