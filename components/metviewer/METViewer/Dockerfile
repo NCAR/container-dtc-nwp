@@ -62,4 +62,4 @@ WORKDIR /METViewer
 #
 # Start Tomcat
 #
-ENTRYPOINT ${CATALINA_HOME}/bin/startup.sh && /bin/bash
+ENTRYPOINT ${CATALINA_HOME}/bin/startup.sh
