@@ -26,10 +26,9 @@ RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; 
 # Install required R packages
 #
 RUN Rscript -e "install.packages('boor')" \
-	&& Rscript -e "install.packages('plotrix')" \
-	&& Rscript -e "install.packages('gsl')" \
-	&& Rscript -e "install.packages('stats')"
-
+ && Rscript -e "install.packages('plotrix')" \
+ && Rscript -e "install.packages('gsl')" \
+ && Rscript -e "install.packages('stats')"
 
 #
 # Install Tomcat
@@ -37,27 +36,25 @@ RUN Rscript -e "install.packages('boor')" \
 ENV CATALINA_HOME /opt/tomcat
 
 RUN wget http://ftp.wayne.edu/apache/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.tar.gz \
-	&& tar -xvf apache-tomcat-8.5.23.tar.gz \
-	&& rm apache-tomcat*.tar.gz \
-	&& mv apache-tomcat* ${CATALINA_HOME} \
-	&& chmod +x ${CATALINA_HOME}/bin/*sh
+ && tar -xvf apache-tomcat-8.5.23.tar.gz \
+ && rm apache-tomcat*.tar.gz \
+ && mv apache-tomcat* ${CATALINA_HOME} \
+ && chmod +x ${CATALINA_HOME}/bin/*sh
 
 EXPOSE 8080
-
 
 #
 # Download and Deploy METViewer load/batch
 #
 
 RUN  curl -L ${METVIEWER_URL} | tar xzC /tmp \
-  && mv  /tmp/METViewer/dist/*.war $CATALINA_HOME/webapps/ \
-  && mv /tmp/METViewer /METViewer
+ && mv /tmp/METViewer/dist/*.war $CATALINA_HOME/webapps/ \
+ && mv /tmp/METViewer /METViewer
 
 #
 # Set working directory
 #
 WORKDIR /METViewer
-
 
 #
 # Start Tomcat
