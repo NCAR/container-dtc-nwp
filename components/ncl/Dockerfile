@@ -11,7 +11,4 @@ ENV NCARG_ROOT /usr/local
 #
 RUN mkdir /nclscripts
 COPY wrf_*files*.ncl /nclscripts/
-COPY ncl_run_all /nclscripts/
 WORKDIR /nclscripts
-RUN chmod 755 ncl_run_all
-CMD ["/nclscripts/ncl_run_all"]
