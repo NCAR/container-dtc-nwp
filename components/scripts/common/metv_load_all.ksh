@@ -13,13 +13,12 @@
 #
 ##########################################################################
 
-if [ $# != 2 ]; then
-  echo "ERROR: Must specify the database name and load XML file."
+if [ $# != 1 ]; then
+  echo "ERROR: Must specify the database name."
   exit 1
 fi
 
 dbname=$1
-loadxml=$2
 hostname=mysql_mv
 
 # Drop existing database
@@ -31,5 +30,10 @@ mysql -h${hostname} -uroot -pmvuser -e"create database ${dbname};"
 # Apply the METViewer schema
 mysql -h${hostname} -uroot -pmvuser ${dbname} < /METViewer/sql/mv_mysql.sql
 
+# Update the load xml file
+cat /scripts/common/load_metv_TMPL.xml | sed "s/DATABASE/${dbname}/g' \
+  > /scripts/common/load_${dbname}.xml
+
 # Load the database
-/METViewer/bin/mv_load.sh ${loadxml}
+/METViewer/bin/mv_load.sh /scripts/common/load_${dbname}.xml
+
