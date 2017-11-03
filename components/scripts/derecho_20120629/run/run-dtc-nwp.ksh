@@ -348,8 +348,8 @@ echo Running UPP
 mkdir -p $POSTPRD_DIR
 cd $POSTPRD_DIR
 
-cp $SCRIPT_DIR/run_unipost .
-./run_unipost >& print.upp.txt
+cp $SCRIPT_DIR/run_unipost.ksh .
+./run_unipost.ksh >& print.upp.txt
 
 fi # end skip_upp = false
 
