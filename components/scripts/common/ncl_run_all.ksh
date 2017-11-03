@@ -1,11 +1,12 @@
-#!/bin/bash
+#!/bin/ksh
+
 export NCARG_ROOT=/usr/local
 #
 #
 cd /nclprd
 for nclscript in `ls -1 /nclscripts/*png.ncl`
 do
-	ncl $nclscript
+   ncl $nclscript
 done
 #
 echo convert to animated gif

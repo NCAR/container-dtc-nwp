@@ -5,7 +5,7 @@
 #
 
 # Variables need to match docker container volume names:
-SCRIPT_DIR="/scripts"
+SCRIPT_DIR="/scripts/common"
 METPRD_DIR="/metprd"
 
 ##################################

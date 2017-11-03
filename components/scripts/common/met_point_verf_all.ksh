@@ -32,8 +32,8 @@ MKDIR=/usr/bin/mkdir
 ECHO=/usr/bin/echo
 CUT=/usr/bin/cut
 DATE=/usr/bin/date
-CALC_DATE=/scripts/calc_date.ksh
-RUN_CMD=/scripts/run_command.ksh
+CALC_DATE=/scripts/common/calc_date.ksh
+RUN_CMD=/scripts/common/run_command.ksh
 
 typeset -Z2 FCST_TIME
 
