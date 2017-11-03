@@ -11,8 +11,10 @@
 #  using "Dockerfile" and commands such as "docker build -t <>"
 #
 
-git clone  https://github.com/NCAR/container-dtc-nwp
-cd ./container-dtc-nwp/components
+setenv PROJ_DIR "/path/to/working/directory"
+
+git clone https://github.com/NCAR/container-dtc-nwp ${PROJ_DIR}/container-dtc-nwp
+cd ${PROJ_DIR}/container-dtc-nwp/components
 
 # Build image for WPSGEOG static data
 cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
