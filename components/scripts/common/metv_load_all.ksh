@@ -31,7 +31,7 @@ mysql -h${hostname} -uroot -pmvuser -e"create database ${dbname};"
 mysql -h${hostname} -uroot -pmvuser ${dbname} < /METViewer/sql/mv_mysql.sql
 
 # Update the load xml file
-cat /scripts/common/load_metv_TMPL.xml | sed "s/DATABASE/${dbname}/g' \
+cat /scripts/common/load_metv_TMPL.xml | sed "s/DATABASE_NAME/${dbname}/g" \
   > /scripts/common/load_${dbname}.xml
 
 # Load the database
