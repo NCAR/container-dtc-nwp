@@ -27,17 +27,22 @@ docker run -it --volumes-from derecho --volumes-from scripts \
  --name run-dtc-met-derecho dtc-met /scripts/derecho_20120629/run/run-dtc-met.ksh
 
 #
-# Run docker compose to launch METViewer and a bash shell in the terminal.
-# METViewer runs as long as bash shell is active.
-# METViewer GUI: http://localhost:8080/metviewer/metviewer1.jsp
+# Run docker compose to launch METViewer and open a shell inside the container.
+# METViewer container exits when the shell is closed.
+# METViewer GUI URL http://localhost:8080/metviewer/metviewer1.jsp
 #
 cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 docker-compose run --rm --service-ports metviewer
 
 #
-# Run METViewer load script.
+# In a separate terminal window, run the METViewer load script.
 #
 docker exec -it metviewer_metviewer_run_1 /scripts/common/metv_load_all.ksh mv_derecho
+
+#
+# In the METViewer GUI browser window, click "Reload Databases" button.
+# John, add instructions for running a batch plot.
+#
 
 #
 # You can access all METViewer modules in /METViewer/bin
