@@ -212,6 +212,7 @@ rm namelist*
 
 # cp $INPUT_DIR/namelist.input .
 cp $NML_DIR/namelist.input .
+cp -f $NML_DIR/namelist.wps .
 sed -e '/nocolons/d' namelist.input > nml
 cp namelist.input namelist.nocolons
 mv nml namelist.input
