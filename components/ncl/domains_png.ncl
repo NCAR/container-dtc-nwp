@@ -20,7 +20,9 @@ begin
   wks = gsn_open_wks(type,PLTDir+"wps_show_dom")
 
 ; read the following namelist file
-  filename = "./namelist.wps"
+;  filename = "./namelist.wps"
+   filename = "/wrfprd/namelist.wps"
+
 
 
 ; Set the colors to be used

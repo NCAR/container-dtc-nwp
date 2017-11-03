@@ -1,6 +1,6 @@
 #
 FROM centos:latest
-MAINTAINER John Exby <exby@ucar.edu>
+MAINTAINER Kate Fossell <fossell@ucar.edu>
 # 
 RUN yum -y update
 RUN yum -y install fontconfig libgfortran libXext libXrender ImageMagick ksh
@@ -10,5 +10,8 @@ RUN curl -SL https://ral.ucar.edu/sites/default/files/public/projects/ncar-docke
 ENV NCARG_ROOT /usr/local
 #
 RUN mkdir /nclscripts
-COPY wrf_*files*.ncl /nclscripts/
+RUN mkdir /nclprd
+RUN mkdir /wrfprd
+COPY *.ncl /nclscripts/
+COPY run_all_ncl /nclscripts
 WORKDIR /nclscripts

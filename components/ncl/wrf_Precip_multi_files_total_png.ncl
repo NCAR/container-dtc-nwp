@@ -8,8 +8,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 begin
 ;
 ; Make a list of all files we are interested in
-; DATADir = "/wrfprd/"
-  DATADir = "./"
+  DATADir = "/wrfprd/"
   PLTDir = "/nclprd/"
   domains = (/"d01", "d02"/)
   ndoms   = dimsizes(domains)
