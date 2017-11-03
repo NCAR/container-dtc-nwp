@@ -1,0 +1,34 @@
+<load_spec>
+  <connection>
+    <management_system>mysql</management_system>
+    <host>mysql_mv:3306</host>
+    <database>DATABASE_NAME</database>
+    <user>root</user>
+    <password>mvuser</password>
+  </connection>
+
+	<folder_tmpl>/data/{met_tool}</folder_tmpl>
+
+	<met_version>V6.0</met_version>
+
+	<verbose>false</verbose>
+	<insert_size>1</insert_size>
+	<mode_header_db_check>false</mode_header_db_check>
+	<drop_indexes>false</drop_indexes>
+	<apply_indexes>true</apply_indexes>
+
+	<load_stat>true</load_stat>
+	<load_mode>true</load_mode>
+	<load_mpr>false</load_mpr>
+	<load_orank>false</load_orank>
+
+	<load_val>
+		<field name="met_tool">
+			<val>grid_stat</val>
+			<val>point_stat</val>
+			<val>ensemble_stat</val>
+			<val>mode_stat</val>
+		</field>
+	</load_val>
+
+</load_spec>
