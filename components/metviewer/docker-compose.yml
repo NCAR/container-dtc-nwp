@@ -1,6 +1,6 @@
 db:
-    image: mysql_mv
-    container_name: mysql_mv
+    image: dtc-mysql
+    container_name: mysql
     ports:
         - "6603:3306"
     volumes:
@@ -10,8 +10,8 @@ db:
         MYSQL_ROOT_PASSWORD: mvuser
 #
 metviewer:
-    image: metviewer
-    container_name: metviewer_1
+    image: dtc-metviewer
+    container_name: metviewer
     ports:
     - "8080:8080"
     volumes:
