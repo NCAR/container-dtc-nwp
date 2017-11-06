@@ -7,15 +7,16 @@
 # Variables need to match docker container volume names:
 SCRIPT_DIR="/scripts/common"
 METPRD_DIR="/metprd"
+LOG_FILE="${METPRD_DIR}/run-dtc-met.log"
 
 ##################################
 #   Run MET                      #
 ##################################
 
-echo Running MET 
-
 mkdir -p $METPRD_DIR
 cd $METPRD_DIR
+
+echo "Running MET and writing log file: ${LOG_FILE}" | tee $LOG_FILE 
 
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
 cp $SCRIPT_DIR/met_point_verf_all.ksh .
@@ -46,21 +47,21 @@ typeset -Z2 BUCKET_TIME
 FCST_TIME=$FCST_HR_BEG
 while [ $FCST_TIME -le $FCST_HR_END ] ; do
 
-  echo "FCST_TIME = $FCST_TIME"
+  echo "FCST_TIME = $FCST_TIME" | tee -a $LOG_FILE
   export FCST_TIME
 
   # Do point verification
   export RAW_OBS=/case_data/derecho_20120629/obs_data/prepbufr
-  ./met_point_verf_all.ksh
+  ./met_point_verf_all.ksh | tee -a $LOG_FILE
 
   # Do qpf verification
   if [ $FCST_TIME -ge $ACCUM_TIME ]; then
-    echo "ACCUM_TIME = $ACCUM_TIME"
-    echo "BUCKET_TIME = $BUCKET_TIME"
+    echo "ACCUM_TIME = $ACCUM_TIME" | tee -a $LOG_FILE
+    echo "BUCKET_TIME = $BUCKET_TIME" | tee -a $LOG_FILE
     export ACCUM_TIME
     export BUCKET_TIME
     export RAW_OBS=/case_data/derecho_20120629/obs_data/qpe
-    ./met_qpf_verf_all.ksh
+    ./met_qpf_verf_all.ksh | tee -a $LOG_FILE
   fi
 
   # Increment the forecast hour
@@ -68,5 +69,5 @@ while [ $FCST_TIME -le $FCST_HR_END ] ; do
 
 done
 
-echo Done
+echo Done | tee -a $LOG_FILE
  

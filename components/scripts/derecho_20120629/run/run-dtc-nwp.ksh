@@ -19,8 +19,8 @@ hosts=127.0.0.1
 # Variables need to match docker container volume names:
 WRF_BUILD="/wrf"
 INPUT_DIR="/case_data/derecho_20120629"
-NML_DIR="/case_data/derecho_20120629/param"
-SCRIPT_DIR="/case_data/derecho_20120629/run"
+NML_DIR="/scripts/derecho_20120629/param"
+SCRIPT_DIR="/scripts/derecho_20120629/run"
 WPSPRD_DIR="/wpsprd"
 WRFPRD_DIR="/wrfprd"
 POSTPRD_DIR="/postprd"
