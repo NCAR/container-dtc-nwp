@@ -13,8 +13,15 @@
 #
 
 git clone https://github.com/NCAR/container-dtc-met
-cd ./container-dtc-met/met
-docker build -t met-6.0-tutorial .
+cd container-dtc-met
+cd MET               ; docker build -t met-6.0 .               ; cd ..
+cd MET_Tutorial_Data ; docker build -t met-6.0_tutorial_data . ; cd ..
+
+#
+# Create a container for the tutorial data
+#
+
+docker create -v /met/met-6.0/data --name met_tutorial_data met-6.0_tutorial_data
 
 #
 # Rather than writing the MET tutorial output in the docker environment, we will write it to your
@@ -42,11 +49,15 @@ curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data
 #
 
 # For Linux Users
-docker run -it -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-6.0/tutorial met-6.0-tutorial /bin/bash
+docker run -it --rm --volumnes-from met_tutorial_data \
+ -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-6.0/tutorial \
+ met-6.0-tutorial /bin/bash
 cd /met/met-6.0
 
 # For Windows Users
-docker run -it -v /c/Users/your-name/container-dtc-met/met-6.0/tutorial:/met/met-6.0/tutorial met-6.0-tutorial /bin/bash
+docker run -it --rm --volumes-from met_tutorial_data \
+ -v /c/Users/your-name/container-dtc-met/met-6.0/tutorial:/met/met-6.0/tutorial \
+ met-6.0-tutorial /bin/bash
 cd /met/met-6.0
 
 #
