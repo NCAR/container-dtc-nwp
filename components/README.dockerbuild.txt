@@ -38,9 +38,6 @@ cd met/MET ; docker build -t dtc-met . ; cd ../..
 cd metviewer/MySQL     ; docker build -t dtc-mysql .     ; cd ../..
 cd metviewer/METViewer ; docker build -t dtc-metviewer . ; cd ../..
 
-# Build image for utility scripts
-cd scripts ; docker build -t dtc-scripts . ; cd ..
-
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
 # Instantiate local docker containers from the images you created above:
@@ -49,7 +46,6 @@ cd scripts ; docker build -t dtc-scripts . ; cd ..
 docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
 docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy
 docker create -v /case_data/derecho_20120629 --name derecho dtc-nwp-derecho
-docker create -v /scripts --name scripts dtc-scripts
 
 #
 # A more automated method using pre-built DTC docker-nwp/met container images,
