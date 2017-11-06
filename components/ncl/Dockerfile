@@ -13,5 +13,4 @@ RUN mkdir /nclscripts
 RUN mkdir /nclprd
 RUN mkdir /wrfprd
 COPY *.ncl /nclscripts/
-COPY run_all_ncl /nclscripts
 WORKDIR /nclscripts
