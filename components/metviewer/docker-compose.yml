@@ -17,7 +17,10 @@ metviewer:
     volumes:
       - ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts
       - ${PROJ_DIR}/metprd:/data
-      - ${PROJ_DIR}/metviewer/output:/opt/tomcat/webapps/metviewer_output
+      - ${PROJ_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
+      - ${PROJ_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
+      - ${PROJ_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
+      - ${PROJ_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
     links:
       - db:mysql_mv
 #
