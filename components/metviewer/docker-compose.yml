@@ -15,10 +15,9 @@ metviewer:
     ports:
     - "8080:8080"
     volumes:
+      - ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts
       - ${PROJ_DIR}/metprd:/data
       - ${PROJ_DIR}/metviewer/output:/opt/tomcat/webapps/metviewer_output
-    volumes_from:
-      - scripts
     links:
       - db:mysql_mv
 #
