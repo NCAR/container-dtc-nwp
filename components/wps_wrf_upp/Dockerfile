@@ -37,6 +37,7 @@ RUN echo export LDFLAGS="-lm" >> /etc/bashrc \
  && echo setenv PATH "/usr/lib64/bin:$PATH" >> /etc/csh.cshrc
 #
 # Build WRF first
+# input 34 and 1 to configure script alternative line = && echo -e "32\r1\r" | ./configure
 # 
 RUN pwd \ 
  && mkdir netcdf_links \
@@ -46,15 +47,14 @@ RUN pwd \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
  && cd ./WRFV3 \
-# input 34 and 1 to configure script alternative line = && echo -e "32\r1\r" | ./configure
  && ./configure <<< $'32\r1\r' \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt32.1.log 2>&1
 #
 # Build UPP second
 #
+# input 7 to configure script (for gfortran serial build)
 RUN cd ./UPPV3.1.1 \
  && export NETCDF=/wrf_serial/netcdf_links \
-# input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
  && sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/' ./configure.upp \
  && /bin/csh ./compile > compile_upp.log 2>&1
@@ -91,6 +91,7 @@ RUN echo export LDFLAGS="-lm" >> /etc/bashrc \
  && echo setenv PATH "/usr/lib64/openmpi/bin:$PATH" >> /etc/csh.cshrc
 #
 # Build WRF first
+# input 34 and 1 to configure script alternative line = && echo -e "34\r1\r" | ./configure
 # 
 RUN pwd \ 
  && mkdir netcdf_links \
@@ -100,19 +101,17 @@ RUN pwd \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
  && cd ./WRFV3 \
-# input 34 and 1 to configure script alternative line = && echo -e "34\r1\r" | ./configure
  && ./configure <<< $'34\r1\r' \
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
 #
 # Build WPS second
 #
-# input 1 to configure script
+# input 1 to configure script (gfortran serial build)
 RUN cd ./WPS \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
-# input 1 to configure script (gfortran serial build)
  && ./configure <<< $'1\r' \
  && sed -i -e 's/-L$(NETCDF)\/lib/-L$(NETCDF)\/lib -lnetcdff /' ./configure.wps \
  && /bin/csh ./compile > compile_wps.log 2>&1
