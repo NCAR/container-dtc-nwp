@@ -32,8 +32,8 @@ mysql -h${hostname} -uroot -pmvuser ${dbname} < /METViewer/sql/mv_mysql.sql
 
 # Update the load xml file
 cat /scripts/common/load_metv_TMPL.xml | sed "s/DATABASE_NAME/${dbname}/g" \
-  > /scripts/common/load_${dbname}.xml
+  > /metprd/load_${dbname}.xml
 
 # Load the database
-/METViewer/bin/mv_load.sh /scripts/common/load_${dbname}.xml
+/METViewer/bin/mv_load.sh /metprd/load_${dbname}.xml
 
