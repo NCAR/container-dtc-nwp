@@ -37,20 +37,18 @@ cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 docker-compose run --rm --service-ports metviewer
 
 #
-# Open a browser window and go to METViewer GUI URL:
-#   http://localhost:8080/metviewer/metviewer1.jsp
 # In a separate terminal window, run the METViewer load script.
 #
 docker exec -it metviewer_metviewer_run_1 /scripts/common/metv_load_all.ksh mv_derecho
 
 #
-# In the METViewer GUI browser window, click "Reload Databases" button.
-# John, add instructions for running a batch plot.
+# Open a web browser and go to the URL for the dockerized METViewer GUI:
+#   http://localhost:8080/metviewer/metviewer1.jsp
+# Use the GUI to make plot selections and then click the "Generate Plot" button. 
 #
 
 #
 # You can access all METViewer modules in /METViewer/bin
-# MET and/or VSDB output are in /data directory
-# You can use METViewer web application using your URL http://localhost:8080/metviewer/metviewer1.jsp
+# The ${PROJ_DIR}/metprd directory is mounted to /data inside the container.
 # MySQL database can be accessed with this command : mysql -h mysql_mv -uroot -pmvuser
 #
