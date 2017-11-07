@@ -31,13 +31,14 @@ docker run -it --volumes-from derecho \
 
 #
 # Run docker compose to launch METViewer and open a shell inside the container.
-# METViewer container exits when the shell is closed.
-# METViewer GUI URL http://localhost:8080/metviewer/metviewer1.jsp
+# The METViewer container exits when the shell is closed.
 #
 cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 docker-compose run --rm --service-ports metviewer
 
 #
+# Open a browser window and go to METViewer GUI URL:
+#   http://localhost:8080/metviewer/metviewer1.jsp
 # In a separate terminal window, run the METViewer load script.
 #
 docker exec -it metviewer_metviewer_run_1 /scripts/common/metv_load_all.ksh mv_derecho
