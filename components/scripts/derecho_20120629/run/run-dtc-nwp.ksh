@@ -250,6 +250,7 @@ ln -sf $WRF_BUILD/WRFV3/run/* .
 rm namelist*
 
 # cp $INPUT_DIR/namelist.input .
+cp $NML_DIR/namelist.wps .
 cp $NML_DIR/namelist.input .
 sed -e '/nocolons/d' namelist.input > nml
 cp namelist.input namelist.nocolons
