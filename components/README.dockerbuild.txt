@@ -11,7 +11,7 @@
 #  using "Dockerfile" and commands such as "docker build -t <>"
 #
 
-setenv PROJ_DIR "/path/to/working/directory"
+setenv PROJ_DIR "/path/to/working/directory"    -or-      export PROJ_DIR="/path/to/working/directory"
 
 git clone https://github.com/NCAR/container-dtc-nwp ${PROJ_DIR}/container-dtc-nwp
 cd ${PROJ_DIR}/container-dtc-nwp/components
