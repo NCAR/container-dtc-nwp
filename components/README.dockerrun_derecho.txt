@@ -1,7 +1,7 @@
 #
 # Setup environment
 #
-setenv PROJ_DIR "/path/to/working/directory"
+setenv PROJ_DIR "/path/to/working/directory"     -or-      export PROJ_DIR="/path/to/working/directory"
 cd ${PROJ_DIR}
 mkdir -p wrfprd postprd metprd metviewer/mysql
 
