@@ -50,7 +50,7 @@
  j_parent_start                      = 0, 20,
  parent_grid_ratio                   = 1, 4,
  parent_time_step_ratio              = 1, 4,
- feedback                            = 1,
+ feedback                            = 0,
  smooth_option                       = 0,
  p_top_requested                     = 1000,
  interp_type                         = 1,
