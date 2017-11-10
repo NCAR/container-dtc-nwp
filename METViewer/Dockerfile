@@ -3,6 +3,9 @@ FROM centos:latest
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 
 ENV METVIEWER_VERSION 2.2
+ENV TOMCAT_MINOR_VERSION 5.23
+ENV TOMCAT_MAJOR_VERSION 8
+ENV TOMCAT_VERSION ${TOMCAT_MAJOR_VERSION}.${TOMCAT_MINOR_VERSION}
 
 ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METViewer-${METVIEWER_VERSION}.tar.gz
 
@@ -15,7 +18,7 @@ RUN		yum -y update  \
 #
 # Install required packages
 #
-RUN yum -y install  wget tar java R gsl-devel mysql \
+RUN yum -y install  wget tar java R gsl-devel mysql ksh\
   && rm -rf /var/cache/yum/* \
 	&& yum clean all
 
@@ -36,8 +39,8 @@ RUN Rscript -e "install.packages('boor')" \
 #
 ENV CATALINA_HOME /opt/tomcat
 
-RUN wget http://ftp.wayne.edu/apache/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.tar.gz \
-	&& tar -xvf apache-tomcat-8.5.23.tar.gz \
+RUN wget https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+	&& tar -xvf apache-tomcat-${TOMCAT_VERSION}.tar.gz \
 	&& rm apache-tomcat*.tar.gz \
 	&& mv apache-tomcat* ${CATALINA_HOME} \
 	&& chmod +x ${CATALINA_HOME}/bin/*sh
@@ -63,3 +66,4 @@ WORKDIR /METViewer
 # Start Tomcat
 #
 ENTRYPOINT ${CATALINA_HOME}/bin/startup.sh && /bin/bash
+CMD ["true"]
