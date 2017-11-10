@@ -13,10 +13,6 @@
 #
 git clone https://github.com/NCAR/container-dtc-metviewer
 
-# From container-dtc-metviewer/MySQL, build MySQL image.
-cd container-dtc-metviewer/MySQL
-docker build -t mysql_mv .
-
 # From container-dtc-metviewer/METViewer, build METViewer image.
 cd ../METViewer
 docker build -t metviewer .
@@ -34,12 +30,20 @@ export METVIEWER_DIR=/path/for/metviewer/output # bash syntax
 setenv METVIEWER_DATA /path/for/data # c-shell syntax
 export METVIEWER_DATA=/path/for/data # bash syntax
 
-# From container-dtc-metviewer, start the containers.
-# It also opens up a shell in the docker environment and point to METViewer home directory
-cd ..
-docker-compose run --rm --service-ports metviewer
+# From container-dtc-metviewer, start the containers:
+  - #It  opens up a shell in the docker environment and point to METViewer home directory
+    cd ..
+    docker-compose run --rm --service-ports metviewer
+  - #It  starts the containers in the background
+      cd ..
+      docker-compose up -d
+      #To open a shell in the docker environment
+      docker exec -it metviewer_1 /bin/bash
 
 # You can access all METViewer modules in /METViewer/bin
 # MET and/or VSDB output are in /data directory
 # You can use METViewer web application using your URL http://localhost:8080/metviewer/metviewer1.jsp
 # MySQL database can be accessed with this command : mysql -h mysql_mv -uroot -pmvuser
+
+# To stop containers and removes containers, networks, volumes, and images
+docker-compose down
