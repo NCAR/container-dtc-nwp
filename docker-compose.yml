@@ -1,13 +1,14 @@
 db:
-    image: mysql_mv
+    image: mysql:5.7
     container_name: mysql_mv
     ports:
         - "6603:3306"
     volumes:
         - ${MYSQL_DIR}:/var/lib/mysql
 
-    environment: 
+    environment:
         MYSQL_ROOT_PASSWORD: mvuser
+    tty: true
 #
 metviewer:
     image: metviewer
@@ -22,5 +23,6 @@ metviewer:
       - ${METVIEWER_DIR}/metviewer_output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
     links:
       - db:mysql_mv
-   
+    tty: true
+
 #
