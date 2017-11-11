@@ -4,7 +4,7 @@ db:
     ports:
         - "6603:3306"
     volumes:
-        - ${PROJ_DIR}/metviewer/mysql:/var/lib/mysql
+        - ${CASE_DIR}/metviewer/mysql:/var/lib/mysql
 
     environment:
         MYSQL_ROOT_PASSWORD: mvuser
