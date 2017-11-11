@@ -40,7 +40,7 @@ docker-compose up -d
 #
 # Run the METViewer load script.
 #
-docker exec -it metviewer_1 /scripts/common/metv_load_all.ksh mv_derecho
+docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_derecho
 
 #
 # Launch the local METViewer GUI webpage:
@@ -51,7 +51,7 @@ docker exec -it metviewer_1 /scripts/common/metv_load_all.ksh mv_derecho
 #
 # Additional METViewer container options:
 # - Open a shell in the docker environment:
-#     docker exec -it metviewer_1 /bin/bash
+#     docker exec -it metviewer /bin/bash
 # - Inside the container, list the METViewer modules:
 #     ls /METViewer/bin
 # - Inside the container, ${CASE_DIR}/metprd is mounted to /data:
@@ -59,5 +59,6 @@ docker exec -it metviewer_1 /scripts/common/metv_load_all.ksh mv_derecho
 # - Inside the container, administer MySQL:
 #     mysql -h mysql_mv -uroot -pmvuser
 # - Outside the container, stop and remove METViewer containers:
+#     cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 #     docker-compose down
 #
