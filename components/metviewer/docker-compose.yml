@@ -1,13 +1,14 @@
 db:
-    image: dtc-mysql
-    container_name: mysql
+    image: mysql:5.7
+    container_name: mysql_mv
     ports:
         - "6603:3306"
     volumes:
         - ${PROJ_DIR}/metviewer/mysql:/var/lib/mysql
 
-    environment: 
+    environment:
         MYSQL_ROOT_PASSWORD: mvuser
+    tty: true
 #
 metviewer:
     image: dtc-metviewer
@@ -23,4 +24,5 @@ metviewer:
       - ${CASE_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
     links:
       - db:mysql_mv
+    tty: true
 #

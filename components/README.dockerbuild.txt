@@ -11,7 +11,7 @@
 #  using "Dockerfile" and commands such as "docker build -t <>"
 #
 
-setenv PROJ_DIR "/path/to/working/directory"    -or-      export PROJ_DIR="/path/to/working/directory"
+setenv PROJ_DIR "/path/to/working/directory"  -or-  export PROJ_DIR="/path/to/working/directory"
 
 git clone https://github.com/NCAR/container-dtc-nwp ${PROJ_DIR}/container-dtc-nwp
 cd ${PROJ_DIR}/container-dtc-nwp/components
@@ -22,8 +22,8 @@ cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
 # Build image for input Sandy test case data
 cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
 
-# Build image for input Derecho test case data                                                                                         
-cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..  
+# Build image for input Derecho test case data
+cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..
 
 # Build image which compiles WPS, WRF, and UPP from source
 cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
@@ -35,7 +35,6 @@ cd ncl ; docker build -t dtc-ncl . ; cd ..
 cd met/MET ; docker build -t dtc-met . ; cd ../..
 
 # Build images for METViewer
-cd metviewer/MySQL     ; docker build -t dtc-mysql .     ; cd ../..
 cd metviewer/METViewer ; docker build -t dtc-metviewer . ; cd ../..
 
 #

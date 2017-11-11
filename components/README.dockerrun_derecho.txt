@@ -1,8 +1,8 @@
 #
 # Setup environment
 #
-setenv PROJ_DIR "/path/to/working/directory"     -or-      export PROJ_DIR="/path/to/working/directory"
-setenv CASE_DIR ${PROJ_DIR}/derecho              -or-      export CASE_DIR=${PROJ_DIR}/derecho
+setenv PROJ_DIR "/path/to/working/directory"  -or-  export PROJ_DIR="/path/to/working/directory"
+setenv CASE_DIR ${PROJ_DIR}/derecho           -or-  export CASE_DIR=${PROJ_DIR}/derecho
 mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
 mkdir -p wrfprd postprd metprd metviewer/mysql
@@ -32,25 +32,32 @@ docker run -it --volumes-from derecho \
  --name run-dtc-met-derecho dtc-met /scripts/derecho_20120629/run/run-dtc-met.ksh
 
 #
-# Run docker compose to launch METViewer and open a shell inside the container.
-# The METViewer container exits when the shell is closed.
+# Run docker compose to launch METViewer.
 #
 cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
-docker-compose run --rm --service-ports metviewer
+docker-compose up -d
 
 #
-# In a separate terminal window, run the METViewer load script.
+# Run the METViewer load script.
 #
-docker exec -it metviewer_metviewer_run_1 /scripts/common/metv_load_all.ksh mv_derecho
+docker exec -it metviewer_1 /scripts/common/metv_load_all.ksh mv_derecho
 
 #
-# Open a web browser and go to the URL for the dockerized METViewer GUI:
+# Launch the local METViewer GUI webpage:
 #   http://localhost:8080/metviewer/metviewer1.jsp
-# Use the GUI to make plot selections and then click the "Generate Plot" button. 
+# Make plot selections and click the "Generate Plot" button.
 #
 
 #
-# You can access all METViewer modules in /METViewer/bin
-# The ${CASE_DIR}/metprd directory is mounted to /data inside the container.
-# MySQL database can be accessed with this command : mysql -h mysql_mv -uroot -pmvuser
+# Additional METViewer container options:
+# - Open a shell in the docker environment:
+#     docker exec -it metviewer_1 /bin/bash
+# - Inside the container, list the METViewer modules:
+#     ls /METViewer/bin
+# - Inside the container, ${CASE_DIR}/metprd is mounted to /data:
+#     ls /data
+# - Inside the container, administer MySQL:
+#     mysql -h mysql_mv -uroot -pmvuser
+# - Outside the container, stop and remove METViewer containers:
+#     docker-compose down
 #
