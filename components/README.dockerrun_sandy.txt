@@ -20,7 +20,7 @@ docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
 docker run --rm -it \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
  -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
- --name run-dtc-ncl-sandy dtc-ncl /scripts/common/ncl_run_all.ksh
+ --name run-dtc-ncl-sandy dtc-ncl /scripts/sandy_20121027/run/ncl_run_all.ksh
 
 #
 # Run MET script in docker-space.
