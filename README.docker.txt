@@ -51,13 +51,13 @@ curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data
 # For Linux Users
 docker run -it --rm --volumnes-from met_tutorial_data \
  -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-6.0/tutorial \
- met-6.0-tutorial /bin/bash
+ --name met-6.0-tutorial met-6.0 /bin/bash
 cd /met/met-6.0
 
 # For Windows Users
 docker run -it --rm --volumes-from met_tutorial_data \
  -v /c/Users/your-name/container-dtc-met/met-6.0/tutorial:/met/met-6.0/tutorial \
- met-6.0-tutorial /bin/bash
+ --name met-6.0-tutorial met-6.0 /bin/bash
 cd /met/met-6.0
 
 #
