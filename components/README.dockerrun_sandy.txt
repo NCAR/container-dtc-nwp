@@ -60,25 +60,3 @@ docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_sandy
 # - Outside the container, stop and remove METViewer containers:
 #     cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 #     docker-compose down
-
----
-old
-
-
-#
-# Run WPS/WRF/UPP (NWP: pre-proc, model, post-proc) script in docker-space.
-#
-docker run -it --volumes-from wps_geog --volumes-from sandy \
- -v ~/wrfprd:/wrfprd -v ~/postprd:/postprd \
- --name run-dtc-nwp-sandy dtc-nwp /case_data/sandy_20121027/run/run-dtc-nwp
-
-# Run NCL to generate plots from WRF output 
-docker run --rm  -it -v ~/wrfprd:/wrfprd dtc-ncl
-
-#
-# Run MET script in docker-space.
-#
-docker run -it --volumes-from scripts --volumes-from sandy \
- -v ~/postprd:/postprd -v ~/metprd:/metprd \
- --name run-dtc-met-sandy dtc-met /case_data/sandy_20121027/run/run-dtc-met
- 
