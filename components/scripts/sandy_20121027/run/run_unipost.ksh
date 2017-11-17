@@ -84,9 +84,9 @@ export UNIPOST_HOME=${TOP_DIR}/wrf_serial/UPPV3.1.1
 export POSTEXEC=${UNIPOST_HOME}/bin
 export SCRIPTS=${UNIPOST_HOME}/scripts
 export modelDataPath=/wrfprd            # or nemsprd
-export paramFile=${UNIPOST_HOME}/parm/wrf_cntrl.parm   # or nmb_cntrl.parm
-export xmlCntrlFile=${UNIPOST_HOME}/parm/postcntrl.xml # for grib2
-export txtCntrlFile=${UNIPOST_HOME}/parm/postxconfig-NT_WRF.txt # grib2
+export paramFile=/scripts/sandy_20121027/param/wrf_cntrl.parm   # or nmb_cntrl.parm
+export xmlCntrlFile=/scripts/sandy_20121027/param/postcntrl.xml # for grib2
+export txtCntrlFile=/scripts/sandy_20121027/param/postxconfig-NT_WRF.txt # grib2
 
 # Specify Dyn Core (ARW or NMM or NMB in upper case)
 export dyncore="ARW"
