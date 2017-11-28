@@ -49,7 +49,7 @@ curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data
 #
 
 # For Linux Users
-docker run -it --rm --volumnes-from met_tutorial_data \
+docker run -it --rm --volumes-from met_tutorial_data \
  -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-6.0/tutorial \
  --name met-6.0-tutorial met-6.0 /bin/bash
 cd /met/met-6.0
