@@ -21,7 +21,7 @@ cd MET_Tutorial_Data ; docker build -t met-6.1_tutorial_data . ; cd ..
 # Create a container for the tutorial data
 #
 
-docker create -v /met/met-6.1/data --name met_tutorial_data met-6.1_tutorial_data
+docker create -v /met/MET_Tutorial --name met_tutorial_data met-6.1_tutorial_data
 
 #
 # Rather than writing the MET tutorial output in the docker environment, we will write it to your
