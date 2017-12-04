@@ -14,14 +14,14 @@
 
 git clone https://github.com/NCAR/container-dtc-met
 cd container-dtc-met
-cd MET               ; docker build -t met-6.0 .               ; cd ..
-cd MET_Tutorial_Data ; docker build -t met-6.0_tutorial_data . ; cd ..
+cd MET               ; docker build -t met-6.1 .               ; cd ..
+cd MET_Tutorial_Data ; docker build -t met-6.1_tutorial_data . ; cd ..
 
 #
 # Create a container for the tutorial data
 #
 
-docker create -v /met/met-6.0/data --name met_tutorial_data met-6.0_tutorial_data
+docker create -v /met/met-6.1/data --name met_tutorial_data met-6.1_tutorial_data
 
 #
 # Rather than writing the MET tutorial output in the docker environment, we will write it to your
@@ -35,13 +35,13 @@ docker create -v /met/met-6.0/data --name met_tutorial_data met-6.0_tutorial_dat
 
 # For Linux Users
 mkdir -p ${MET_TUTORIAL_DIR}
-curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv6.0_tutorial_data.tar.gz | \
+curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv6.1_tutorial_data.tar.gz | \
   tar zxC ${MET_TUTORIAL_DIR} tutorial
 
 # For Windows Users
 # We recommend you place the tutorial directory in the container-dtc-met folder, which will likely be
-# located in C:\Users\your-name\container-dtc-met\met-6.0 (where you are after executing docker build  
-curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv6.0_tutorial_data.tar.gz | \
+# located in C:\Users\your-name\container-dtc-met\met-6.1 (where you are after executing docker build  
+curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv6.1_tutorial_data.tar.gz | \
   tar zxC ./ tutorial
 
 #
@@ -50,19 +50,19 @@ curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data
 
 # For Linux Users
 docker run -it --rm --volumes-from met_tutorial_data \
- -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-6.0/tutorial \
- --name met-6.0-tutorial met-6.0 /bin/bash
-cd /met/met-6.0
+ -v ${MET_TUTORIAL_DIR}/tutorial:/met/met-6.1/tutorial \
+ --name met-6.1-tutorial met-6.1 /bin/bash
+cd /met/met-6.1
 
 # For Windows Users
 docker run -it --rm --volumes-from met_tutorial_data \
- -v /c/Users/your-name/container-dtc-met/met-6.0/tutorial:/met/met-6.0/tutorial \
- --name met-6.0-tutorial met-6.0 /bin/bash
-cd /met/met-6.0
+ -v /c/Users/your-name/container-dtc-met/met-6.1/tutorial:/met/met-6.1/tutorial \
+ --name met-6.1-tutorial met-6.1 /bin/bash
+cd /met/met-6.1
 
 #
 # Open a browser and navigate to the MET online tutorial:
-#   http://www.dtcenter.org/met/users/support/online_tutorial/METv6.0/index.php
+#   http://www.dtcenter.org/met/users/support/online_tutorial/METv6.1/index.php
 # 
 # Users are encouraged to open two shells, one in the docker environment and one on their local machine
 # in the $MET_TUTORIAL_OUT/tutorial directory.  The tutorial exercises generate ascii, NetCDF, and PostScript
@@ -72,7 +72,7 @@ cd /met/met-6.0
 # You may skip over all steps in the "Compilation" section.
 #
 # * NOTE * that in the docker environment...
-#   - All tutorial commands should be run from the /met/met-6.0 directory.
+#   - All tutorial commands should be run from the /met/met-6.1 directory.
 #   - MET is installed in /usr/local/bin.
 #     Therefore, the "bin/" prefix should be ommitted from all tutorial commands.
 #     For example, run "grid_stat" instead of "bin/grid_stat".
@@ -81,4 +81,3 @@ cd /met/met-6.0
 #       convert -background white in.ps out.png
 #       ps2pdf -dPDFSETTINGS=/prepress in.ps [out.pdf] 
 #
-
