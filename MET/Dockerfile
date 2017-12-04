@@ -29,7 +29,6 @@ ENV GSFONT_URL     http://www.dtcenter.org/met/users/support/online_tutorial/doc
 
 ENV MET_URL        http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
 ENV PATCH_URL      http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz
-ENV DATA_URL       http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz
 
 #
 # Install required packages
