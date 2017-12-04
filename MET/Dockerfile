@@ -4,8 +4,8 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 # 
 # This Dockerfile compiles MET from source during "docker build" step
 #
-ENV MET_VERSION 6.0 
-ENV MET_RELEASE_DATE 20170403
+ENV MET_VERSION 6.1
+ENV MET_RELEASE_DATE 20171204
 
 #
 # Compilers
