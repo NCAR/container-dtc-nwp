@@ -7,9 +7,9 @@ ENV DATA_URL    http://www.dtcenter.org/met/users/support/online_tutorial/tutori
 #
 # Pull input data for the online tutorial
 #
-RUN mkdir -p /MET_Tutorial \
+RUN mkdir -p /met \
  && echo "Downloading input data for the met-${MET_VERSION} online tutorial from ${DATA_URL}" \
- && curl -SL ${DATA_URL} | tar zxC /MET_Tutorial MET_Tutorial
+ && curl -SL ${DATA_URL} | tar zxC /met MET_Tutorial
 
-VOLUME /MET_Tutorial
+VOLUME /met/MET_Tutorial
 CMD ["true"]
