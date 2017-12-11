@@ -50,11 +50,14 @@ WORKDIR /met
 #
 # Environment for interactive bash and csh container shells
 #
-RUN echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
+RUN echo export MET_BASE=/usr/local/share/met >> /etc/bashrc \
+ && echo setenv MET_BASE /usr/local/share/met >> /etc/csh.cshrc \
+ && echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
  && echo setenv MET_FONT_DIR /met/external_libs/fonts >> /etc/csh.cshrc \
+ && echo export RSCRIPTS_BASE=/usr/local/share/met/Rscripts >> /etc/bashrc \
+ && echo setenv RSCRIPTS_BASE /usr/local/share/met/Rscripts >> /etc/csh.cshrc \
  && echo export LD_LIBRARY_PATH=/usr/local/lib >> /etc/bashrc \
  && echo setenv LD_LIBRARY_PATH /usr/local/lib >> /etc/csh.cshrc
-
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 #
