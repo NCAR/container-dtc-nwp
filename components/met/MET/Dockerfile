@@ -4,8 +4,8 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 # 
 # This Dockerfile compiles MET from source during "docker build" step
 #
-ENV MET_VERSION 6.0 
-ENV MET_RELEASE_DATE 20170403
+ENV MET_VERSION 6.1
+ENV MET_RELEASE_DATE 20171204
 
 #
 # Compilers
@@ -29,7 +29,6 @@ ENV GSFONT_URL     http://www.dtcenter.org/met/users/support/online_tutorial/doc
 
 ENV MET_URL        http://www.dtcenter.org/met/users/downloads/MET_releases/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
 ENV PATCH_URL      http://www.dtcenter.org/met/users/support/known_issues/METv${MET_VERSION}/patches/met-${MET_VERSION}_patches_latest.tar.gz
-ENV DATA_URL       http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv${MET_VERSION}_tutorial_data.tar.gz
 
 #
 # Install required packages
@@ -51,11 +50,14 @@ WORKDIR /met
 #
 # Environment for interactive bash and csh container shells
 #
-RUN echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
+RUN echo export MET_BASE=/usr/local/share/met >> /etc/bashrc \
+ && echo setenv MET_BASE /usr/local/share/met >> /etc/csh.cshrc \
+ && echo export MET_FONT_DIR=/met/external_libs/fonts >> /etc/bashrc \
  && echo setenv MET_FONT_DIR /met/external_libs/fonts >> /etc/csh.cshrc \
+ && echo export RSCRIPTS_BASE=/usr/local/share/met/Rscripts >> /etc/bashrc \
+ && echo setenv RSCRIPTS_BASE /usr/local/share/met/Rscripts >> /etc/csh.cshrc \
  && echo export LD_LIBRARY_PATH=/usr/local/lib >> /etc/bashrc \
  && echo setenv LD_LIBRARY_PATH /usr/local/lib >> /etc/csh.cshrc
-
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 #
