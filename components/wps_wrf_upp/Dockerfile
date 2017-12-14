@@ -4,7 +4,7 @@ MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # This Dockerfile compiles WRF from source during "docker build" step
 ENV WRF_VERSION 3.9.1.1
 ENV WPS_VERSION 3.9.1
-ENV UPP_VERSION 3.1.1
+ENV UPP_VERSION 3.2
 
 #SERIAL BUILD
 RUN yum -y update
@@ -43,6 +43,7 @@ RUN pwd \
  && mkdir netcdf_links \
  && ln -sf /usr/include/ netcdf_links/include \
  && ln -sf /usr/lib64 netcdf_links/lib \
+ && ln -sf /usr/lib64/gfortran/modules/netcdf.mod netcdf_links/include \
  && export NETCDF=/wrf_serial/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
@@ -53,10 +54,9 @@ RUN pwd \
 # Build UPP second
 #
 # input 7 to configure script (for gfortran serial build)
-RUN cd ./UPPV3.1.1 \
+RUN cd ./UPPV3.2 \
  && export NETCDF=/wrf_serial/netcdf_links \
  && ./configure <<< $'7\r' \
- && sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/' ./configure.upp \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
 ENV LD_LIBRARY_PATH /usr/lib64/lib

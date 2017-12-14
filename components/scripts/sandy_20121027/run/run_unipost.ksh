@@ -80,7 +80,7 @@ set -x
 export TOP_DIR=/
 export DOMAINPATH=${TOP_DIR}
 export WRFPATH=${TOP_DIR}/wrf_serial/WRFV3
-export UNIPOST_HOME=${TOP_DIR}/wrf_serial/UPPV3.1.1
+export UNIPOST_HOME=${TOP_DIR}/wrf_serial/UPPV3.2
 export POSTEXEC=${UNIPOST_HOME}/bin
 export SCRIPTS=${UNIPOST_HOME}/scripts
 export modelDataPath=/wrfprd            # or nemsprd
