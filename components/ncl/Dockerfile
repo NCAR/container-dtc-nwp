@@ -9,8 +9,6 @@ RUN curl -SL https://ral.ucar.edu/sites/default/files/public/projects/ncar-docke
 #
 ENV NCARG_ROOT /usr/local
 #
-RUN mkdir /nclscripts
 RUN mkdir /nclprd
 RUN mkdir /wrfprd
-COPY *.ncl /nclscripts/
-WORKDIR /nclscripts
+WORKDIR /nclprd
