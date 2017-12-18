@@ -93,7 +93,7 @@ export dyncore="ARW"
 
 # Set input format from model
 export inFormat="netcdf"
-export outFormat="grib2"
+export outFormat="grib"
 
 # Set date/time information
 export startdate=2012062912
