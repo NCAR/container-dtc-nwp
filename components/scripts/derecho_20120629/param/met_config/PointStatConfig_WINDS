@@ -35,7 +35,7 @@ fcst = {
 
    field = [
       { name = "TMP";  },
-      { name = "UGRD", },
+      { name = "UGRD"; },
       { name = "VGRD"; },
       { name = "WIND"; }
    ];
