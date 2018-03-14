@@ -2,7 +2,7 @@ FROM centos:latest
 
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 
-ENV METVIEWER_VERSION 2.3
+ENV METVIEWER_VERSION 2.4
 ENV TOMCAT_MINOR_VERSION 5.23
 ENV TOMCAT_MAJOR_VERSION 8
 ENV TOMCAT_VERSION ${TOMCAT_MAJOR_VERSION}.${TOMCAT_MINOR_VERSION}
@@ -31,6 +31,7 @@ RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; 
 RUN Rscript -e "install.packages('boor')" \
 	&& Rscript -e "install.packages('plotrix')" \
 	&& Rscript -e "install.packages('gsl')" \
+	&& Rscript -e "install.packages('data.table')" \
 	&& Rscript -e "install.packages('stats')"
 
 
