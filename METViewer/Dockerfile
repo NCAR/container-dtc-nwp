@@ -2,12 +2,12 @@ FROM centos:latest
 
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 
-ENV METVIEWER_VERSION 2.6
+ENV METVIEWER_VERSION 2.7
 ENV TOMCAT_MINOR_VERSION 5.23
 ENV TOMCAT_MAJOR_VERSION 8
 ENV TOMCAT_VERSION ${TOMCAT_MAJOR_VERSION}.${TOMCAT_MINOR_VERSION}
 
-ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METViewer-${METVIEWER_VERSION}.tar.gz
+ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METviewer-${METVIEWER_VERSION}.tar.gz
 
 #
 # Install Extra Packages for Enterprise Linux for Rscript install
