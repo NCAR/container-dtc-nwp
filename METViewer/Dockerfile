@@ -50,17 +50,17 @@ EXPOSE 8080
 
 
 #
-# Download and Deploy METViewer load/batch
+# Download and Deploy METviewer load/batch
 #
 
 RUN  curl -L ${METVIEWER_URL} | tar xzC /tmp \
-  && mv  /tmp/METViewer/dist/*.war $CATALINA_HOME/webapps/ \
-  && mv /tmp/METViewer /METViewer
+  && mv  /tmp/METviewer/dist/*.war $CATALINA_HOME/webapps/ \
+  && mv /tmp/METviewer /METviewer
 
 #
 # Set working directory
 #
-WORKDIR /METViewer
+WORKDIR /METviewer
 
 
 #
