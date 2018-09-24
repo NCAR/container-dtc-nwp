@@ -1,6 +1,6 @@
 FROM centos:latest
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
-# 
+#
 # This Dockerfile compiles GSI from source during "docker build" step
 ENV GSI_VERSION 3.7
 ENV ENKF_VERSION 1.2
@@ -11,10 +11,11 @@ ENV J 4
 #SERIAL BUILD
 RUN yum -y update
 #RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
-RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 ksh hostname m4 make perl tar tcsh time wget which epel-release
+RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 ksh hostname m4 make perl tar tcsh time wget which epel-release cmake lapack
 #
 # now get 3rd party EPEL builds of netcdf dependencies
-RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64
+#SERIAL RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64
+RUN yum -y install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64
 #
 WORKDIR /gsi
 #
@@ -23,32 +24,31 @@ WORKDIR /gsi
 # This command will be used after the official release
 #RUN curl -SL https://dtcenter.org/com-GSI/users/downloads/GSI_releases/comGSIv${GSI_VERSION}_EnKFv1.2.tar.gz | tar zxC /gsi 
 #
-RUN tar -zxC /gsi comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz
+ADD comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz /gsi
+#RUN gunzip comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz \
+# && tar -xf comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar
 
-# Set environment for interactive container shells: can use tcsh or bash
+# Set necessary environment variables for GSI build
 #
-RUN echo export LDFLAGS="-lm" >> /etc/bashrc \ 
- && echo export NETCDF=/gsi/netcdf_links >> /etc/bashrc \
- && echo export LD_LIBRARY_PATH="/usr/lib64" >> /etc/bashrc \
- && echo export PATH="/usr/lib64/bin:$PATH" >> /etc/bashrc \
- && echo setenv LDFLAGS "-lm" >> /etc/csh.cshrc \
- && echo setenv NETCDF "/gsi/netcdf_links" >> /etc/csh.cshrc \
- && echo setenv LD_LIBRARY_PATH "/usr/lib64" >> /etc/csh.cshrc \
- && echo setenv PATH "/usr/lib64/bin:$PATH" >> /etc/csh.cshrc
+ENV LDFLAGS -lm
+ENV NETCDF /gsi/netcdf_links
+ENV LD_LIBRARY_PATH /lib64:/usr/lib64:/usr/lib64/openmpi/lib:/usr/lib
+ENV PATH /usr/lib64/openmpi/bin:$PATH
+ENV HDF5_ROOT $NETCDF
 #
 # Build GSI
-# input 34 and 1 to configure script alternative line = && echo -e "32\r1\r" | ./configure
 # 
 RUN pwd \ 
  && mkdir netcdf_links \
- && ln -sf /usr/include/ netcdf_links/include \
- && ln -sf /usr/lib64 netcdf_links/lib \
- && ln -sf /usr/lib64/gfortran/modules/netcdf.mod netcdf_links/include \
- && export NETCDF=/gsi/netcdf_links \
+ && ln -sf /usr/include/openmpi-x86_64/ netcdf_links/include \
+ && ln -sf /usr/lib64/openmpi/lib netcdf_links/lib \
+# && ln -sf /usr/lib64/gfortran/modules/netcdf.mod netcdf_links/include \
  && mkdir gsi_build 
- && cd ./gsi_build \
- && /bin/bash cmake /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
- && /bin/bash make -j ${J}
+#
+WORKDIR /gsi/gsi_build
+#
+RUN cmake /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
+ && make -j ${J}
 #
 
 # Setup run directory
