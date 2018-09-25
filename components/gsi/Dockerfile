@@ -11,11 +11,11 @@ ENV J 4
 #SERIAL BUILD
 RUN yum -y update
 #RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
-RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 ksh hostname m4 make perl tar tcsh time wget which epel-release cmake lapack
+RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 ksh hostname m4 make perl tar tcsh time wget which epel-release
 #
 # now get 3rd party EPEL builds of netcdf dependencies
-#SERIAL RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64
-RUN yum -y install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64
+#SERIAL RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64 
+RUN yum -y install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64 cmake3 openblas-devel.x86_64
 #
 WORKDIR /gsi
 #
@@ -39,15 +39,13 @@ ENV HDF5_ROOT $NETCDF
 # Build GSI
 # 
 RUN pwd \ 
+ && env \
  && mkdir netcdf_links \
  && ln -sf /usr/include/openmpi-x86_64/ netcdf_links/include \
  && ln -sf /usr/lib64/openmpi/lib netcdf_links/lib \
-# && ln -sf /usr/lib64/gfortran/modules/netcdf.mod netcdf_links/include \
- && mkdir gsi_build 
-#
-WORKDIR /gsi/gsi_build
-#
-RUN cmake /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
+ && mkdir gsi_build \
+ && cd gsi_build \
+ && cmake3 /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
  && make -j ${J}
 #
 
@@ -65,7 +63,7 @@ RUN chmod +x /gsi/docker-clean \
 # set up ssh configuration
 #
 COPY ssh_config /root/.ssh/config
-COPY slave /wrf/slave
+COPY slave /gsi/slave
 RUN yum install -y openssh-clients openssh-server net-tools \
     && yum clean all \
     && mkdir -p /var/run/sshd \
@@ -77,6 +75,6 @@ RUN yum install -y openssh-clients openssh-server net-tools \
     && chmod 600 /root/.ssh/config \
     && chmod 700 /root/.ssh \
     && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
-    && chmod +x /wrf/slave
+    && chmod +x /gsi/slave
 
-CMD ["/wrf/run-gsi"]
+CMD ["/gsi/run-gsi"]
