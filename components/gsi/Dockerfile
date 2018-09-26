@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM ubuntu:latest
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 #
 # This Dockerfile compiles GSI from source during "docker build" step
@@ -11,7 +11,7 @@ ENV J 4
 #SERIAL BUILD
 RUN apt update
 #RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
-RUN apt -y install file gcc gfortran g++ ksh hostname m4 make perl tar tcsh time wget libopenmpi-dev libnetcdf-dev libnetcdff-dev libopenblas-dev
+RUN apt -y install file gcc gfortran g++ ksh hostname m4 make perl tar tcsh time wget libopenmpi-dev libnetcdf-dev libnetcdff-dev netcdf-bin libopenblas-dev cmake
 #
 # now get 3rd party EPEL builds of netcdf dependencies, hdf5, openmpi stuff, cmake3, and openblas
 #RUN apt install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64 cmake3 openblas-devel.x86_64
@@ -54,17 +54,17 @@ RUN mkdir /gsi/gsi_run
 #
 # copy in a couple custom scripts
 #
-COPY docker-clean /gsi
-COPY run-gsi /gsi/gsi_run
-RUN chmod +x /gsi/docker-clean \
- && chmod +x /gsi/gsi_run/run-gsi
+#COPY docker-clean /gsi
+#COPY run-gsi /gsi/gsi_run
+#RUN chmod +x /gsi/docker-clean \
+# && chmod +x /gsi/gsi_run/run-gsi
 #
 # set up ssh configuration
 #
 COPY ssh_config /root/.ssh/config
 COPY slave /gsi/slave
-RUN yum install -y openssh-clients openssh-server net-tools \
-    && yum clean all \
+RUN apt install -y openssh-client openssh-server net-tools \
+    && apt clean all \
     && mkdir -p /var/run/sshd \
     && ssh-keygen -A \
     && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
