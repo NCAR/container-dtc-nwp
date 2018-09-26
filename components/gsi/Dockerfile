@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM debian:latest
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 #
 # This Dockerfile compiles GSI from source during "docker build" step
@@ -9,13 +9,14 @@ ENV ENKF_VERSION 1.2
 ENV J 4
 
 #SERIAL BUILD
-RUN yum -y update
+RUN apt update
 #RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
-RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 ksh hostname m4 make perl tar tcsh time wget which epel-release
+RUN apt -y install file gcc gfortran g++ ksh hostname m4 make perl tar tcsh time wget libopenmpi-dev libnetcdf-dev libnetcdff-dev libopenblas-dev
 #
-# now get 3rd party EPEL builds of netcdf dependencies
-#SERIAL RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64 
-RUN yum -y install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64 cmake3 openblas-devel.x86_64
+# now get 3rd party EPEL builds of netcdf dependencies, hdf5, openmpi stuff, cmake3, and openblas
+#RUN apt install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64 cmake3 openblas-devel.x86_64
+#
+
 #
 WORKDIR /gsi
 #
@@ -25,14 +26,12 @@ WORKDIR /gsi
 #RUN curl -SL https://dtcenter.org/com-GSI/users/downloads/GSI_releases/comGSIv${GSI_VERSION}_EnKFv1.2.tar.gz | tar zxC /gsi 
 #
 ADD comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz /gsi
-#RUN gunzip comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz \
-# && tar -xf comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar
 
 # Set necessary environment variables for GSI build
 #
 ENV LDFLAGS -lm
 ENV NETCDF /gsi/netcdf_links
-ENV LD_LIBRARY_PATH /lib64:/usr/lib64:/usr/lib64/openmpi/lib:/usr/lib
+ENV LD_LIBRARY_PATH /usr/lib/
 ENV PATH /usr/lib64/openmpi/bin:$PATH
 ENV HDF5_ROOT $NETCDF
 #
@@ -41,11 +40,11 @@ ENV HDF5_ROOT $NETCDF
 RUN pwd \ 
  && env \
  && mkdir netcdf_links \
- && ln -sf /usr/include/openmpi-x86_64/ netcdf_links/include \
- && ln -sf /usr/lib64/openmpi/lib netcdf_links/lib \
+ && ln -sf /usr/include /gsi/netcdf_links/ \
+ && ln -sf /usr/lib/x86_64-linux-gnu/ /gsi/netcdf_links/lib \
  && mkdir gsi_build \
  && cd gsi_build \
- && cmake3 /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
+ && cmake /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
  && make -j ${J}
 #
 
