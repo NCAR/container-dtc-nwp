@@ -11,7 +11,7 @@ ENV J 4
 #SERIAL BUILD
 RUN apt update
 #RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
-RUN apt -y install file gcc gfortran g++ ksh hostname m4 make perl tar tcsh time wget libopenmpi-dev libnetcdf-dev libnetcdff-dev netcdf-bin libopenblas-dev cmake
+RUN apt -y install file gcc gfortran g++ ksh hostname m4 make perl tar tcsh time wget libopenmpi-dev libnetcdf-dev libnetcdff-dev netcdf-bin libopenblas-dev cmake vim emacs nano
 #
 # now get 3rd party EPEL builds of netcdf dependencies, hdf5, openmpi stuff, cmake3, and openblas
 #RUN apt install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64 cmake3 openblas-devel.x86_64
@@ -34,6 +34,7 @@ ENV NETCDF /gsi/netcdf_links
 ENV LD_LIBRARY_PATH /usr/lib/
 ENV PATH /usr/lib64/openmpi/bin:$PATH
 ENV HDF5_ROOT $NETCDF
+ENV WE_ARE_IN_THE_GSI_CONTAINER true
 #
 # Build GSI
 # 
@@ -47,15 +48,29 @@ RUN pwd \
  && cmake /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
  && make -j ${J}
 #
-
+# Download CRTM files
+#
+RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/CRTM_2.2.3.tar.gz \
+ && tar -xf CRTM_2.2.3.tar.gz
+#
+# Download tutorial data
+RUN mkdir -p /data/2017051312/arw_45km \
+ && wget https://dtcenter.org/com-GSI/users/tutorial/online_tutorial/releaseV3.6/data/Case01/wrfinput_d01.2017051312 -P /data/2017051312/arw_45km \
+ && wget https://dtcenter.org/com-GSI/users/tutorial/online_tutorial/releaseV3.6/data/Case02/obs.tar -P /data/2017051312/ \
+ && tar -xf /data/2017051312/obs.tar -C /data/2017051312/
+#
 # Setup run directory
 RUN mkdir /gsi/gsi_run
-
+#
+# Set some useful settings for bashrc/cshrc
+RUN echo set -o ignoreeof >> /etc/bashrc \
+ && echo set -o ignoreeof >> /etc/csh.cshrc \
+RUN set -o ignoreeof
 #
 # copy in a couple custom scripts
 #
 #COPY docker-clean /gsi
-#COPY run-gsi /gsi/gsi_run
+COPY run_gsi_regional.ksh /gsi/gsi_run
 #RUN chmod +x /gsi/docker-clean \
 # && chmod +x /gsi/gsi_run/run-gsi
 #
@@ -76,4 +91,5 @@ RUN apt install -y openssh-client openssh-server net-tools \
     && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
     && chmod +x /gsi/slave
 
-CMD ["/gsi/run-gsi"]
+RUN env
+CMD ["/gsi/gsi_run/run_gsi_regional.ksh"]
