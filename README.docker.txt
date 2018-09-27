@@ -14,7 +14,7 @@
 
 git clone https://github.com/NCAR/container-dtc-met
 cd container-dtc-met/MET
-docker build -t met-7.0 .
+docker build -t met-8.0 .
 
 #
 # Rather than writing the MET tutorial data in the docker environment, we will write it to your
@@ -27,7 +27,7 @@ docker build -t met-7.0 .
 #
 
 mkdir -p ${MET_TUTORIAL_DIR}
-curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv7.0_tutorial_data.tar.gz | \
+curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data/METv8.0_tutorial_data.tar.gz | \
   tar zxC ${MET_TUTORIAL_DIR}
 
 #
@@ -35,13 +35,13 @@ curl -SL http://www.dtcenter.org/met/users/support/online_tutorial/tutorial_data
 #
 
 docker run -it --rm \
- -v ${MET_TUTORIAL_DIR}/MET_Tutorial:/met/met-7.0/MET_Tutorial \
- --name met-7.0-tutorial met-7.0 /bin/bash
-cd /met/met-7.0
+ -v ${MET_TUTORIAL_DIR}/MET_Tutorial:/met/met-8.0/MET_Tutorial \
+ --name met-8.0-tutorial met-8.0 /bin/bash
+cd /met/met-8.0
 
 #
 # Open a browser and navigate to the MET online tutorial:
-#   http://www.dtcenter.org/met/users/support/online_tutorial/METv7.0/index.php
+#   http://www.dtcenter.org/met/users/support/online_tutorial/METv8.0/index.php
 # 
 # Users are encouraged to open two shells, one in the docker environment and one on their local machine
 # in the $MET_TUTORIAL_DIR/tutorial directory.  The tutorial exercises generate ascii, NetCDF, and PostScript
@@ -51,7 +51,7 @@ cd /met/met-7.0
 # You may skip over all steps in the "Compilation" section.
 #
 # * NOTE * that in the docker environment...
-#   - All tutorial commands should be run from the /met/met-7.0 directory.
+#   - All tutorial commands should be run from the /met/met-8.0 directory.
 #   - MET is installed in /usr/local/bin.
 #   - MET creates PostScript ouput image which may be difficult to view on your local machine.
 #     The convert or ps2pdf may be used to convert PostScript images to PDF or other image file formats.
