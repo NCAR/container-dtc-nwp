@@ -44,7 +44,7 @@ RUN pwd \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./WRFV3 \
+ && cd ./WRF-${WRF_VERSION} \
 # input 32 and 1 to configure script (gfortran for serial build)
  && ./configure <<< $'32\r1\r' \
 # && echo -e "32\r1\r" | ./configure
@@ -55,7 +55,7 @@ RUN pwd \
 # Build WPS second
 #
 RUN pwd \
- && cd ./WPS \
+ && cd ./WPS-${WPS_VERSION} \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper \
  && export JASPERLIB=/usr/lib64 \

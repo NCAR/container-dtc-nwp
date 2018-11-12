@@ -47,7 +47,7 @@ RUN pwd \
  && export NETCDF=/wrf_serial/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./WRFV3 \
+ && cd ./WRF-${WRF_VERSION} \
  && ./configure <<< $'32\r1\r' \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt32.1.log 2>&1
 #
@@ -100,7 +100,7 @@ RUN pwd \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./WRFV3 \
+ && cd ./WRF-${WRF_VERSION} \
  && ./configure <<< $'34\r1\r' \
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
@@ -108,7 +108,7 @@ RUN pwd \
 # Build WPS second
 #
 # input 1 to configure script (gfortran serial build)
-RUN cd ./WPS \
+RUN cd ./WPS-${WPS_VERSION} \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
