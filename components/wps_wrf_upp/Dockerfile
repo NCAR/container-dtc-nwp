@@ -2,8 +2,8 @@ FROM centos:latest
 MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
-ENV WRF_VERSION 3.9.1.1
-ENV WPS_VERSION 3.9.1
+ENV WRF_VERSION 4.0.2
+ENV WPS_VERSION 4.0.2
 ENV UPP_VERSION 3.2
 
 #SERIAL BUILD
@@ -17,7 +17,7 @@ WORKDIR /wrf_serial
 #
 # Download original sources
 #
-RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zxC /wrf_serial \
+RUN curl -SL https://github.com/wrf-model/WRF/archive/v${WRF_VERSION}.tar.gz | tar zxC /wrf_serial \
  && curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /wrf_serial
 #
 
@@ -72,8 +72,8 @@ WORKDIR /wrf
 #
 # Download original sources
 #
-RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV$WRF_VERSION.TAR.gz | tar zxC /wrf \
- && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV$WPS_VERSION.TAR.gz | tar zxC /wrf
+RUN curl -SL https://github.com/wrf-model/WRF/archive/v${WRF_VERSION}.tar.gz | tar zxC /wrf \
+ && curl -SL https://github.com/wrf-model/WPS/archive/v${WPS_VERSION}.tar.gz | tar zxC /wrf
 #
 # Set environment for interactive container shells
 #
