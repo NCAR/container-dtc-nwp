@@ -52,7 +52,7 @@ EXPOSE 8080
 #
 
 RUN  curl -L ${METVIEWER_URL} | tar xzC /tmp \
- && mv  /tmp/METviewer/dist/*.war $CATALINA_HOME/webapps/ \
+ && mv /tmp/METviewer/dist/*.war $CATALINA_HOME/webapps/ \
  && mv /tmp/METviewer /METviewer
 
 #
