@@ -56,7 +56,7 @@ RUN pwd \
 # input 7 to configure script (for gfortran serial build)
 RUN cd ./UPPV3.2 \
  && export NETCDF=/wrf_serial/netcdf_links \
- && ./configure <<< $'1\r' <<< $"../WRF-${WRF_VERSION}\r" <<< $'7\r' \
+ && ./configure <<< $"1\r../WRF-${WRF_VERSION}\r7\r" \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
 ENV LD_LIBRARY_PATH /usr/lib64/lib
