@@ -14,7 +14,7 @@
 git clone https://github.com/NCAR/container-dtc-metviewer
 
 # From container-dtc-metviewer/METviewer, build METviewer image.
-cd ../METviewer
+cd container-dtc-metviewer/METviewer
 docker build -t metviewer .
 
 # Rather than writing the METviewer output and MySQL tables in the docker environment, we will write it to your
