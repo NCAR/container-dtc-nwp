@@ -12,15 +12,15 @@ ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METvi
 #
 # Install Extra Packages for Enterprise Linux for Rscript install
 #
-RUN		yum -y update  \
-	&&	yum -y install epel-release
+RUN yum -y update  \
+ && yum -y install epel-release
 
 #
 # Install required packages
 #
 RUN yum -y install  wget tar java R gsl-devel mysql ksh\
-  && rm -rf /var/cache/yum/* \
-	&& yum clean all
+ && rm -rf /var/cache/yum/* \
+ && yum clean all
 
 # Setup default cran repo
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
@@ -28,12 +28,11 @@ RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; 
 #
 # Install required R packages
 #
-RUN Rscript -e "install.packages('boor')" \
-	&& Rscript -e "install.packages('plotrix')" \
-	&& Rscript -e "install.packages('gsl')" \
-	&& Rscript -e "install.packages('data.table')" \
-	&& Rscript -e "install.packages('stats')"
-
+RUN Rscript -e "install.packages('boot')" \
+ && Rscript -e "install.packages('plotrix')" \
+ && Rscript -e "install.packages('gsl')" \
+ && Rscript -e "install.packages('data.table')" \
+ && Rscript -e "install.packages('stats')"
 
 #
 # Install Tomcat
@@ -41,27 +40,25 @@ RUN Rscript -e "install.packages('boor')" \
 ENV CATALINA_HOME /opt/tomcat
 
 RUN wget https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
-	&& tar -xvf apache-tomcat-${TOMCAT_VERSION}.tar.gz \
-	&& rm apache-tomcat*.tar.gz \
-	&& mv apache-tomcat* ${CATALINA_HOME} \
-	&& chmod +x ${CATALINA_HOME}/bin/*sh
+ && tar -xvf apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+ && rm apache-tomcat*.tar.gz \
+ && mv apache-tomcat* ${CATALINA_HOME} \
+ && chmod +x ${CATALINA_HOME}/bin/*sh
 
 EXPOSE 8080
-
 
 #
 # Download and Deploy METviewer load/batch
 #
 
 RUN  curl -L ${METVIEWER_URL} | tar xzC /tmp \
-  && mv  /tmp/METviewer/dist/*.war $CATALINA_HOME/webapps/ \
-  && mv /tmp/METviewer /METviewer
+ && mv  /tmp/METviewer/dist/*.war $CATALINA_HOME/webapps/ \
+ && mv /tmp/METviewer /METviewer
 
 #
 # Set working directory
 #
 WORKDIR /METviewer
-
 
 #
 # Start Tomcat
