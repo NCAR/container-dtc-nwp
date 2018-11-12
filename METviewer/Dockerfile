@@ -12,13 +12,13 @@ ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METvi
 #
 # Install Extra Packages for Enterprise Linux for Rscript install
 #
-RUN yum -y update  \
+RUN yum -y update \
  && yum -y install epel-release
 
 #
 # Install required packages
 #
-RUN yum -y install  wget tar java R gsl-devel mysql ksh\
+RUN yum -y install  wget tar java R gsl-devel mysql ksh \
  && rm -rf /var/cache/yum/* \
  && yum clean all
 
