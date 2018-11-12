@@ -4,8 +4,8 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 # 
 # This Dockerfile compiles MET from source during "docker build" step
 #
-ENV MET_VERSION 6.1
-ENV MET_RELEASE_DATE 20171204
+ENV MET_VERSION 8.0
+ENV MET_RELEASE_DATE 20180927
 
 #
 # Compilers
@@ -40,7 +40,9 @@ RUN yum -y update \
                    hostname m4 make tar tcsh ksh time wget which \
                    flex flex-devel bison bison-devel unzip \
  && yum -y install g2clib-devel hdf5-devel.x86_64 gsl-devel \
- && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf
+ && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf \
+ && yum -y install python2 python2-pip python2-devel \
+ && pip install xarray numpy
 
 #
 # Set working directory
@@ -141,11 +143,12 @@ RUN echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
  && cd /met/met-${MET_VERSION} \
  && LOG_FILE=/met/met-${MET_VERSION}/configure.log \
  && echo "Configuring met-${MET_VERSION} and writing log file ${LOG_FILE}" \
- && ./configure --enable-grib2 --enable-mode_graphics --enable-modis --enable-lidar2nc \
+ && ./configure --enable-grib2 --enable-mode_graphics --enable-modis --enable-lidar2nc --enable-python \
     MET_HDF=/met/external_libs/HDF4.2r3 \
     MET_HDFEOS=/met/external_libs/hdfeos \
     MET_FREETYPEINC=/usr/include/freetype2 MET_FREETYPELIB=/usr/lib \
-    MET_CAIROINC=/usr/include/cairo MET_CAIROLIB=/usr/lib > ${LOG_FILE} \
+    MET_CAIROINC=/usr/include/cairo MET_CAIROLIB=/usr/lib \
+    MET_PYTHON_CC='-I/usr/include/python2.7' MET_PYTHON_LD='-lpython2.7' > ${LOG_FILE} \
  && LOG_FILE=/met/met-${MET_VERSION}/make_install.log \
  && echo "Compiling met-${MET_VERSION} and writing log file ${LOG_FILE}" \
  && make install > ${LOG_FILE} \
