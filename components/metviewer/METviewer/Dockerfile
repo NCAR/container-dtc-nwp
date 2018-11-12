@@ -18,9 +18,9 @@ RUN yum -y update \
 #
 # Install required packages
 #
-RUN yum -y install  wget tar java R gsl-devel mysql ksh \
-  && rm -rf /var/cache/yum/* \
-  && yum clean all
+RUN yum -y install wget tar java R gsl-devel mysql ksh \
+ && rm -rf /var/cache/yum/* \
+ && yum clean all
 
 # Setup default cran repo
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
@@ -52,7 +52,7 @@ EXPOSE 8080
 #
 
 RUN  curl -L ${METVIEWER_URL} | tar xzC /tmp \
- && mv /tmp/METViewer/dist/*.war $CATALINA_HOME/webapps/ \
+ && mv /tmp/METviewer/dist/*.war $CATALINA_HOME/webapps/ \
  && mv /tmp/METviewer /METviewer
 
 #
