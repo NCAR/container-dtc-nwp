@@ -69,7 +69,7 @@ RUN pwd \
 RUN cd ./UPPV3.1 \
  && export NETCDF=/wrf/netcdf_links \
 # input 7 to configure script (for gfortran serial build)
- && ./configure <<< $"1\r../WRF-${WRF_VERSION}\r7\r" \
+ && ./configure <<< $'1\r..\/WRF-4.0.2\r7\r' \
  && sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/' ./configure.upp \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
