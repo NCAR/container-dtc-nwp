@@ -5,7 +5,7 @@ MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 ENV WRF_VERSION 4.0.2
 ENV WPS_VERSION 4.0.2
 ENV UPP_VERSION 3.2
-
+ 
 #SERIAL BUILD
 RUN yum -y update
 RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
@@ -14,6 +14,7 @@ RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-d
 RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64
 #
 WORKDIR /wrf_serial
+
 #
 # Download original sources
 #
@@ -54,11 +55,13 @@ RUN pwd \
 # Build UPP second
 #
 # input 7 to configure script (for gfortran serial build)
+
 RUN cd ./UPPV3.2 \
  && export NETCDF=/wrf_serial/netcdf_links \
- && ./configure <<< $'1\r..\/WRF-4.0.2\r7\r' \
+ && export WRF_DIR=/wrf_serial/WRF-${WRF_VERSION} \
+ && ./configure <<< $'7\r' \
  && /bin/csh ./compile > compile_upp.log 2>&1
-#
+
 ENV LD_LIBRARY_PATH /usr/lib64/lib
 ENV PATH  /usr/lib64/bin:$PATH
 #
