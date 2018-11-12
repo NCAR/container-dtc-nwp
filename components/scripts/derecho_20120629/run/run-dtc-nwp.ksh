@@ -17,6 +17,9 @@ my_namelist=false
 hosts=127.0.0.1
 
 # Variables need to match docker container volume names:
+WPS_VERSION="4.0.2"
+WRF_VERSION="4.0.2"
+
 WRF_BUILD="/wrf"
 INPUT_DIR="/case_data/derecho_20120629"
 NML_DIR="/scripts/derecho_20120629/param"
@@ -108,7 +111,7 @@ echo Running WPS
 mkdir -p $WPSPRD_DIR
 cd $WPSPRD_DIR
 
-ln -sf $WRF_BUILD/WPS/*.exe .
+ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
 
 # Get namelist and correct Vtable based on data
 # The Vtable is dependent on the data that is used
@@ -118,7 +121,7 @@ cp -f $NML_DIR/namelist.wps .
 cp -f $NML_DIR/Vtable.GFS Vtable
 
 # Link input data
-$WRF_BUILD/WPS/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
+$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
 
 ##################################
 #     Run the geogrid program    #
@@ -246,7 +249,7 @@ echo Running WRF
 mkdir -p $WRFPRD_DIR
 cd $WRFPRD_DIR
 
-ln -sf $WRF_BUILD/WRFV3/run/* .
+ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
 rm namelist*
 
 # cp $INPUT_DIR/namelist.input .
