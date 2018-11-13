@@ -25,6 +25,9 @@ cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
 # Build image for input Derecho test case data
 cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..
 
+# Build image for input snow test case data
+cd case_data/snow_20160123 ; docker build -t dtc-nwp-snow . ; cd ../..
+
 # Build image which compiles WPS, WRF, and UPP from source
 cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
 
