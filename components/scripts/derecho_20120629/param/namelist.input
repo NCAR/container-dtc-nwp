@@ -82,7 +82,7 @@
  cu_physics                          = 3, 0,
  cu_diag                             = 1, 0,
  convtrans_avglen_m                  = 20,
- ishallow                            = 1,
+ ishallow                            = 0,
  cudt                                = 0, 0,
  surface_input_source                = 1,
  num_soil_layers                     = 9,

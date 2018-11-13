@@ -2,7 +2,8 @@ FROM centos:latest
 MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
-ENV WRF_VERSION 3.7.1
+ENV WRF_VERSION 4.0.2
+ENV WPS_VERSION 4.0.2
 ENV UPP_VERSION 3.1.1
 #
 RUN yum -y update
@@ -15,8 +16,8 @@ WORKDIR /wrf
 #
 # Download original sources
 #
-RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zxC /wrf \
- && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV${WRF_VERSION}.TAR.gz | tar zxC /wrf \
+RUN curl -SL https://github.com/wrf-model/WRF/archive/v${WRF_VERSION}.tar.gz | tar zxC /wrf \
+ && curl -SL https://github.com/wrf-model/WPS/archive/v${WPS_VERSION}.tar.gz | tar zxC /wrf \
  && curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /wrf
 #
 # Set environment for interactive container shells
@@ -43,7 +44,7 @@ RUN pwd \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./WRFV3 \
+ && cd ./WRF-${WRF_VERSION} \
 # input 32 and 1 to configure script (gfortran for serial build)
  && ./configure <<< $'32\r1\r' \
 # && echo -e "32\r1\r" | ./configure
@@ -54,7 +55,7 @@ RUN pwd \
 # Build WPS second
 #
 RUN pwd \
- && cd ./WPS \
+ && cd ./WPS-${WPS_VERSION} \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper \
  && export JASPERLIB=/usr/lib64 \
@@ -67,6 +68,7 @@ RUN pwd \
 #
 RUN cd ./UPPV3.1 \
  && export NETCDF=/wrf/netcdf_links \
+ && export WRF_DIR=/wrf_serial/WRF-${WRF_VERSION} \
 # input 7 to configure script (for gfortran serial build)
  && ./configure <<< $'7\r' \
  && sed -i -e 's/-lnetcdf/-lnetcdf -lnetcdff/' ./configure.upp \

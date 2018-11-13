@@ -2,10 +2,10 @@ FROM centos:latest
 MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
-ENV WRF_VERSION 3.9.1.1
-ENV WPS_VERSION 3.9.1
+ENV WRF_VERSION 4.0.2
+ENV WPS_VERSION 4.0.2
 ENV UPP_VERSION 3.2
-
+ 
 #SERIAL BUILD
 RUN yum -y update
 RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
@@ -14,10 +14,11 @@ RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-d
 RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64
 #
 WORKDIR /wrf_serial
+
 #
 # Download original sources
 #
-RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV${WRF_VERSION}.TAR.gz | tar zxC /wrf_serial \
+RUN curl -SL https://github.com/wrf-model/WRF/archive/v${WRF_VERSION}.tar.gz | tar zxC /wrf_serial \
  && curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /wrf_serial
 #
 
@@ -47,18 +48,20 @@ RUN pwd \
  && export NETCDF=/wrf_serial/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./WRFV3 \
+ && cd ./WRF-${WRF_VERSION} \
  && ./configure <<< $'32\r1\r' \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt32.1.log 2>&1
 #
 # Build UPP second
 #
 # input 7 to configure script (for gfortran serial build)
+
 RUN cd ./UPPV3.2 \
  && export NETCDF=/wrf_serial/netcdf_links \
+ && export WRF_DIR=/wrf_serial/WRF-${WRF_VERSION} \
  && ./configure <<< $'7\r' \
  && /bin/csh ./compile > compile_upp.log 2>&1
-#
+
 ENV LD_LIBRARY_PATH /usr/lib64/lib
 ENV PATH  /usr/lib64/bin:$PATH
 #
@@ -72,8 +75,8 @@ WORKDIR /wrf
 #
 # Download original sources
 #
-RUN curl -SL http://www2.mmm.ucar.edu/wrf/src/WRFV$WRF_VERSION.TAR.gz | tar zxC /wrf \
- && curl -SL http://www2.mmm.ucar.edu/wrf/src/WPSV$WPS_VERSION.TAR.gz | tar zxC /wrf
+RUN curl -SL https://github.com/wrf-model/WRF/archive/v${WRF_VERSION}.tar.gz | tar zxC /wrf \
+ && curl -SL https://github.com/wrf-model/WPS/archive/v${WPS_VERSION}.tar.gz | tar zxC /wrf
 #
 # Set environment for interactive container shells
 #
@@ -100,7 +103,7 @@ RUN pwd \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./WRFV3 \
+ && cd ./WRF-${WRF_VERSION} \
  && ./configure <<< $'34\r1\r' \
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
@@ -108,7 +111,7 @@ RUN pwd \
 # Build WPS second
 #
 # input 1 to configure script (gfortran serial build)
-RUN cd ./WPS \
+RUN cd ./WPS-${WPS_VERSION} \
  && export NETCDF=/wrf/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
