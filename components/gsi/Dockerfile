@@ -3,7 +3,7 @@ MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 #
 # This Dockerfile compiles GSI from source during "docker build" step
 ENV GSI_VERSION 3.7
-ENV ENKF_VERSION 1.2
+ENV ENKF_VERSION 1.3
 
 # Make with this many parallel tasks
 ENV J 4
@@ -23,9 +23,11 @@ WORKDIR /gsi
 # Download source code
 #
 # This command will be used after the official release
-#RUN curl -SL https://dtcenter.org/com-GSI/users/downloads/GSI_releases/comGSIv${GSI_VERSION}_EnKFv1.2.tar.gz | tar zxC /gsi 
+#RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz | tar zxC /gsi 
+RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/comGSIv3.7_EnKFv1.3.tar.gz 
+RUN tar -xvf comGSIv3.7_EnKFv1.3.tar.gz 
 #
-ADD comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz /gsi
+#ADD comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz /gsi
 
 # Set necessary environment variables for GSI build
 #
@@ -50,8 +52,8 @@ RUN pwd \
 #
 # Download CRTM files
 #
-RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/CRTM_2.2.3.tar.gz \
- && tar -xf CRTM_2.2.3.tar.gz
+RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/CRTM_v2.3.0.tar.gz \
+ && tar -xf CRTM_v2.3.0.tar.gz
 #
 # Download tutorial data
 RUN mkdir -p /data/2017051312/arw_45km \
