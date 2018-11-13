@@ -9,6 +9,8 @@ if [ ! -n "$WE_ARE_IN_THE_GSI_CONTAINER" ] ; then
   echo "It should not be run outside of that environment"
   exit 1
 fi
+
+
 set -x
 #
 # GSIPROC = processor number used for GSI analysis
@@ -32,15 +34,16 @@ set -x
 # OBS_ROOT = path of observations files
 # FIX_ROOT = path of fix files
 # GSI_EXE  = path and name of the gsi executable 
+# ENS_ROOT = path where ensemble background files exist
   ANAL_TIME=2017051312
   HH=`echo $ANAL_TIME | cut -c9-10`
-  WORK_ROOT=/gsi/gsi_run/${ANAL_TIME}/psot
+  WORK_ROOT=/gsi/gsi_run/${ANAL_TIME}/3dvar
   OBS_ROOT=/data/${ANAL_TIME}/obs
   PREPBUFR=${OBS_ROOT}/nam.t${HH}z.prepbufr.tm00.nr
   BK_ROOT=/data/${ANAL_TIME}/arw_45km
   BK_FILE=${BK_ROOT}/wrfinput_d01.2017051312
-  CRTM_ROOT=/gsi/CRTM_2.2.3
-  GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.2
+  CRTM_ROOT=/gsi/CRTM_v2.3.0
+  GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
   GSI_BUILD=/gsi/gsi_build
   FIX_ROOT=${GSI_ROOT}/fix/
   GSI_EXE=${GSI_BUILD}/bin/gsi.x
@@ -55,29 +58,56 @@ set -x
 # if_observer = Yes  : only used as observation operater for enkf
 # if_hybrid   = Yes  : Run GSI as 3D/4D EnVar
 # if_4DEnVar  = Yes  : Run GSI as 4D EnVar
+# if_nemsio = Yes    : The GFS background files are in NEMSIO format
+# if_oneob  = Yes    : Do single observation test
   if_hybrid=No     # Yes, or, No -- case sensitive !
-  if_4DEnVar=No    # Yes, or, No -- case sensitive (if_hybrid must be Yes)!
+  if_4DEnVar=No    # Yes, or, No -- case sensitive (set if_hybrid=Yes first)!
   if_observer=No   # Yes, or, No -- case sensitive !
+  if_nemsio=No     # Yes, or, No -- case sensitive !
+  if_oneob=No      # Yes, or, No -- case sensitive !
 
   bk_core=ARW
   bkcv_option=NAM
   if_clean=clean
 #
+# setup whether to do single obs test
+  if [ ${if_oneob} = Yes ]; then
+    if_oneobtest='.true.'
+  else
+    if_oneobtest='.false.'
+  fi
+#
 # setup for GSI 3D/4D EnVar hybrid
   if [ ${if_hybrid} = Yes ] ; then
-    ENS_ROOT=data/regionalcase/2017051318
-    ENSEMBLE_FILE_mem=${ENS_ROOT}/gfsens/sfg_2017051312_fhr06s
+    PDYa=`echo $ANAL_TIME | cut -c1-8`
+    cyca=`echo $ANAL_TIME | cut -c9-10`
+    gdate=`date -u -d "$PDYa $cyca -6 hour" +%Y%m%d%H` #guess date is 6hr ago
+    gHH=`echo $gdate |cut -c9-10`
+    datem1=`date -u -d "$PDYa $cyca -1 hour" +%Y-%m-%d_%H:%M:%S` #1hr ago
+    datep1=`date -u -d "$PDYa $cyca 1 hour"  +%Y-%m-%d_%H:%M:%S`  #1hr later
+    if [ ${if_nemsio} = Yes ]; then
+      if_gfs_nemsio='.true.'
+      ENSEMBLE_FILE_mem=${ENS_ROOT}/gdas.t${gHH}z.atmf006s.mem
+    else
+      if_gfs_nemsio='.false.'
+      ENSEMBLE_FILE_mem=${ENS_ROOT}/sfg_${gdate}_fhr06s_mem
+    fi
 
     if [ ${if_4DEnVar} = Yes ] ; then
-      BK_FILE_P1=${BK_ROOT}/wrfout_d01_2017-05-13_19:00:00
-      BK_FILE_M1=${BK_ROOT}/wrfout_d01_2017-05-13_17:00:00
+      BK_FILE_P1=${BK_ROOT}/wrfout_d01_${datep1}
+      BK_FILE_M1=${BK_ROOT}/wrfout_d01_${datem1}
 
-      ENSEMBLE_FILE_mem_p1=${ENS_ROOT}/gfsens/sfg_2017051312_fhr09s
-      ENSEMBLE_FILE_mem_m1=${ENS_ROOT}/gfsens/sfg_2017051312_fhr03s
+      if [ ${if_nemsio} = Yes ]; then
+        ENSEMBLE_FILE_mem_p1=${ENS_ROOT}/gdas.t${gHH}z.atmf009s.mem
+        ENSEMBLE_FILE_mem_m1=${ENS_ROOT}/gdas.t${gHH}z.atmf003s.mem
+      else
+        ENSEMBLE_FILE_mem_p1=${ENS_ROOT}/sfg_${gdate}_fhr09s_mem
+        ENSEMBLE_FILE_mem_m1=${ENS_ROOT}/sfg_${gdate}_fhr03s_mem
+      fi
     fi
   fi
 
-# if_observer = Yes  : only used as observation operater for enkf
+# The following two only apply when if_observer = Yes, i.e. run observation operator for EnKF
 # no_member     number of ensemble members
 # BK_FILE_mem   path and base for ensemble members
   no_member=20
@@ -85,7 +115,7 @@ set -x
 #
 #
 #####################################################
-# Users should NOT change script after this point
+# Users should NOT make changes after this point
 #####################################################
 #
 BYTE_ORDER=Big_Endian
@@ -102,7 +132,7 @@ case $ARCH in
          RUN_COMMAND=""
       else
          ###### Linux workstation -  mpi run
-        RUN_COMMAND="mpirun -np ${GSIPROC} -machinefile ~/mach "
+        RUN_COMMAND="mpirun -np ${GSIPROC} "
       fi ;;
 
    'LINUX_LSF')
@@ -111,7 +141,7 @@ case $ARCH in
 
    'LINUX_PBS')
       #### Linux cluster PBS (Portable Batch System)
-      RUN_COMMAND="mpiexec -np ${GSIPROC} " ;;
+      RUN_COMMAND="mpirun -np ${GSIPROC} " ;;
 
    'DARWIN_PGI')
       ### Mac - mpi run
@@ -213,7 +243,7 @@ cd ${workdir}
 echo " Copy GSI executable, background file, and link observation bufr to working directory"
 
 # Save a copy of the GSI executable in the workdir
-cp ${GSI_EXE} gsi.exe
+cp ${GSI_EXE} gsi.x
 
 # Bring over background field (it's modified by GSI so we can't link to it)
 cp ${BK_FILE} ./wrf_inout
@@ -270,6 +300,8 @@ srcobsfile[20]=${OBS_ROOT}/rap.t${HH}z.nexrad.tm00.bufr_d
 gsiobsfile[20]=l2rwbufr
 srcobsfile[21]=${OBS_ROOT}/rap.t${HH}z.lgycld.tm00.bufr_d
 gsiobsfile[21]=larcglb
+srcobsfile[22]=${OBS_ROOT}/gdas1.t${HH}z.glm.tm00.bufr_d
+gsiobsfile[22]=
 ii=1
 while [[ $ii -le 21 ]]; do
    if [ -r "${srcobsfile[$ii]}" ]; then
@@ -284,10 +316,10 @@ done
 
 ifhyb=.false.
 if [ ${if_hybrid} = Yes ] ; then
-  ls ${ENSEMBLE_FILE_mem}_mem* > filelist02
+  ls ${ENSEMBLE_FILE_mem}* > filelist02
   if [ ${if_4DEnVar} = Yes ] ; then
-    ls ${ENSEMBLE_FILE_mem_p1}_mem* > filelist03
-    ls ${ENSEMBLE_FILE_mem_m1}_mem* > filelist01
+    ls ${ENSEMBLE_FILE_mem_p1}* > filelist03
+    ls ${ENSEMBLE_FILE_mem_m1}* > filelist01
   fi
   
   nummem=`more filelist02 | wc -l`
@@ -320,6 +352,7 @@ echo " Copy fixed files and link CRTM coefficient files to working directory"
 #   ozinfo   = text file with information about assimilation of ozone data
 #   errtable = text file with obs error for conventional data (regional only)
 #   convinfo = text file with information about assimilation of conventional data
+#   lightinfo= text file with information about assimilation of GLM lightning data
 #   bufrtable= text file ONLY needed for single obs test (oneobstest=.true.)
 #   bftab_sst= bufr table for sst ONLY needed for sst retrieval (retrieval=.true.)
 
@@ -356,6 +389,7 @@ SATINFO=${FIX_ROOT}/global_satinfo.txt
 CONVINFO=${FIX_ROOT}/global_convinfo.txt
 OZINFO=${FIX_ROOT}/global_ozinfo.txt
 PCPINFO=${FIX_ROOT}/global_pcpinfo.txt
+LIGHTINFO=${FIX_ROOT}/global_lightinfo.txt
 
 #  copy Fixed fields to working directory
  cp $ANAVINFO anavinfo
@@ -365,6 +399,7 @@ PCPINFO=${FIX_ROOT}/global_pcpinfo.txt
  cp $CONVINFO convinfo
  cp $OZINFO   ozinfo
  cp $PCPINFO  pcpinfo
+ cp $LIGHTINFO lightinfo
  cp $OBERROR  errtable
 #
 #    # CRTM Spectral and Transmittance coefficients
@@ -403,9 +438,9 @@ done
  cp $bufrtable ./prepobs_prep.bufrtable
 
 # for satellite bias correction
-# Users may need to modify these to use their own bias corrections
-cp ${FIX_ROOT}/gdas1.t12z.abias ./satbias_in
-cp ${FIX_ROOT}/gdas1.t12z.abias_pc ./satbias_pc
+# Users may need to use their own satbias files for correct bias correction
+cp ${GSI_ROOT}/fix/comgsi_satbias_in ./satbias_in
+cp ${GSI_ROOT}/fix/comgsi_satbias_pc_in ./satbias_pc_in 
 
 #
 ##################################################################################
@@ -474,10 +509,10 @@ echo ' Run GSI with' ${bk_core} 'background'
 
 case $ARCH in
    'IBM_LSF')
-      ${RUN_COMMAND} ./gsi.exe < gsiparm.anl > stdout 2>&1  ;;
+      ${RUN_COMMAND} ./gsi.x < gsiparm.anl > stdout 2>&1  ;;
 
    * )
-      ${RUN_COMMAND} ./gsi.exe > stdout 2>&1  ;;
+      ${RUN_COMMAND} ./gsi.x > stdout 2>&1  ;;
 esac
 
 ##################################################################
@@ -538,7 +573,7 @@ esac
 #          omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 amsua_n18 mhs_n18 \
 #          amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 \
 #          ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 mhs_metop_b \
-#          hirs4_metop_b hirs4_n19 amusa_n19 mhs_n19"
+#          hirs4_metop_b hirs4_n19 amusa_n19 mhs_n19 goes_glm_16"
  listall=`ls pe* | cut -f2 -d"." | awk '{print substr($0, 0, length($0)-3)}' | sort | uniq `
 
    for type in $listall; do
@@ -605,10 +640,10 @@ if [ ${if_observer} = Yes ] ; then
 
      case $ARCH in
         'IBM_LSF')
-           ${RUN_COMMAND} ./gsi.exe < gsiparm.anl > stdout_mem${ensmemid} 2>&1  ;;
+           ${RUN_COMMAND} ./gsi.x < gsiparm.anl > stdout_mem${ensmemid} 2>&1  ;;
 
         * )
-           ${RUN_COMMAND} ./gsi.exe > stdout_mem${ensmemid} 2>&1 ;;
+           ${RUN_COMMAND} ./gsi.x > stdout_mem${ensmemid} 2>&1 ;;
      esac
 
 #  run time error check and save run time file status
