@@ -48,7 +48,7 @@ cd metviewer/METViewer ; docker build -t dtc-metviewer . ; cd ../..
 docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
 docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy
 docker create -v /case_data/derecho_20120629 --name derecho dtc-nwp-derecho
-docker create -v /case_data/snow_20160123 --name derecho dtc-nwp-snow
+docker create -v /case_data/snow_20160123 --name snow dtc-nwp-snow
 
 #
 # A more automated method using pre-built DTC docker-nwp/met container images,
