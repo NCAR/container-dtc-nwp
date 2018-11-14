@@ -97,7 +97,7 @@ export inFormat="netcdf"
 export outFormat="grib"
 
 # Set date/time information
-export startdate=2012102712
+export startdate=2016012300
 export fhr=00
 export lastfhr=06
 export incrementhr=01

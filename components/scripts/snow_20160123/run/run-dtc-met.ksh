@@ -21,13 +21,12 @@ echo "Running MET and writing log file: ${LOG_FILE}" | tee $LOG_FILE
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
 cp $SCRIPT_DIR/met_point_verf_all.ksh .
 
-# Constants for the 2012102712 case
-export START_TIME=2012102712
+# Constants for the 2016012300 case
+export START_TIME=2016012300
 export DOMAIN_LIST=d01
 export GRID_VX=FCST
 export MET_EXE_ROOT=/usr/local/bin
 export MET_CONFIG=/scripts/snow_20160123/param/met_config
-export UNIPOST_EXEC=/wrf/UPPV3.1/bin
 export DATAROOT=/
 export MODEL=ARW
 export ACCUM_TIME=3
