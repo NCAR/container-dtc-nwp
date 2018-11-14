@@ -1,31 +1,29 @@
 #!/bin/bash
 #
-# Simplified script to run wrf test Sandy case in Docker world
+# Simplified script to run wrf test the snow case in Docker world
 #
 # Examples in block below.
-# ./run-dtc-nwp -np 2 -slots 2 -face eth0 -skip wps -namelist /path/to/namelist -skip real
+# ./run-dtc-nwp -np 1 -skip wps -namelist /path/to/namelist -skip real
 
 #Initalize options
-num_procs=4
-process_perhost=1
-iface=eth0
+num_procs=1
 skip_wps=false
 skip_real=false
 skip_wrf=false
 skip_upp=false
 my_namelist=false
-hosts=127.0.0.1
 
 # Variables need to match docker container volume names:
 WPS_VERSION="4.0.2"
 WRF_VERSION="4.0.2"
 
 WRF_BUILD="/wrf"
-INPUT_DIR="/case_data/snow_20160123"
 NML_DIR="/scripts/snow_20160123/param"
 SCRIPT_DIR="/scripts/snow_20160123/run"
 WPSPRD_DIR="/wpsprd"
+INPUT_DIR="/case_data/snow_20160123"
 WRFPRD_DIR="/wrfprd"
+OUTPUT_DIR="/wrfoutput"
 POSTPRD_DIR="/postprd"
 
 # Read in command line options
@@ -37,21 +35,6 @@ case $opt in
 
    "-np")
         num_procs="$2"
-        shift
-        ;;
-
-    "-slots")
-        process_per_host="$2"
-        shift
-        ;;
-   
-   "-hosts")
-        hosts="$2"
-        shift
-        ;;
-        
-   "-iface")
-        iface="$2"
         shift
         ;;
 
@@ -86,8 +69,6 @@ esac
 shift
 done
 
-echo "slots         = " $process_per_host
-echo "iface         = " $iface
 echo "num_procs     = " $num_procs
 echo "skip_wps      = " $skip_wps
 echo "skip_real     = " $skip_real
@@ -96,9 +77,6 @@ echo "skip_upp      = " $skip_upp
 echo "my_namelist   = " $my_namelist
 echo "namelist dir  = " $NML_DIR
 # End sample argument list
-
-# start ssh
-/usr/sbin/sshd
 
 # Set input data contain location
 
@@ -121,7 +99,7 @@ cp -f $NML_DIR/namelist.wps .
 cp -f $NML_DIR/Vtable.GFS Vtable
 
 # Link input data
-$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*.*
+$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
 
 ##################################
 #     Run the geogrid program    #
@@ -261,7 +239,7 @@ if [ $skip_real = "false" ]; then # Don't skip real
 echo Running real
 
 # Link data from WPS
-  ln -sf $WPSPRD_DIR/met_em.d01* .
+  ln -sf $WPSPRD_DIR/met_em.d0* .
 
 # Remove old files
   if [ -e wrfinput_d01 ]; then
@@ -269,7 +247,7 @@ echo Running real
   fi
 
 # Command for real
-    ./real.exe >& print.real.txt
+    ./real.exe
 
 # Check success
   ls -ls wrfinput_d01
@@ -279,13 +257,13 @@ echo Running real
   OK_wrfbdy=$?
 
   if [ $OK_wrfinput -eq 0 ] && [ $OK_wrfbdy -eq 0 ]; then
-	tail print.real.txt
+	tail rsl.error.0000
         echo
 	echo OK real ran fine
         echo
 
   else
-	cat print.real.txt
+	cat rsl.error.0000
 	echo
 	echo TROUBLES
 	echo the real program did not complete
@@ -302,18 +280,11 @@ fi # end skip_real = false
 if [ $skip_wrf = "false" ]; then # Don't skip wrf
 echo Running wrf.exe 
 
-# generate machine list
-IFS=,
-ary=($hosts)
-for key in "${!ary[@]}"; do echo "${ary[$key]} slots=${process_per_host}" >> $WRFPRD_DIR/hosts; done
-
 # Command for openmpi wrf in Docker world
 cp namelist.nocolons namelist.input
-mpirun --allow-run-as-root -np $num_procs ./wrf.exe
-time mpirun --allow-run-as-root -hostfile /wrf/hosts -np $num_procs --mca btl self,tcp --mca btl_tcp_if_include $iface ./wrf.exe
-
+#mpirun --allow-run-as-root -np $num_procs ./wrf.exe
 # Command for serial wrf in Docker world
-#./wrf.exe >& print.wrf.txt
+./wrf.exe
 
 # Check success
   ls -ls $WRFPRD_DIR/wrfo*
@@ -347,7 +318,7 @@ mkdir -p $POSTPRD_DIR
 cd $POSTPRD_DIR
 
 cp $SCRIPT_DIR/run_unipost.ksh .
-./run_unipost.ksh >& print.upp.txt
+./run_unipost.ksh
 
 fi # end skip_upp = false
 

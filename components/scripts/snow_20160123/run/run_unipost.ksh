@@ -79,7 +79,8 @@ set -x
 # as recommended in the users guide where UPP will output.
 export TOP_DIR=/
 export DOMAINPATH=${TOP_DIR}
-export WRFPATH=${TOP_DIR}/wrf_serial/WRFV3
+export WRF_VERSION="4.0.2"
+export WRFPATH=${TOP_DIR}/wrf_serial/WRF-${WRF_VERSION}
 export UNIPOST_HOME=${TOP_DIR}/wrf_serial/UPPV3.2
 export POSTEXEC=${UNIPOST_HOME}/bin
 export SCRIPTS=${UNIPOST_HOME}/scripts
