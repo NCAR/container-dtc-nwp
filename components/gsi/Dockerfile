@@ -50,17 +50,6 @@ RUN pwd \
  && cmake /gsi/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION} \
  && make -j ${J}
 #
-# Download CRTM files
-#
-RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/CRTM_v2.3.0.tar.gz \
- && tar -xf CRTM_v2.3.0.tar.gz
-#
-# Download tutorial data
-RUN mkdir -p /data/2017051312/arw_45km \
- && wget https://dtcenter.org/com-GSI/users/tutorial/online_tutorial/releaseV3.6/data/Case01/wrfinput_d01.2017051312 -P /data/2017051312/arw_45km \
- && wget https://dtcenter.org/com-GSI/users/tutorial/online_tutorial/releaseV3.6/data/Case02/obs.tar -P /data/2017051312/ \
- && tar -xf /data/2017051312/obs.tar -C /data/2017051312/
-#
 # Setup run directory
 RUN mkdir /gsi/gsi_run
 #
@@ -78,20 +67,20 @@ COPY run_gsi_regional.ksh /gsi/gsi_run
 #
 # set up ssh configuration
 #
-COPY ssh_config /root/.ssh/config
-COPY slave /gsi/slave
-RUN apt install -y openssh-client openssh-server net-tools \
-    && apt clean all \
-    && mkdir -p /var/run/sshd \
-    && ssh-keygen -A \
-    && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config \
-    && ssh-keygen -f /root/.ssh/id_rsa -t rsa -N '' \
-    && chmod 600 /root/.ssh/config \
-    && chmod 700 /root/.ssh \
-    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
-    && chmod +x /gsi/slave
-
-RUN env
+#COPY ssh_config /root/.ssh/config
+#COPY slave /gsi/slave
+#RUN apt install -y openssh-client openssh-server net-tools \
+#    && apt clean all \
+#    && mkdir -p /var/run/sshd \
+#    && ssh-keygen -A \
+#    && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
+#    && sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/g' /etc/ssh/sshd_config \
+#    && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config \
+#    && ssh-keygen -f /root/.ssh/id_rsa -t rsa -N '' \
+#    && chmod 600 /root/.ssh/config \
+#    && chmod 700 /root/.ssh \
+#    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
+#    && chmod +x /gsi/slave
+#
+#RUN env
 CMD ["/gsi/gsi_run/run_gsi_regional.ksh"]
