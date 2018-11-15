@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Common script to run wps, real, and/or wrf in Docker world
+# Common script for running wps, real, gsi, wrf, and upp in Docker world
 #
 # Examples in block below.
 # ./run-dtc-wps-wrf.ksh -np 2 -slots 2 -face eth0 -run wps -namelist /path/to/namelist -run real
@@ -11,7 +11,9 @@ process_perhost=1
 iface=eth0
 run_wps=false
 run_real=false
+run_gsi=false
 run_wrf=false
+run_upp=false
 my_namelist=false
 hosts=127.0.0.1
 
@@ -26,6 +28,8 @@ SCRIPT_DIR="/scripts/case/run"
 
 WPSPRD_DIR="/wpsprd"
 WRFPRD_DIR="/wrfprd"
+GSIPRD_DIR="/gsiprd"
+POSTPRD_DIR="/postprd"
 
 # Read in command line options
 while (( $# > 1 ))
@@ -62,8 +66,14 @@ case $opt in
            if [[ $run_stuff == "real" ]]; then
              run_real=true
            fi
+           if [[ $run_stuff == "gsi" ]]; then
+             run_gsi=true
+           fi
            if [[ $run_stuff == "wrf" ]]; then
              run_wrf=true
+           fi
+           if [[ $run_stuff == "upp" ]]; then
+             run_upp=true
            fi
        shift
        ;;
@@ -87,7 +97,9 @@ echo "iface         = " $iface
 echo "num_procs     = " $num_procs
 echo "run_wps       = " $run_wps
 echo "run_real      = " $run_real
+echo "run_gsi       = " $run_gsi
 echo "run_wrf       = " $run_wrf
+echo "run_upp       = " $run_upp
 echo "my_namelist   = " $my_namelist
 echo "namelist dir  = " $NML_DIR
 # End sample argument list
@@ -100,13 +112,23 @@ echo "namelist dir  = " $NML_DIR
 # To run the test, bring in the correct namelist.wps, and link the Grib data,
 # select the right Vtable.
 
-if [ $run_wps = "true" ]; then # Run wps
-echo Running WPS 
+##################################
+#     Run the WPS programs       #
+##################################
+
+if [[ $run_wps == "true" ]]; then
+echo Running WPS
 
 mkdir -p $WPSPRD_DIR
 cd $WPSPRD_DIR
 
 ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
+
+if [ ! -e geogrid.exe || ! -e ungrib.exe || ! -e metgrid.exe ]; then
+  echo
+  echo ERROR: WPS can only be run with the dtc-nwp-wps-wrf container.
+  echo
+fi
 
 # Get namelist and correct Vtable based on data
 # The Vtable is dependent on the data that is used
@@ -144,8 +166,7 @@ echo Starting geogrid
 	echo
   else
 	echo
-	echo TROUBLES
-	echo geogrid did not complete
+	echo ERROR: geogrid.exe did not complete
 	echo
 	cat geogrid.log
 	echo
@@ -181,8 +202,7 @@ echo Starting ungrib
 	echo
   else
 	echo
-	echo TROUBLES
-	echo ungrib did not complete
+	echo ERROR: ungrib.exe did not complete
 	echo
 	cat ungrib.log
 	echo
@@ -215,21 +235,20 @@ echo Starting metgrid
 	echo
   else
 	echo
-	echo TROUBLES
-	echo metgrid did not complete
+	echo ERROR: metgrid.exe did not complete
 	echo
 	cat metgrid.log
 	echo
 	exit 666
   fi
 
-fi # end if run_wps = true
+fi # end if run_wps == true
 
 ##################################
-#    Move to WRF                 #
+#    Setup WRF environment       #
 ##################################
 
-echo Running WRF
+if [[ $run_real == "true" || $run_wrf == "true" ]]; then
 
 # Go to test directory where tables, data, etc. exist
 # Perform wrf run here.
@@ -247,19 +266,27 @@ sed -e '/nocolons/d' namelist.input > nml
 cp namelist.input namelist.nocolons
 mv nml namelist.input
 
+fi
+
 ##################################
 #     Run the real program       #
 ##################################
 
-if [ $run_real = "true" ]; then # Run real 
-echo Running real
+if [[ $run_real == "true" ]]; then
+echo Running real.exe
+
+if [ ! -e real.exe ]; then
+  echo
+  echo ERROR: real.exe can only be run with the dtc-nwp-wps-wrf container.
+  echo
+fi
 
 # Link data from WPS
   ln -sf $WPSPRD_DIR/met_em.d0* .
 
 # Remove old files
   if [ -e wrfinput_d* ]; then
-	rm -rf wrfi* wrfb*
+    rm -rf wrfi* wrfb*
   fi
 
 # Command for real
@@ -273,28 +300,49 @@ echo Running real
   OK_wrfbdy=$?
 
   if [ $OK_wrfinput -eq 0 ] && [ $OK_wrfbdy -eq 0 ]; then
-	tail print.real.txt
-        echo
-	echo OK real ran fine
-        echo
-
+    tail print.real.txt
+    echo
+    echo OK real ran fine
+    echo
   else
-	cat print.real.txt
-	echo
-	echo TROUBLES
-	echo the real program did not complete
-	echo
-	exit 777
+    cat print.real.txt
+    echo
+    echo ERROR: real.exe did not complete
+    echo
+    exit 777
   fi
 
-fi # end skip_real = false
+fi # end run_real == true 
+
+##################################
+#     Run GSI                    #
+##################################
+
+if [[ $run_gsi == "true" ]]; then
+echo Running GSI 
+
+if [ ! -e GSI ]; then
+  echo
+  echo ERROR: GSI can only be run with the dtc-nwp-gsi container.
+  echo
+fi
+
+# JHG, add GSI commands here
+
+fi # end run_gsi == true
 
 ##################################
 #   Run the WRF forecast model.  #
 ##################################
 
-if [ $run_wrf = "true" ]; then # Run wrf
+if [[ $run_wrf == "true" ]]; then
 echo Running wrf.exe 
+
+if [ ! -e wrf.exe ]; then
+  echo
+  echo ERROR: wrf.exe can only be run with the dtc-nwp-wps-wrf container.
+  echo
+fi
 
 # generate machine list
 IFS=,
@@ -314,21 +362,41 @@ time mpirun --allow-run-as-root -hostfile /wrf/hosts -np $num_procs --mca btl se
   OK_wrfout=$?
 
   if [ $OK_wrfout -eq 0 ]; then
-	tail rsl.error.0000
-	echo
-	echo OK wrf ran fine
-	echo Completed WRF model with $FCST_LENGTH_HOURS hour simulation at `date`
-	echo
+    tail rsl.error.0000
+    echo
+    echo OK wrf ran fine
+    echo Completed WRF model with $FCST_LENGTH_HOURS hour simulation at `date`
+    echo
   else
-	cat rsl.error.0000
-       	echo
-	echo TROUBLES
-	echo the WRF model did not complete
-	echo
-	exit 888
+    cat rsl.error.0000
+    echo
+    echo ERROR: wrf.exe did not complete
+    echo
+    exit 888
   fi
 
-fi # end run_wrf = true 
+fi # end run_wrf == true 
 
-echo Done
+##################################
+#   Run UPP                      #
+##################################
+
+if [[ $run_upp == "true" ]]; then
+echo Running UPP
+
+# JHG: this check doesn't actually work.  Not sure where unipost lives!
+if [ ! -e unipost.exe ]; then
+  echo
+  echo ERROR: unipost.exe can only be run with the dtc-nwp-upp container.
+  echo
+fi
+
+mkdir -p $POSTPRD_DIR
+cd $POSTPRD_DIR
+
+cp $SCRIPT_DIR/run_unipost.ksh .
+./run_unipost.ksh >& print.upp.txt
+
+fi # end run_upp == true 
  
+echo Done
