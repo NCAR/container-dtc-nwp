@@ -3,7 +3,9 @@
 # Common script for running wps, real, gsi, wrf, and upp in Docker world
 #
 # Examples in block below.
-# ./run-dtc-wps-wrf.ksh -np 2 -slots 2 -face eth0 -run wps -namelist /path/to/namelist -run real
+# ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run wps -run real
+# ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run gsi
+# ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run wrf 
 
 #Initalize options
 num_procs=4
@@ -26,6 +28,7 @@ INPUT_DIR="/case_data"
 NML_DIR="/scripts/case/param"
 SCRIPT_DIR="/scripts/case/run"
 
+# Output directories
 WPSPRD_DIR="/wpsprd"
 WRFPRD_DIR="/wrfprd"
 GSIPRD_DIR="/gsiprd"
@@ -117,129 +120,135 @@ echo "namelist dir  = " $NML_DIR
 ##################################
 
 if [[ $run_wps == "true" ]]; then
-echo Running WPS
+  echo Running WPS
 
-mkdir -p $WPSPRD_DIR
-cd $WPSPRD_DIR
+  # Check for WPS output directory
+  if [[ ! -e $WPSPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $WPSPRD directory is not mounted.
+    echo
+  fi
+  cd $WPSPRD_DIR
 
-ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
+  ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
 
-if [ ! -e geogrid.exe || ! -e ungrib.exe || ! -e metgrid.exe ]; then
-  echo
-  echo ERROR: WPS can only be run with the dtc-nwp-wps-wrf container.
-  echo
-fi
-
-# Get namelist and correct Vtable based on data
-# The Vtable is dependent on the data that is used
-# Will need to pull this in dynamically somehow, tie to data/namelist
-
-cp -f $NML_DIR/namelist.wps .
-cp -f $NML_DIR/Vtable.GFS Vtable
-
-# Link input data
-$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
-
-##################################
-#     Run the geogrid program    #
-##################################
-
-echo Starting geogrid
-
-# Remove old files
-  if [ -e geo_em.d*.nc ]; then
-	rm -rf geo_em.d*.nc
+  # Check for WPS executables
+  if [[ ! -e geogrid.exe || ! -e ungrib.exe || ! -e metgrid.exe ]]; then
+    echo
+    echo ERROR: WPS can only be run with the dtc-nwp-wps-wrf container.
+    echo
   fi
 
-# Command for geogrid
+  # Get namelist and correct Vtable based on data
+  # The Vtable is dependent on the data that is used
+  # Will need to pull this in dynamically somehow, tie to data/namelist
+
+  cp -f $NML_DIR/namelist.wps .
+  cp -f $NML_DIR/Vtable.GFS Vtable
+
+  # Link input data
+  $WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
+
+  ##################################
+  #     Run the geogrid program    #
+  ##################################
+
+  echo Starting geogrid
+
+  # Remove old files
+  if [ -e geo_em.d*.nc ]; then
+    rm -rf geo_em.d*.nc
+  fi
+
+  # Command for geogrid
   ./geogrid.exe >& print.geogrid.txt
 
-# Check success
+  # Check success
   ls -ls geo_em.d01.nc
   OK_geogrid=$?
 
   if [ $OK_geogrid -eq 0 ]; then
-	tail print.geogrid.txt
-	echo
-	echo OK geogrid ran fine
-	echo Completed geogrid, Starting ungrib at `date`
-	echo
+    tail print.geogrid.txt
+    echo
+    echo OK geogrid ran fine
+    echo Completed geogrid, Starting ungrib at `date`
+    echo
   else
-	echo
-	echo ERROR: geogrid.exe did not complete
-	echo
-	cat geogrid.log
-	echo
-	exit 444
+    echo
+    echo ERROR: geogrid.exe did not complete
+    echo
+    cat geogrid.log
+    echo
+    exit 444
   fi
 
-##################################
-#    Run the ungrib program      #
-##################################
+  ##################################
+  #    Run the ungrib program      #
+  ##################################
 
-echo Starting ungrib
+  echo Starting ungrib
 
-# checking to remove old files
+  # Remove old files
   file_date=`cat namelist.wps | grep -i start_date | cut -d"'" -f2 | cut -d":" -f1`
   if [ -e PFILE:${file_date} ]; then
-	rm -rf PFILE*
+    rm -rf PFILE*
   fi
   if [ -e FILE:${file_date} ]; then
-	rm -rf FILE*
+    rm -rf FILE*
   fi
 
-# Command for ungrib
+  # Command for ungrib
   ./ungrib.exe >& print.ungrib.txt
 
   ls -ls FILE:*
   OK_ungrib=$?
 
   if [ $OK_ungrib -eq 0 ]; then
-	tail print.ungrib.txt
-	echo
-	echo OK ungrib ran fine
-	echo Completed ungrib, Starting metgrid at `date`
-	echo
+    tail print.ungrib.txt
+    echo
+    echo OK ungrib ran fine
+    echo Completed ungrib, Starting metgrid at `date`
+    echo
   else
-	echo
-	echo ERROR: ungrib.exe did not complete
-	echo
-	cat ungrib.log
-	echo
-	exit 555
+    echo
+    echo ERROR: ungrib.exe did not complete
+    echo
+    cat ungrib.log
+    echo
+    exit 555
   fi
 
-##################################
-#     Run the metgrid program    #
-##################################
+  ##################################
+  #     Run the metgrid program    #
+  ##################################
 
-echo Starting metgrid 
+  echo Starting metgrid 
 
-# Remove old files
+  # Remove old files
   if [ -e met_em.d*.${file_date}:00:00.nc ]; then
-	rm -rf met_em.d*
+    rm -rf met_em.d*
   fi
 
-# Command for metgrid
+  # Command for metgrid
   ./metgrid.exe >& print.metgrid.txt
 
-# Check sucess
+  # Check sucess
   ls -ls met_em.d01.*
   OK_metgrid=$?
 
   if [ $OK_metgrid -eq 0 ]; then
-	tail print.metgrid.txt
-	echo
-	echo OK metgrid ran fine
-	echo Completed metgrid, Starting program real at `date`
-	echo
+    tail print.metgrid.txt
+    echo
+    echo OK metgrid ran fine
+    echo Completed metgrid, Starting program real at `date`
+    echo
   else
-	echo
-	echo ERROR: metgrid.exe did not complete
-	echo
-	cat metgrid.log
-	echo
-	exit 666
+    echo
+    echo ERROR: metgrid.exe did not complete
+    echo
+    cat metgrid.log
+    echo
+    exit 666
   fi
 
 fi # end if run_wps == true
@@ -250,21 +259,22 @@ fi # end if run_wps == true
 
 if [[ $run_real == "true" || $run_wrf == "true" ]]; then
 
-# Go to test directory where tables, data, etc. exist
-# Perform wrf run here.
+  # Check for WRF output directory
+  if [[ ! -e $WRFPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $WRFPRD directory is not mounted.
+    echo
+  fi
+  cd $WRFPRD_DIR
+  
+  ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
+  rm namelist*
 
-mkdir -p $WRFPRD_DIR
-cd $WRFPRD_DIR
-
-ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
-rm namelist*
-
-# cp $INPUT_DIR/namelist.input .
-cp $NML_DIR/namelist.wps .
-cp $NML_DIR/namelist.input .
-sed -e '/nocolons/d' namelist.input > nml
-cp namelist.input namelist.nocolons
-mv nml namelist.input
+  cp $NML_DIR/namelist.wps .
+  cp $NML_DIR/namelist.input .
+  sed -e '/nocolons/d' namelist.input > nml
+  cp namelist.input namelist.nocolons
+  mv nml namelist.input
 
 fi
 
@@ -273,26 +283,34 @@ fi
 ##################################
 
 if [[ $run_real == "true" ]]; then
-echo Running real.exe
+  echo Running real.exe
 
-if [ ! -e real.exe ]; then
-  echo
-  echo ERROR: real.exe can only be run with the dtc-nwp-wps-wrf container.
-  echo
-fi
+  # Check for executable
+  if [ ! -e real.exe ]; then
+    echo
+    echo ERROR: real.exe can only be run with the dtc-nwp-wps-wrf container.
+    echo
+  fi
 
-# Link data from WPS
+  # Check for WPS input directory
+  if [[ ! -e $WPSPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $WPSPRD directory is not mounted.
+    echo
+  fi
+
+  # Link data from WPS
   ln -sf $WPSPRD_DIR/met_em.d0* .
 
-# Remove old files
+  # Remove old files
   if [ -e wrfinput_d* ]; then
     rm -rf wrfi* wrfb*
   fi
 
-# Command for real
-    ./real.exe >& print.real.txt
+  # Command for real
+  ./real.exe >& print.real.txt
 
-# Check success
+  # Check success
   ls -ls wrfinput_d01
   OK_wrfinput=$?
 
@@ -319,15 +337,32 @@ fi # end run_real == true
 ##################################
 
 if [[ $run_gsi == "true" ]]; then
-echo Running GSI 
+  echo Running GSI 
 
-if [ ! -e GSI ]; then
-  echo
-  echo ERROR: GSI can only be run with the dtc-nwp-gsi container.
-  echo
-fi
+  # Check for executable
+  if [ ! -e /gsi/gsi_run ]; then
+    echo
+    echo ERROR: GSI can only be run with the dtc-nwp-gsi container.
+    echo
+  fi
 
-# JHG, add GSI commands here
+  # Check for WRF input directory
+  if [[ ! -e $WRFPRD_DIR ]]; then
+    echo
+    echo ERROR: The input $WRFPRD directory is not mounted.
+    echo
+  fi
+
+  # Check for GSI output directory
+  if [[ ! -e $GSIPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $GSIPRD directory is not mounted.
+    echo
+  fi
+  cd $GSIPRD_DIR
+
+  # Run gsi (JHG: need to write to a log and check return status?)
+  /gsi/gsi_run
 
 fi # end run_gsi == true
 
@@ -336,28 +371,34 @@ fi # end run_gsi == true
 ##################################
 
 if [[ $run_wrf == "true" ]]; then
-echo Running wrf.exe 
+  echo Running wrf.exe 
 
-if [ ! -e wrf.exe ]; then
-  echo
-  echo ERROR: wrf.exe can only be run with the dtc-nwp-wps-wrf container.
-  echo
-fi
+  # Check for executable
+  if [ ! -e wrf.exe ]; then
+    echo
+    echo ERROR: wrf.exe can only be run with the dtc-nwp-wps-wrf container.
+    echo
+  fi
 
-# generate machine list
-IFS=,
-ary=($hosts)
-for key in "${!ary[@]}"; do echo "${ary[$key]} slots=${process_per_host}" >> $WRFPRD_DIR/hosts; done
+  # Command for openmpi wrf in Docker world
+  cp namelist.nocolons namelist.input
 
-# Command for openmpi wrf in Docker world
-cp namelist.nocolons namelist.input
-mpirun --allow-run-as-root -np $num_procs ./wrf.exe
-time mpirun --allow-run-as-root -hostfile /wrf/hosts -np $num_procs --mca btl self,tcp --mca btl_tcp_if_include $iface ./wrf.exe
+  if [ num_procs -eq 1 ]; then
+    # Run serial wrf
+    ./wrf.exe >& print.wrf.txt
+  else
 
-# Command for serial wrf in Docker world
-#./wrf.exe >& print.wrf.txt
+    # Generate machine list
+    IFS=,
+    ary=($hosts)
+    for key in "${!ary[@]}"; do echo "${ary[$key]} slots=${process_per_host}" >> $WRFPRD_DIR/hosts; done
+  
+    # Run wrf using mpi
+    mpirun --allow-run-as-root -np $num_procs ./wrf.exe
+    time mpirun --allow-run-as-root -hostfile /wrf/hosts -np $num_procs --mca btl self,tcp --mca btl_tcp_if_include $iface ./wrf.exe
+  fi
 
-# Check success
+  # Check success
   ls -ls $WRFPRD_DIR/wrfo*
   OK_wrfout=$?
 
@@ -382,20 +423,32 @@ fi # end run_wrf == true
 ##################################
 
 if [[ $run_upp == "true" ]]; then
-echo Running UPP
+  echo Running UPP
 
-# JHG: this check doesn't actually work.  Not sure where unipost lives!
-if [ ! -e unipost.exe ]; then
-  echo
-  echo ERROR: unipost.exe can only be run with the dtc-nwp-upp container.
-  echo
-fi
+  # JHG: this check doesn't actually work.  Not sure where unipost lives!
+  if [ ! -e unipost.exe ]; then
+    echo
+    echo ERROR: unipost.exe can only be run with the dtc-nwp-upp container.
+    echo
+  fi
 
-mkdir -p $POSTPRD_DIR
-cd $POSTPRD_DIR
+  # Check for input WRF directory 
+  if [[ ! -e $WRFPRD_DIR ]]; then
+    echo
+    echo ERROR: The input $WRFPRD directory is not mounted.
+    echo
+  fi
 
-cp $SCRIPT_DIR/run_unipost.ksh .
-./run_unipost.ksh >& print.upp.txt
+  # Check for output POST directory
+  if [[ ! -e $POSTPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $POSTPRD directory is not mounted.
+    echo
+  fi
+  cd $POSTPRD_DIR
+
+  cp $SCRIPT_DIR/run_unipost.ksh .
+  ./run_unipost.ksh >& print.upp.txt
 
 fi # end run_upp == true 
  
