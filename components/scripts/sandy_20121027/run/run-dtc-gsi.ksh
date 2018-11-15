@@ -2,14 +2,6 @@
 #####################################################
 # machine set up (users should change this part)
 #####################################################
-`env`
-if [ ! -n "$WE_ARE_IN_THE_GSI_CONTAINER" ] ; then
-  echo ""
-  echo "This script is designed to be run within the GSI container"
-  echo "It should not be run outside of that environment"
-  exit 1
-fi
-
 
 set -x
 #
@@ -38,11 +30,11 @@ set -x
   ANAL_TIME=2017051312
   HH=`echo $ANAL_TIME | cut -c9-10`
   WORK_ROOT=/gsi/gsi_run/${ANAL_TIME}/3dvar
-  OBS_ROOT=/data/${ANAL_TIME}/obs
+  OBS_ROOT=/case_data/sandy_20121027/
   PREPBUFR=${OBS_ROOT}/nam.t${HH}z.prepbufr.tm00.nr
   BK_ROOT=/data/${ANAL_TIME}/arw_45km
   BK_FILE=${BK_ROOT}/wrfinput_d01.2017051312
-  CRTM_ROOT=/gsi/CRTM_v2.3.0
+  CRTM_ROOT=/gsi_data/CRTM_v2.3.0
   GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
   GSI_BUILD=/gsi/gsi_build
   FIX_ROOT=${GSI_ROOT}/fix/
