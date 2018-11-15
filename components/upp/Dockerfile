@@ -1,8 +1,8 @@
 FROM centos:latest
-MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
+MAINTAINER Kate Fossell <fossell@ucar.edu>
 # 
 # This Dockerfile compiles UPP from source during "docker build" step
-ENV UPP_VERSION 4.0_beta1
+ENV UPP_VERSION 4.0_beta2
  
 #SERIAL BUILD
 RUN yum -y update
@@ -19,7 +19,7 @@ WORKDIR /upp
 # Download original sources
 #
 #RUN curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /upp
-RUN curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/UPPV4.0_beta1.tar.gz | tar zxC /upp
+RUN curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/UPPV4.0_beta2.tar.gz | tar zxC /upp
 
 #
 
@@ -41,14 +41,16 @@ RUN echo export LDFLAGS="-lm" >> /etc/bashrc \
 #
 # Build UPP 
 # input 7 to configure script (for gfortran serial build)
-RUN cd ./UPPV4.0_beta1 \
+
+RUN pwd \
  && mkdir netcdf_links \
- && ln -sf /usr/include/openmpi-x86_64/ netcdf_links/include \
- && ln -sf /usr/lib64/openmpi/lib netcdf_links/lib \
+ && ln -sf /usr/include/ netcdf_links/include \
+ && ln -sf /usr/lib64 netcdf_links/lib \
+ && ln -sf /usr/lib64/gfortran/modules/netcdf.mod netcdf_links/include \
  && export NETCDF=/upp/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && export NETCDF=/upp/netcdf_links \
+ && cd ./UPPV4.0_beta2 \
  && ./configure <<< $'7\r' \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
