@@ -1,20 +1,61 @@
 #!/bin/ksh
+  
+#
+# Simplified script to run NCL in Docker world
+#
+
+# Constants
+NCL_BIN="/usr/local/bin/ncl"
+SCRIPT_DIR="/scripts/common"
+CASE_DIR="/scripts/case"
+WRFPRD_DIR="/wrfprd"
+NCLPRD_DIR="/nclprd"
+
+# Check for the correct container
+if [[ ! -e $NCL_BIN ]]; then
+  echo
+  echo ERROR: NCL can only be run with the dtc-ncl container.
+  echo
+  exit 1
+fi
+
+# Check for input directory
+if [[ ! -e $WRFPRD_DIR ]]; then
+  echo
+  echo ERROR: The $WRFPRD_DIR directory is not mounted.
+  echo
+  exit 1
+fi
+
+# Check for output directory
+if [[ ! -e $NCLPRD_DIR ]]; then
+  echo
+  echo ERROR: The $NCLPRD_DIR directory is not mounted.
+  echo
+  exit 1
+fi
+cd $NCLPRD_DIR
+
+# Include case-specific settings
+. $CASE_DIR/set_env.ksh
 
 export NCARG_ROOT=/usr/local
-#
-#
-cd /nclprd
-for nclscript in `ls -1 /nclscripts/*png.ncl`
+
+# Run all NCL scripts found
+for nclscript in `ls -1 $SCRIPT_DIR/ncl/*png.ncl $CASE_DIR/ncl/*png.ncl`
 do
-   ncl $nclscript
-done
-#
-echo convert to animated gif
-for file in `ls -1 *png`
-do
-   convert $file -trim $file
+  ncl $nclscript
 done
 
+echo convert to animated gif
+
+# Trim images
+for file in `ls -1 *png`
+do
+  convert $file -trim $file
+done
+
+# Generate animated gifs
 for domain in `ls -1 *.png | awk '{print substr($0, length($0)-6)}' | cut -d'.' -f1 | sort -u`
 do
   convert -delay 100 plt_Surface_multi_${domain}*.png Surface_multi_${domain}.gif
@@ -24,4 +65,4 @@ done
 
 ls -alh *gif
 
-echo Done.
+echo Done with NCL
