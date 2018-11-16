@@ -16,6 +16,7 @@ if [[ ! -e $WRF_BUILD ]]; then
   echo
   echo ERROR: WPS can only be run with the dtc-nwp-wps-wrf container.
   echo
+  exit 1
 fi
 
 # Check for input directory
@@ -23,6 +24,7 @@ if [[ ! -e $CASE_DIR ]]; then
   echo
   echo ERROR: The $CASE_DIR directory is not mounted.
   echo
+  exit 1
 fi
 
 # Check for output directory
@@ -30,6 +32,7 @@ if [[ ! -e $WPSPRD_DIR ]]; then
   echo
   echo ERROR: The $WPSPRD_DIR directory is not mounted.
   echo
+  exit 1
 fi
 cd $WPSPRD_DIR
 
@@ -83,7 +86,7 @@ else
   echo ERROR: geogrid.exe did not complete
   echo
   cat geogrid.log
-echo
+  echo
   exit 11 
 fi
 

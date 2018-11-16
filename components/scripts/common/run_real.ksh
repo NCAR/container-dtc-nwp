@@ -17,6 +17,7 @@ if [[ ! -e $WRF_BUILD ]]; then
   echo
   echo ERROR: WRF real.exe can only be run with the dtc-nwp-wps-wrf container.
   echo
+  exit 1
 fi
 
 # Check for input directory
@@ -24,6 +25,7 @@ if [[ ! -e $CASE_DIR ]]; then
   echo
   echo ERROR: The $CASE_DIR directory is not mounted.
   echo
+  exit 1
 fi
 
 # Check for input directory
@@ -31,6 +33,7 @@ if [[ ! -e $WPSPRD_DIR ]]; then
   echo
   echo ERROR: The $WPSPRD_DIR directory is not mounted.
   echo
+  exit 1
 fi
 
 # Check for output directory
@@ -38,6 +41,7 @@ if [[ ! -e $WRFPRD_DIR ]]; then
   echo
   echo ERROR: The $WRFPRD_DIR directory is not mounted.
   echo
+  exit 1
 fi
 cd $WRFPRD_DIR
 
