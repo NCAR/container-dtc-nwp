@@ -4,7 +4,30 @@ setenv PROJ_DIR "/path/to/working/directory"  -or-  export PROJ_DIR="/path/to/wo
 setenv CASE_DIR ${PROJ_DIR}/sandy             -or-  export CASE_DIR=${PROJ_DIR}/sandy
 mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
-mkdir -p wrfprd postprd metprd metviewer/mysql
+mkdir -p wpsprd gsiprd wrfprd postprd metprd metviewer/mysql
+
+#                                                                                                                                                             
+# Run WPS script in docker-space.
+#
+                                                                                              
+docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd\
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
+ --name run-dtc-nwp-sandy dtc-nwp /scripts/common/run_wps.ksh
+
+docker run --rm -it --volumes-from sandy -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
+ --name run-dtc-nwp-sandy dtc-nwp /scripts/common/run_real.ksh
+
+#
+# Run GSI (tbd)
+#
+
+#
+# Run UPP (tbd)
+#
 
 #
 # Run WPS/WRF/UPP (NWP: pre-proc, model, post-proc) script in docker-space.
