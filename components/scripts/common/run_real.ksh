@@ -68,7 +68,7 @@ if [ -e wrfinput_d* ]; then
 fi
 
 # Command for real
-./real.exe >& print.real.txt
+./real.exe > run_real.log 2>&1
 
 # Check success
 ls -ls wrfinput_d01
@@ -78,16 +78,16 @@ ls -ls wrfbdy_d01
 OK_wrfbdy=$?
 
 if [ $OK_wrfinput -eq 0 ] && [ $OK_wrfbdy -eq 0 ]; then
-  tail print.real.txt
+  tail run_real.log
   echo
   echo OK real ran fine at `date`
   echo
 else
-  cat print.real.txt
+  cat run_real.log
   echo
   echo ERROR: real.exe did not complete
   echo
   exit 44 
 fi
 
-echo Done with real
+echo Done with real.exe
