@@ -28,12 +28,12 @@ mysql -h${hostname} -uroot -pmvuser -e"drop database ${dbname};"
 mysql -h${hostname} -uroot -pmvuser -e"create database ${dbname};"
 
 # Apply the METViewer schema
-mysql -h${hostname} -uroot -pmvuser ${dbname} < /METViewer/sql/mv_mysql.sql
+mysql -h${hostname} -uroot -pmvuser ${dbname} < /METviewer/sql/mv_mysql.sql
 
 # Update the load xml file
 cat /scripts/common/load_metv_TMPL.xml | sed "s/DATABASE_NAME/${dbname}/g" \
   > /data/load_${dbname}.xml
 
 # Load the database
-/METViewer/bin/mv_load.sh /data/load_${dbname}.xml
+/METviewer/bin/mv_load.sh /data/load_${dbname}.xml
 
