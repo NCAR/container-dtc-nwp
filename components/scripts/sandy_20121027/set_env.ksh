@@ -1,5 +1,10 @@
 #!/bin/ksh
 
+# WRF settings
+
+export WPS_VERSION="4.0.2"
+export WRF_VERSION="4.0.2"
+
 # UPP settings
 
 # Set input format from model

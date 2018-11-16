@@ -7,7 +7,10 @@
 # ./run_component.ksh                           -namelist /path/to/namelist -run gsi
 # ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run wrf 
 
-#Initalize options
+# Include case-specific settings
+. /scripts/case/set_env.ksh
+
+# Initalize options
 num_procs=4
 process_per_host=1
 iface=eth0
@@ -20,10 +23,6 @@ run_ncl=false
 run_met=false
 my_namelist=false
 hosts=127.0.0.1
-
-# Variables need to match docker container volume names:
-WPS_VERSION="4.0.2"
-WRF_VERSION="4.0.2"
 
 WRF_BUILD="/wrf"
 INPUT_DIR="/case_data"

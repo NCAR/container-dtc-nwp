@@ -82,15 +82,14 @@ set -x
 # as recommended in the users guide where UPP will output.
 export TOP_DIR=/
 export DOMAINPATH=${TOP_DIR}
-export WRF_VERSION="4.0.2"
 export WRFPATH=${TOP_DIR}/wrf_serial/WRF-${WRF_VERSION}
 export UNIPOST_HOME=${TOP_DIR}/wrf_serial/UPPV3.2
 export POSTEXEC=${UNIPOST_HOME}/bin
 export SCRIPTS=${UNIPOST_HOME}/scripts
 export modelDataPath=/wrfprd            # or nemsprd
-export paramFile=/scripts/sandy_20121027/param/wrf_cntrl.parm   # or nmb_cntrl.parm
-export xmlCntrlFile=/scripts/sandy_20121027/param/postcntrl.xml # for grib2
-export txtCntrlFile=/scripts/sandy_20121027/param/postxconfig-NT_WRF.txt # grib2
+export paramFile=/scripts/case/wrf_cntrl.parm   # or nmb_cntrl.parm
+export xmlCntrlFile=/scripts/case/postcntrl.xml # for grib2
+export txtCntrlFile=/scripts/case/postxconfig-NT_WRF.txt # grib2
 
 # Specify Dyn Core (ARW or NMM or NMB in upper case)
 export dyncore="ARW"
