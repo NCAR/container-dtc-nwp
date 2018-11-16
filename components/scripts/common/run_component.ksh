@@ -9,7 +9,7 @@
 
 #Initalize options
 num_procs=4
-process_perhost=1
+process_per_host=1
 iface=eth0
 run_wps=false
 run_real=false
@@ -183,8 +183,8 @@ if [[ $run_wps == "true" ]]; then
   if [ $OK_geogrid -eq 0 ]; then
     tail print.geogrid.txt
     echo
-    echo OK geogrid ran fine
-    echo Completed geogrid, Starting ungrib at `date`
+    echo OK geogrid ran fine at `date`
+    echo Completed geogrid, Starting ungrib
     echo
   else
     echo
@@ -219,8 +219,8 @@ if [[ $run_wps == "true" ]]; then
   if [ $OK_ungrib -eq 0 ]; then
     tail print.ungrib.txt
     echo
-    echo OK ungrib ran fine
-    echo Completed ungrib, Starting metgrid at `date`
+    echo OK ungrib ran fine at `date`
+    echo Completed ungrib, Starting metgrid
     echo
   else
     echo
@@ -252,8 +252,8 @@ if [[ $run_wps == "true" ]]; then
   if [ $OK_metgrid -eq 0 ]; then
     tail print.metgrid.txt
     echo
-    echo OK metgrid ran fine
-    echo Completed metgrid, Starting program real at `date`
+    echo OK metgrid ran fine at `date`
+    echo Completed metgrid, Starting program real
     echo
   else
     echo
@@ -333,7 +333,7 @@ if [[ $run_real == "true" ]]; then
   if [ $OK_wrfinput -eq 0 ] && [ $OK_wrfbdy -eq 0 ]; then
     tail print.real.txt
     echo
-    echo OK real ran fine
+    echo OK real ran fine at `date`
     echo
   else
     cat print.real.txt
@@ -390,7 +390,7 @@ if [[ $run_gsi == "true" ]]; then
   if [ $OK_gsi -eq 0 ]; then
     tail print.gsi.txt
     echo
-    echo OK GSI ran fine
+    echo OK GSI ran fine at `date`
     echo
   else
     echo
@@ -444,7 +444,7 @@ if [[ $run_wrf == "true" ]]; then
   
     # Run wrf using mpi
     mpirun --allow-run-as-root -np $num_procs ./wrf.exe
-    time mpirun --allow-run-as-root -hostfile /wrf/hosts -np $num_procs --mca btl self,tcp --mca btl_tcp_if_include $iface ./wrf.exe
+    time mpirun --allow-run-as-root -hostfile $WRFPRD_DIR/hosts -np $num_procs --mca btl self,tcp --mca btl_tcp_if_include $iface ./wrf.exe
   fi
 
   # Check success
@@ -454,8 +454,8 @@ if [[ $run_wrf == "true" ]]; then
   if [ $OK_wrfout -eq 0 ]; then
     tail rsl.error.0000
     echo
-    echo OK wrf ran fine
-    echo Completed WRF model with $FCST_LENGTH_HOURS hour simulation at `date`
+    echo OK wrf ran fine at `date`
+    echo Completed WRF model
     echo
   else
     cat rsl.error.0000
@@ -505,7 +505,7 @@ if [[ $run_upp == "true" ]]; then
   if [ $OK_upp -eq 0 ]; then
     tail print.upp.txt
     echo
-    echo OK UPP ran fine
+    echo OK UPP ran fine at `date`
     echo
   else
     echo
@@ -553,7 +553,7 @@ if [[ $run_ncl == "true" ]]; then
   if [ $OK_ncl -eq 0 ]; then
     tail print.ncl.txt
     echo
-    echo OK NCL ran fine
+    echo OK NCL ran fine at `date`
     echo
   else
     echo
@@ -601,7 +601,7 @@ if [[ $run_met == "true" ]]; then
   if [ $OK_met -eq 0 ]; then
     tail print.met.txt
     echo
-    echo OK MET ran fine
+    echo OK MET ran fine at `date`
     echo
   else
     echo
