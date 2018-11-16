@@ -27,8 +27,7 @@ set -x
 # FIX_ROOT = path of fix files
 # GSI_EXE  = path and name of the gsi executable 
 # ENS_ROOT = path where ensemble background files exist
-#  ANAL_TIME=2017051312  #needs change
-#  HH=`echo $ANAL_TIME | cut -c9-10`
+
   WORK_ROOT=/gsiprd
   OBS_ROOT=/case_data
   BK_ROOT=/wrfprd
