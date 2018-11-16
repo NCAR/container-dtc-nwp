@@ -31,10 +31,11 @@ export DATAROOT=/
 export MODEL=ARW
 export ACCUM_TIME=3
 export BUCKET_TIME=1
+export OBTYPE=MRMS
 
 # Forecast hours to evaluate
 FCST_HR_BEG=0
-FCST_HR_END=6
+FCST_HR_END=24
 FCST_HR_INC=3
 
 # Define times as 2-digits
