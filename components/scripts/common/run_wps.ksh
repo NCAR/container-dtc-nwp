@@ -66,7 +66,7 @@ if [ -e geo_em.d*.nc ]; then
 fi
 
 # Command for geogrid
-./geogrid.exe >& run_geogrid.log
+./geogrid.exe > run_geogrid.log 2>&1
 
 # Check success
 ls -ls geo_em.d01.nc
@@ -103,7 +103,7 @@ if [ -e FILE:${file_date} ]; then
 fi
 
 # Command for ungrib
-./ungrib.exe >& run_ungrib.log
+./ungrib.exe > run_ungrib.log 2>&1
 
 ls -ls FILE:*
 OK_ungrib=$?
@@ -135,7 +135,7 @@ if [ -e met_em.d*.${file_date}:00:00.nc ]; then
 fi
 
 # Command for metgrid
-./metgrid.exe >& run_metgrid.log
+./metgrid.exe > run_metgrid.log 2>&1
 
 # Check sucess
 ls -ls met_em.d01.*
