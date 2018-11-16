@@ -272,6 +272,14 @@ fi # end if run_wps == true
 
 if [[ $run_real == "true" || $run_wrf == "true" ]]; then
 
+
+  # Check for WPS input directory
+  if [[ ! -e $WPSPRD_DIR ]]; then
+    echo
+    echo ERROR: The input $WPSPRD directory is not mounted.
+    echo
+  fi
+
   # Check for WRF output directory
   if [[ ! -e $WRFPRD_DIR ]]; then
     echo
