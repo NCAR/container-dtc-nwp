@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ksh
 #
 # Common script for running wps, real, gsi, wrf, and upp in Docker world
 #
