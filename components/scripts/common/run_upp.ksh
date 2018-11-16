@@ -21,6 +21,9 @@ set -x
 #    native A-E to a regular projection grid
 #--------------------------------------------------------
 
+# Include case-specific settings
+. /scripts/case/set_env.ksh
+
 #----------------------------------------------------------------------------------
 #--- USER EDIT DESCIPTIONS --------------------------------------------------------
 # See UPP User's Guide for more information
@@ -91,19 +94,6 @@ export txtCntrlFile=/scripts/sandy_20121027/param/postxconfig-NT_WRF.txt # grib2
 
 # Specify Dyn Core (ARW or NMM or NMB in upper case)
 export dyncore="ARW"
-
-# Set input format from model
-export inFormat="netcdf"
-export outFormat="grib"
-
-# Set date/time information
-export startdate=2012102712
-export fhr=00
-export lastfhr=06
-export incrementhr=01
-
-# Set domain lists
-export domain_list="d01"
 
 # Set run command: 
 
