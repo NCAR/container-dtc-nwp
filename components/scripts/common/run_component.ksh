@@ -382,7 +382,7 @@ if [[ $run_gsi == "true" ]]; then
   cd $GSIPRD_DIR
 
   # Run GSI
-  $SCRIPT_COMMON_DIR/run-dtc-gsi.ksh >& print.gsi.txt
+  $SCRIPT_COMMON_DIR/run_gsi.ksh >& print.gsi.txt
 
   # Check return status
   OK_gsi=$?
@@ -545,7 +545,7 @@ if [[ $run_ncl == "true" ]]; then
   fi
   cd $NCLPRD_DIR
 
-  $SCRIPT_COMMON_DIR/run_ncl_all.ksh >& print.ncl.txt
+  $SCRIPT_COMMON_DIR/run_ncl.ksh >& print.ncl.txt
 
   # Check success
   OK_ncl=$?
