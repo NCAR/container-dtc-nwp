@@ -31,10 +31,10 @@ set -x
 #  HH=`echo $ANAL_TIME | cut -c9-10`
   WORK_ROOT=/gsiprd
   OBS_ROOT=/case_data
-#  PREPBUFR=${OBS_ROOT}/ndas.t${HH}z.prepbufr.tm06.nr
   BK_ROOT=/wrfprd
   BK_FILE=${BK_ROOT}/wrfinput_d01
   HH=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f3 -d"_" | cut -c1-2`
+  PREPBUFR=${OBS_ROOT}/ndas.t${HH}z.prepbufr.tm06.nr
   CRTM_ROOT=/gsi_data/CRTM_v2.3.0
   GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
   GSI_BUILD=/gsi/gsi_build
