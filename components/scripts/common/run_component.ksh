@@ -27,9 +27,8 @@ WRF_VERSION="4.0.2"
 
 WRF_BUILD="/wrf"
 INPUT_DIR="/case_data"
-NML_DIR="/scripts/case/param"
-SCRIPT_CASE_DIR="/scripts/case/run"
-SCRIPT_COMMON_DIR="/scripts/common"
+NML_DIR="/scripts/case"
+SCRIPT_DIR="/scripts/common"
 
 # Output directories
 WPSPRD_DIR="/wpsprd"
@@ -138,7 +137,7 @@ if [[ $run_wps == "true" ]]; then
   # Check for WPS output directory
   if [[ ! -e $WPSPRD_DIR ]]; then
     echo
-    echo ERROR: The output $WPSPRD directory is not mounted.
+    echo ERROR: The output $WPSPRD_DIR directory is not mounted.
     echo
   fi
   cd $WPSPRD_DIR
@@ -276,14 +275,14 @@ if [[ $run_real == "true" || $run_wrf == "true" ]]; then
   # Check for WPS input directory
   if [[ ! -e $WPSPRD_DIR ]]; then
     echo
-    echo ERROR: The input $WPSPRD directory is not mounted.
+    echo ERROR: The input $WPSPRD_DIR directory is not mounted.
     echo
   fi
 
   # Check for WRF output directory
   if [[ ! -e $WRFPRD_DIR ]]; then
     echo
-    echo ERROR: The output $WRFPRD directory is not mounted.
+    echo ERROR: The output $WRFPRD_DIR directory is not mounted.
     echo
   fi
   cd $WRFPRD_DIR
@@ -316,7 +315,7 @@ if [[ $run_real == "true" ]]; then
   # Check for WPS input directory
   if [[ ! -e $WPSPRD_DIR ]]; then
     echo
-    echo ERROR: The output $WPSPRD directory is not mounted.
+    echo ERROR: The output $WPSPRD_DIR directory is not mounted.
     echo
   fi
 
@@ -367,10 +366,10 @@ if [[ $run_gsi == "true" ]]; then
     echo
   fi
 
-  # Check for the CRTM data
+  # Check for input data
   if [[ ! -e /gsi_data ]]; then
     echo
-    echo ERROR: The CRTM input directory (/gsi_data) is not mounted.
+    echo ERROR: The /gsi_data input directory is not mounted.
     echo
   fi
 
@@ -390,7 +389,7 @@ if [[ $run_gsi == "true" ]]; then
   cd $GSIPRD_DIR
 
   # Run GSI
-  $SCRIPT_COMMON_DIR/run_gsi.ksh >& print.gsi.txt
+  $SCRIPT_DIR/run_gsi.ksh >& print.gsi.txt
 
   # Check return status
   OK_gsi=$?
@@ -492,20 +491,20 @@ if [[ $run_upp == "true" ]]; then
   # Check for input WRF directory 
   if [[ ! -e $WRFPRD_DIR ]]; then
     echo
-    echo ERROR: The input $WRFPRD directory is not mounted.
+    echo ERROR: The input $WRFPRD_DIR directory is not mounted.
     echo
   fi
 
   # Check for output POST directory
   if [[ ! -e $POSTPRD_DIR ]]; then
     echo
-    echo ERROR: The output $POSTPRD directory is not mounted.
+    echo ERROR: The output $POSTPRD_DIR directory is not mounted.
     echo
   fi
   cd $POSTPRD_DIR
 
-  cp $SCRIPT_CASE_DIR/run_unipost.ksh .
-  ./run_unipost.ksh >& print.upp.txt
+  cp $SCRIPT_DIR/run_upp.ksh .
+  ./run_upp.ksh >& print.upp.txt
 
   # Check success
   OK_upp=$?
@@ -541,19 +540,19 @@ if [[ $run_ncl == "true" ]]; then
   # Check for input UPP directory
   if [[ ! -e $POSTPRD_DIR ]]; then
     echo
-    echo ERROR: The input $POSTPRD directory is not mounted.
+    echo ERROR: The input $POSTPRD_DIR directory is not mounted.
     echo
   fi
 
   # Check for output NCL directory
   if [[ ! -e $NCLPRD_DIR ]]; then
     echo
-    echo ERROR: The output $NCLPRD directory is not mounted.
+    echo ERROR: The output $NCLPRD_DIR directory is not mounted.
     echo
   fi
   cd $NCLPRD_DIR
 
-  $SCRIPT_COMMON_DIR/run_ncl.ksh >& print.ncl.txt
+  $SCRIPT_DIR/run_ncl.ksh >& print.ncl.txt
 
   # Check success
   OK_ncl=$?
@@ -589,19 +588,19 @@ if [[ $run_met == "true" ]]; then
   # Check for input UPP directory
   if [[ ! -e $POSTPRD_DIR ]]; then
     echo
-    echo ERROR: The input $POSTPRD directory is not mounted.
+    echo ERROR: The input $POSTPRD_DIR directory is not mounted.
     echo
   fi
 
   # Check for output MET directory
   if [[ ! -e $METPRD_DIR ]]; then
     echo
-    echo ERROR: The output $METPRD directory is not mounted.
+    echo ERROR: The output $METPRD_DIR directory is not mounted.
     echo
   fi
   cd $METPRD_DIR
 
-  $SCRIPT_CASE_DIR/run-dtc-met.ksh >& print.met.txt
+  $SCRIPT_DIR/run_met.ksh >& print.met.txt
 
   # Check success
   OK_met=$?
