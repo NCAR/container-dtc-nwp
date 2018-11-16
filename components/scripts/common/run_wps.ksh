@@ -14,7 +14,7 @@ WPSPRD_DIR="/wpsprd"
 # Check for the correct container
 if [[ ! -e $WRF_BUILD ]]; then
   echo
-  echo ERROR: WPS can only be run with the dtc-nwp-wps-wrf container.
+  echo ERROR: WPS can only be run with the dtc-nwp container.
   echo
   exit 1
 fi

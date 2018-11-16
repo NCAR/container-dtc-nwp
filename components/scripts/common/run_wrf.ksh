@@ -16,7 +16,7 @@ GSIPRD_DIR="/gsiprd"
 # Check for the correct container
 if [[ ! -e $WRF_BUILD ]]; then
   echo
-  echo ERROR: wrf.exe can only be run with the dtc-nwp-wps-wrf container.
+  echo ERROR: wrf.exe can only be run with the dtc-nwp container.
   echo
   exit 1
 fi
