@@ -49,6 +49,7 @@ ${ECHO} "    START_TIME = ${START_TIME}"
 ${ECHO} "     FCST_TIME = ${FCST_TIME}"
 ${ECHO} "    ACCUM_TIME = ${ACCUM_TIME}"
 ${ECHO} "   BUCKET_TIME = ${BUCKET_TIME}"
+${ECHO} "        OBTYPE = ${OBTYPE}"
 ${ECHO} "   DOMAIN_LIST = ${DOMAIN_LIST}"
 ${ECHO} "       GRID_VX = ${GRID_VX}"
 ${ECHO} "  MET_EXE_ROOT = ${MET_EXE_ROOT}"
@@ -78,6 +79,7 @@ ${MKDIR} -p ${PCP_COMBINE_DIR}
 export MODEL
 export FCST_TIME
 export ACCUM_TIME
+export OBTYPE
 
 ########################################################################
 # Compute VX date - only need to calculate once
@@ -91,11 +93,11 @@ PVYYYYMMDD=`${CALC_DATE} ${VDATE} -24 -fmt %Y%m%d`
 ${ECHO} 'valid time for ' ${FCST_TIME} 'h forecast = ' ${VDATE}
 
 ########################################################################
-# Run pcp_combine on ccpa obs file - only need to run once
+# Run pcp_combine on gridded obs file - only need to run once
 ########################################################################
 
 # Create a pcp_combine output file name
-OBS_FILE="${PCP_COMBINE_DIR}/STAGEII_${ACCUM_TIME}H_${VYYYYMMDD}${VHH}.nc"
+OBS_FILE="${PCP_COMBINE_DIR}/${OBTYPE}_${ACCUM_TIME}H_${VYYYYMMDD}${VHH}.nc"
 
 if [ ! -e ${OBS_FILE} ]; then
 
@@ -114,9 +116,18 @@ if [ ! -e ${OBS_FILE} ]; then
     PRV_DIR_ARGS=""
   fi
 
-  PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} \
-                    -pcpdir ${RAW_OBS_DIR} ${PRV_DIR_ARGS} \
-                    -name APCP_${ACCUM_TIME} ${OBS_FILE}"
+  if [[ ${OBTYPE} == "ST2" ]]; then
+    PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} \
+                      -pcpdir ${RAW_OBS_DIR} ${PRV_DIR_ARGS} \
+                      -name APCP_${ACCUM_TIME} ${OBS_FILE}"
+  elif [[ ${OBTYPE} == "MRMS" ]]; then
+    PCP_COMBINE_ARGS="-sum 00000000_000000 ${BUCKET_TIME} ${VYYYYMMDD}_${VHH}0000 ${ACCUM_TIME} \
+                      -pcpdir ${RAW_OBS_DIR} ${PRV_DIR_ARGS} \
+                      -field 'name=\"GaugeCorrQPE01H\";level=\"L0\";' \
+                      -name APCP_${ACCUM_TIME} ${OBS_FILE}"
+  else
+    echo "Not a supported OBTYPE"
+  fi
 
   # Call pcp_combine 
   ${RUN_CMD} /usr/bin/time ${MET_EXE_ROOT}/pcp_combine ${PCP_COMBINE_ARGS}
