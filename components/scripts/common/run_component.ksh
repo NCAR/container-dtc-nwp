@@ -1,10 +1,10 @@
 #!/bin/ksh
 #
-# Common script for running wps, real, gsi, wrf, and upp in Docker world
+# Common script for running wps, real, gsi, wrf, upp, ncl, and met in Docker world
 #
 # Examples in block below.
-# ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run wps -run real
-# ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run gsi
+# ./run_component.ksh                           -namelist /path/to/namelist -run wps -run real
+# ./run_component.ksh                           -namelist /path/to/namelist -run gsi
 # ./run_component.ksh -np 2 -slots 2 -face eth0 -namelist /path/to/namelist -run wrf 
 
 #Initalize options
@@ -16,6 +16,8 @@ run_real=false
 run_gsi=false
 run_wrf=false
 run_upp=false
+run_ncl=false
+run_met=false
 my_namelist=false
 hosts=127.0.0.1
 
@@ -26,13 +28,16 @@ WRF_VERSION="4.0.2"
 WRF_BUILD="/wrf"
 INPUT_DIR="/case_data"
 NML_DIR="/scripts/case/param"
-SCRIPT_DIR="/scripts/case/run"
+SCRIPT_CASE_DIR="/scripts/case/run"
+SCRIPT_COMMON_DIR="/scripts/common"
 
 # Output directories
 WPSPRD_DIR="/wpsprd"
 WRFPRD_DIR="/wrfprd"
 GSIPRD_DIR="/gsiprd"
 POSTPRD_DIR="/postprd"
+NCLPRD_DIR="/nclprd"
+METPRD_DIR="/metprd"
 
 # Read in command line options
 while (( $# > 1 ))
@@ -78,6 +83,12 @@ case $opt in
            if [[ $run_stuff == "upp" ]]; then
              run_upp=true
            fi
+           if [[ $run_stuff == "ncl" ]]; then
+             run_ncl=true
+           fi
+           if [[ $run_stuff == "met" ]]; then
+             run_met=true
+           fi
        shift
        ;;
 
@@ -89,7 +100,7 @@ case $opt in
 
    *)
         echo "Usage: Incorrect"
-        exit 15
+        exit 1
         ;;
 esac
 shift
@@ -103,6 +114,8 @@ echo "run_real      = " $run_real
 echo "run_gsi       = " $run_gsi
 echo "run_wrf       = " $run_wrf
 echo "run_upp       = " $run_upp
+echo "run_ncl       = " $run_ncl
+echo "run_met       = " $run_met
 echo "my_namelist   = " $my_namelist
 echo "namelist dir  = " $NML_DIR
 # End sample argument list
@@ -132,8 +145,8 @@ if [[ $run_wps == "true" ]]; then
 
   ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
 
-  # Check for WPS executables
-  if [[ ! -e geogrid.exe || ! -e ungrib.exe || ! -e metgrid.exe ]]; then
+  # Check for the correct container
+  if [[ ! -e /wrf ]]; then
     echo
     echo ERROR: WPS can only be run with the dtc-nwp-wps-wrf container.
     echo
@@ -179,7 +192,7 @@ if [[ $run_wps == "true" ]]; then
     echo
     cat geogrid.log
     echo
-    exit 444
+    exit 11 
   fi
 
   ##################################
@@ -215,7 +228,7 @@ if [[ $run_wps == "true" ]]; then
     echo
     cat ungrib.log
     echo
-    exit 555
+    exit 22 
   fi
 
   ##################################
@@ -248,7 +261,7 @@ if [[ $run_wps == "true" ]]; then
     echo
     cat metgrid.log
     echo
-    exit 666
+    exit 33 
   fi
 
 fi # end if run_wps == true
@@ -285,8 +298,8 @@ fi
 if [[ $run_real == "true" ]]; then
   echo Running real.exe
 
-  # Check for executable
-  if [ ! -e real.exe ]; then
+  # Check for the correct container
+  if [[ ! -e /wrf ]]; then
     echo
     echo ERROR: real.exe can only be run with the dtc-nwp-wps-wrf container.
     echo
@@ -327,7 +340,7 @@ if [[ $run_real == "true" ]]; then
     echo
     echo ERROR: real.exe did not complete
     echo
-    exit 777
+    exit 44 
   fi
 
 fi # end run_real == true 
@@ -339,30 +352,52 @@ fi # end run_real == true
 if [[ $run_gsi == "true" ]]; then
   echo Running GSI 
 
-  # Check for executable
-  if [ ! -e /gsi/gsi_run ]; then
+  # Check for the correct container
+  if [[ ! -e /gsi ]]; then
     echo
     echo ERROR: GSI can only be run with the dtc-nwp-gsi container.
+    echo
+  fi
+
+  # Check for the CRTM data
+  if [[ ! -e /gsi_data ]]; then
+    echo
+    echo ERROR: The CRTM input directory (/gsi_data) is not mounted.
     echo
   fi
 
   # Check for WRF input directory
   if [[ ! -e $WRFPRD_DIR ]]; then
     echo
-    echo ERROR: The input $WRFPRD directory is not mounted.
+    echo ERROR: The input $WRFPRD_DIR directory is not mounted.
     echo
   fi
 
   # Check for GSI output directory
   if [[ ! -e $GSIPRD_DIR ]]; then
     echo
-    echo ERROR: The output $GSIPRD directory is not mounted.
+    echo ERROR: The output $GSIPRD_DIR directory is not mounted.
     echo
   fi
   cd $GSIPRD_DIR
 
-  # Run gsi (JHG: need to write to a log and check return status?)
-  /gsi/gsi_run
+  # Run GSI
+  $SCRIPT_COMMON_DIR/run-dtc-gsi.ksh >& print.gsi.txt
+
+  # Check return status
+  OK_gsi=$?
+
+  if [ $OK_gsi -eq 0 ]; then
+    tail print.gsi.txt
+    echo
+    echo OK GSI ran fine
+    echo
+  else
+    echo
+    echo ERROR: GSI did not complete
+    echo
+    exit 55 
+  fi
 
 fi # end run_gsi == true
 
@@ -373,11 +408,25 @@ fi # end run_gsi == true
 if [[ $run_wrf == "true" ]]; then
   echo Running wrf.exe 
 
-  # Check for executable
-  if [ ! -e wrf.exe ]; then
+  # Check for the correct container
+  if [[ ! -e /wrf ]]; then
     echo
     echo ERROR: wrf.exe can only be run with the dtc-nwp-wps-wrf container.
     echo
+  fi
+
+  # Check for WRF output directory
+  if [[ ! -e $WRFPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $WRFPRD_DIR directory is not mounted.
+    echo
+  fi
+  cd $WRFPRD_DIR
+
+  # If GSI was run, update the wrfinput file
+  if [[ -e $GSIPRD_DIR/wrf_inout ]]; then
+    mv wrfinput_d01 wrfinput_d01.orig
+    cp $GSIPRD_DIR/wrf_inout wrfinput_d01
   fi
 
   # Command for openmpi wrf in Docker world
@@ -413,7 +462,7 @@ if [[ $run_wrf == "true" ]]; then
     echo
     echo ERROR: wrf.exe did not complete
     echo
-    exit 888
+    exit 66 
   fi
 
 fi # end run_wrf == true 
@@ -425,10 +474,10 @@ fi # end run_wrf == true
 if [[ $run_upp == "true" ]]; then
   echo Running UPP
 
-  # JHG: this check doesn't actually work.  Not sure where unipost lives!
-  if [ ! -e unipost.exe ]; then
+  # Check for the correct container
+  if [[ ! -e /upp ]]; then
     echo
-    echo ERROR: unipost.exe can only be run with the dtc-nwp-upp container.
+    echo ERROR: UPP can only be run with the dtc-nwp-upp container.
     echo
   fi
 
@@ -447,9 +496,120 @@ if [[ $run_upp == "true" ]]; then
   fi
   cd $POSTPRD_DIR
 
-  cp $SCRIPT_DIR/run_unipost.ksh .
+  cp $SCRIPT_CASE_DIR/run_unipost.ksh .
   ./run_unipost.ksh >& print.upp.txt
 
-fi # end run_upp == true 
+  # Check success
+  OK_upp=$?
+
+  if [ $OK_upp -eq 0 ]; then
+    tail print.upp.txt
+    echo
+    echo OK UPP ran fine
+    echo
+  else
+    echo
+    echo ERROR: UPP did not complete
+    echo
+    exit 77 
+  fi
+
+fi # end run_upp == true
+
+##################################
+#   Run NCL                      #
+##################################
+
+if [[ $run_ncl == "true" ]]; then
+  echo Running NCL 
+
+  # Check for the correct container
+  if [[ ! -e /ncl ]]; then
+    echo
+    echo ERROR: NCL can only be run with the dtc-nwp-ncl container.
+    echo
+  fi
+
+  # Check for input UPP directory
+  if [[ ! -e $POSTPRD_DIR ]]; then
+    echo
+    echo ERROR: The input $POSTPRD directory is not mounted.
+    echo
+  fi
+
+  # Check for output NCL directory
+  if [[ ! -e $NCLPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $NCLPRD directory is not mounted.
+    echo
+  fi
+  cd $NCLPRD_DIR
+
+  $SCRIPT_COMMON_DIR/run_ncl_all.ksh >& print.ncl.txt
+
+  # Check success
+  OK_ncl=$?
+
+  if [ $OK_ncl -eq 0 ]; then
+    tail print.ncl.txt
+    echo
+    echo OK NCL ran fine
+    echo
+  else
+    echo
+    echo ERROR: NCL did not complete
+    echo
+    exit 88 
+  fi
+
+fi # end run_ncl == true
+
+##################################
+#   Run MET                      #
+##################################
+
+if [[ $run_met == "true" ]]; then
+  echo Running MET 
+
+  # Check for the correct container
+  if [[ ! -e /met ]]; then
+    echo
+    echo ERROR: MET can only be run with the dtc-nwp-met container.
+    echo
+  fi
+
+  # Check for input UPP directory
+  if [[ ! -e $POSTPRD_DIR ]]; then
+    echo
+    echo ERROR: The input $POSTPRD directory is not mounted.
+    echo
+  fi
+
+  # Check for output MET directory
+  if [[ ! -e $METPRD_DIR ]]; then
+    echo
+    echo ERROR: The output $METPRD directory is not mounted.
+    echo
+  fi
+  cd $METPRD_DIR
+
+  $SCRIPT_CASE_DIR/run-dtc-met.ksh >& print.met.txt
+
+  # Check success
+  OK_met=$?
+
+  if [ $OK_met -eq 0 ]; then
+    tail print.met.txt
+    echo
+    echo OK MET ran fine
+    echo
+  else
+    echo
+    echo ERROR: MET did not complete
+    echo
+    exit 99 
+  fi
+
+fi # end run_met == true 
  
 echo Done
