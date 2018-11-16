@@ -13,6 +13,6 @@ RUN mkdir /gsi_data
 #
 # Download CRTM files
 RUN wget https://dtcenter.org/com-GSI/users/downloads/GSI_releases/CRTM_v2.3.0.tar.gz -P /gsi_data/ \
- && tar -xf /gsi_data/CRTM_v2.3.0.tar.gz
+ && tar -xf /gsi_data/CRTM_v2.3.0.tar.gz -C /gsi_data/
 VOLUME /gsi_data
 CMD ["true"]

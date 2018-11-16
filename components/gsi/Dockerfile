@@ -67,20 +67,20 @@ COPY run-gsi /gsi/gsi_run
 #
 # set up ssh configuration
 #
-#COPY ssh_config /root/.ssh/config
-#COPY slave /gsi/slave
-#RUN apt install -y openssh-client openssh-server net-tools \
-#    && apt clean all \
-#    && mkdir -p /var/run/sshd \
-#    && ssh-keygen -A \
-#    && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
-#    && sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/g' /etc/ssh/sshd_config \
-#    && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config \
-#    && ssh-keygen -f /root/.ssh/id_rsa -t rsa -N '' \
-#    && chmod 600 /root/.ssh/config \
-#    && chmod 700 /root/.ssh \
-#    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
-#    && chmod +x /gsi/slave
+COPY ssh_config /root/.ssh/config
+COPY slave /gsi/slave
+RUN apt install -y openssh-client openssh-server net-tools \
+    && apt clean all \
+    && mkdir -p /var/run/sshd \
+    && ssh-keygen -A \
+    && sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config \
+    && sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/g' /etc/ssh/sshd_config \
+    && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config \
+    && ssh-keygen -f /root/.ssh/id_rsa -t rsa -N '' \
+    && chmod 600 /root/.ssh/config \
+    && chmod 700 /root/.ssh \
+    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
+    && chmod +x /gsi/slave
 #
 #RUN env
 CMD ["/gsi/run-gsi"]

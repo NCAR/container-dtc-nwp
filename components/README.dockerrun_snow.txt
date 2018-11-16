@@ -7,7 +7,7 @@ cd ${CASE_DIR}
 mkdir -p wrfprd postprd metprd metviewer/mysql wpsprd gsiprd
 
 #
-# Run WPS/WRF/UPP (NWP: pre-proc, model, post-proc) script in docker-space.
+# Run WPS/real.exe (NWP: pre-processing) scripts in docker-space.
 #
 docker run --rm -it --volumes-from wps_geog --volumes-from snow \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
@@ -20,10 +20,16 @@ docker run --rm -it --volumes-from snow -v ${PROJ_DIR}/container-dtc-nwp/compone
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case \
  --name run-dtc-nwp-snow dtc-nwp /scripts/common/run_real.ksh
 
+
 #
 # Run GSI (tbd)
 #
 
+docker run --rm -it --volumes-from snow --volumes-from gsi_data     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common      -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd   -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case  --name run-dtc-gsi-snow dtc-gsi /scripts/common/run_gsi.ksh
+
+#
+# Run WRF (tbd)
+#
 
 
 #
