@@ -32,7 +32,11 @@ set -x
   OBS_ROOT=/case_data
   BK_ROOT=/wrfprd
   BK_FILE=${BK_ROOT}/wrfinput_d01
-  HH=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f3 -d"_" | cut -c1-2`
+  YYYY=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c3-6`
+  MM=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c8-9`
+  DD=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c11-12`
+  HH=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c14-15`
+  ANAL_TIME=${YYYY}${MM}${DD}${HH}
   PREPBUFR=${OBS_ROOT}/ndas.t${HH}z.prepbufr.tm06.nr
   CRTM_ROOT=/gsi_data/CRTM_v2.3.0
   GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
