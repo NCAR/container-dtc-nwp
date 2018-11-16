@@ -61,7 +61,7 @@ RUN set -o ignoreeof
 # copy in a couple custom scripts
 #
 #COPY docker-clean /gsi
-COPY run_gsi_regional.ksh /gsi/gsi_run
+COPY run-gsi /gsi/gsi_run
 #RUN chmod +x /gsi/docker-clean \
 # && chmod +x /gsi/gsi_run/run-gsi
 #
