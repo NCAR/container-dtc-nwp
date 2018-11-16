@@ -10,7 +10,7 @@ begin
 ; Make a list of all files we are interested in
   DATADir = "/wrfprd/"
   PLTDir = "/nclprd/"
-  domains = (/"d01"/)
+  domains = str_split(getenv("domain_list"), " ")
   ndoms   = dimsizes(domains)
 
 do id = 0,ndoms-1
