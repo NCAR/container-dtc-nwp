@@ -1,0 +1,6 @@
+#!/bin/bash
+  
+echo "HELLO! This is GSI version 3.7!"
+
+echo "To run GSI using this container, use scripts/common/run_gsi.ksh"
+

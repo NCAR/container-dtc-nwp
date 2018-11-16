@@ -83,4 +83,4 @@ COPY run_gsi_regional.ksh /gsi/gsi_run
 #    && chmod +x /gsi/slave
 #
 #RUN env
-CMD ["/gsi/gsi_run/run_gsi_regional.ksh"]
+CMD ["/gsi/run-gsi"]
