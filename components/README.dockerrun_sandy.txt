@@ -26,7 +26,7 @@ docker run --rm -it --volumes-from sandy \
 # Run GSI in docker-space.
 #
 
-docker run --rm -it --volumes-from gsi_data \
+docker run --rm -it --volumes-from gsi_data --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
  -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
