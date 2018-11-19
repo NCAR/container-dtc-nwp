@@ -19,6 +19,9 @@ cd ${PROJ_DIR}/container-dtc-nwp/components
 # Build image for WPSGEOG static data
 cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
 
+# Build image for GSI input data
+cd gsi_data ; docker build -t dtc-nwp-gsi_data . ; cd ..
+
 # Build image for input Sandy test case data
 cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
 
@@ -46,6 +49,7 @@ cd metviewer/METViewer ; docker build -t dtc-metviewer . ; cd ../..
 #
 
 docker create -v /WPS_GEOG --name wps_geog dtc-nwp-wps_geog
+docker create -v /gsi_data --name gsi_data dtc-nwp-gsi_data
 docker create -v /case_data/sandy_20121027 --name sandy dtc-nwp-sandy
 docker create -v /case_data/derecho_20120629 --name derecho dtc-nwp-derecho
 docker create -v /case_data/snow_20160123 --name snow dtc-nwp-snow
