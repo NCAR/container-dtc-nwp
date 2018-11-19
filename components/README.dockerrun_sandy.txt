@@ -36,7 +36,7 @@ docker run --rm -it --volumes-from gsi_data \
 # Run WRF in docker-space.
 #
 
-docker run --rm -it --volumes-from gsi_data \
+docker run --rm -it \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
  -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
@@ -46,7 +46,7 @@ docker run --rm -it --volumes-from gsi_data \
 # Run UPP in docker-space.
 #
 
-docker run --rm -it --volumes-from sandy \
+docker run --rm -it \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
  -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
@@ -100,3 +100,4 @@ docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_sandy
 # - Outside the container, stop and remove METViewer containers:
 #     cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 #     docker-compose down
+#
