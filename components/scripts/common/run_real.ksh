@@ -15,7 +15,7 @@ WRFPRD_DIR="/wrfprd"
 # Check for the correct container
 if [[ ! -e $WRF_BUILD ]]; then
   echo
-  echo ERROR: real.exe can only be run with the dtc-nwp container.
+  echo ERROR: real.exe can only be run with the dtc-wps_wrf container.
   echo
   exit 1
 fi
