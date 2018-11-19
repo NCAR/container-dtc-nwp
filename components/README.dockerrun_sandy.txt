@@ -39,7 +39,7 @@ docker run --rm -it --volumes-from gsi_data --volumes-from sandy \
 docker run --rm -it \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
  --name run-sandy-wrf dtc-wps_wrf /scripts/common/run_wrf.ksh
 
 #
