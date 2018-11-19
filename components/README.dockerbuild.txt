@@ -32,7 +32,7 @@ cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..
 cd case_data/snow_20160123 ; docker build -t dtc-nwp-snow . ; cd ../..
 
 # Build image which compiles WPS and WRF from source
-cd wps_wrf ; docker build -t dtc-nwp . ; cd ..
+cd wps_wrf ; docker build -t dtc-wps_wrf . ; cd ..
 
 # Build image which compiles GSI from source
 cd gsi ; docker build -t dtc-gsi . ; cd ..

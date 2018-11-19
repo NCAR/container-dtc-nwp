@@ -14,12 +14,12 @@ docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd\
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- --name run-dtc-nwp-sandy dtc-nwp /scripts/common/run_wps.ksh
+ --name run-dtc-nwp-sandy dtc-wps_wrf /scripts/common/run_wps.ksh
 
 docker run --rm -it --volumes-from sandy -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- --name run-dtc-nwp-sandy dtc-nwp /scripts/common/run_real.ksh
+ --name run-dtc-nwp-sandy dtc-wps_wrf /scripts/common/run_real.ksh
 
 #
 # Run GSI (tbd)
@@ -35,10 +35,10 @@ docker run --rm -it --volumes-from sandy -v ${PROJ_DIR}/container-dtc-nwp/compon
 docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
  -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
- --name run-dtc-nwp-sandy dtc-nwp /scripts/sandy_20121027/run/run-dtc-nwp.ksh
+ --name run-dtc-nwp-sandy dtc-wps_wrf /scripts/sandy_20121027/run/run-dtc-nwp.ksh
 
 #
-# Example of running select components of the dtc-nwp container.
+# Example of running select components of the dtc-wps_wrf container.
 # User may choose to skip WPS, REAL, WRF, or UPP by using the 'skip'
 # command line argument. The example below would allow the user
 # to rureun the UPP component of the container, perhaps to output
@@ -48,7 +48,7 @@ docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
 #docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
 # -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts  \
 # -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
-# --name run-dtc-nwp-sandy dtc-nwp /scripts/sandy_20121027/run/run-dtc-nwp.ksh -skip wps -skip real -skip wrf
+# --name run-dtc-nwp-sandy dtc-wps_wrf /scripts/sandy_20121027/run/run-dtc-nwp.ksh -skip wps -skip real -skip wrf
 #
 
 #
