@@ -31,8 +31,14 @@ cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..
 # Build image for input snow test case data
 cd case_data/snow_20160123 ; docker build -t dtc-nwp-snow . ; cd ../..
 
-# Build image which compiles WPS, WRF, and UPP from source
-cd wps_wrf_upp ; docker build -t dtc-nwp . ; cd ..
+# Build image which compiles WPS and WRF from source
+cd wps_wrf ; docker build -t dtc-nwp . ; cd ..
+
+# Build image which compiles GSI from source
+cd gsi ; docker build -t dtc-gsi . ; cd ..
+
+# Build image which compiles UPP from source
+cd upp ; docker build -t dtc-upp . ; cd ..
 
 # Build image for NCL
 cd ncl ; docker build -t dtc-ncl . ; cd ..
