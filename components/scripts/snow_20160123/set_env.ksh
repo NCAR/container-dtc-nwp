@@ -1,12 +1,16 @@
 #!/bin/ksh
 
 # WRF settings
-
+########################################################################
 export WPS_VERSION="4.0.2"
 export WRF_VERSION="4.0.2"
 
-# UPP settings
+# GSI settings
+########################################################################
+export OBS_ROOT=/case_data/obs_data/prepbufr/2016012300/
 
+# UPP settings
+########################################################################
 # Set input format from model
 export inFormat="netcdf"
 export outFormat="grib"
@@ -21,7 +25,7 @@ export incrementhr=01
 export domain_list="d01"
 
 # MET settings
-
+#########################################################################
 export START_TIME=2016012300
 export DOMAIN_LIST=d01
 export GRID_VX=FCST

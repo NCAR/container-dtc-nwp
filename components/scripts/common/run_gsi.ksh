@@ -15,13 +15,22 @@ set -x
             # LINUX, LINUX_LSF, LINUX_PBS,
             # DARWIN_PGI
 #
+# Constants
+  INPUT_DIR="/case_data"
+  SCRIPT_DIR="/scripts/common"
+  CASE_DIR="/scripts/case"
+  WRFPRD_DIR="/wrfprd"
+
+# Include case-specific settings
+. $CASE_DIR/set_env.ksh
+
 #####################################################
 # case set up (users should change this part)
 #####################################################
 #
 # ANAL_TIME= analysis time  (YYYYMMDDHH)
 # WORK_ROOT= working directory, where GSI runs
-# PREPBURF = path of PreBUFR conventional obs
+# PREPBUFR = path of PreBUFR conventional obs
 # BK_FILE  = path and name of background file
 # OBS_ROOT = path of observations files
 # FIX_ROOT = path of fix files
@@ -29,8 +38,7 @@ set -x
 # ENS_ROOT = path where ensemble background files exist
 
   WORK_ROOT=/gsiprd
-  OBS_ROOT=/case_data
-  BK_ROOT=/wrfprd
+  BK_ROOT=${WRFPRD_DIR}
   BK_FILE=${BK_ROOT}/wrfinput_d01
   YYYY=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c3-6`
   MM=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c8-9`
@@ -228,7 +236,7 @@ workdir=${WORK_ROOT}
 echo " Create working directory:" ${workdir}
 
 if [ -d "${workdir}" ]; then
-  rm -rf ${workdir}
+  rm -rf ${workdir}/*
 fi
 mkdir -p ${workdir}
 cd ${workdir}
