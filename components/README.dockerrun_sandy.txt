@@ -13,7 +13,7 @@ mkdir -p wpsprd gsiprd wrfprd postprd metprd metviewer/mysql
 docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
+ -v ${CASE_DIR}/wpsprd:/wpsprd \
  --name run-sandy-wps dtc-wps_wrf /scripts/common/run_wps.ksh
 
 docker run --rm -it --volumes-from sandy \
