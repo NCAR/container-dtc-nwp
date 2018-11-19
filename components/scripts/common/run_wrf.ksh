@@ -105,6 +105,11 @@ sed -e '/nocolons/d' namelist.input > nml
 cp namelist.input namelist.nocolons
 mv nml namelist.input
 
+# If wrfinput_d01.orig exists, rename it to wrfinput_d01 to reset the state
+if [[ -e wrfinput_d01.orig ]]; then
+  mv wrfinput_d01.orig wrfinput_d01
+fi
+
 # If GSI was run, update the wrfinput file
 if [[ -e $GSIPRD_DIR/wrf_inout ]]; then
   mv wrfinput_d01 wrfinput_d01.orig
