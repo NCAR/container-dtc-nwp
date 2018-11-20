@@ -8,13 +8,16 @@ mkdir -p wpsprd gsiprd wrfprd postprd metprd metviewer/mysql
 
 #                                                                                                                                                             
 # Run WPS script in docker-space.
-#
-                                                                                              
+#                                                                                           
 docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
  -v ${CASE_DIR}/wpsprd:/wpsprd \
  --name run-sandy-wps dtc-wps_wrf /scripts/common/run_wps.ksh
+
+#                                                                                                                                                             
+# Run real in docker-space.
+#                                                                                           
 
 docker run --rm -it --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
@@ -25,7 +28,6 @@ docker run --rm -it --volumes-from sandy \
 #
 # Run GSI in docker-space.
 #
-
 docker run --rm -it --volumes-from gsi_data --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
@@ -35,7 +37,6 @@ docker run --rm -it --volumes-from gsi_data --volumes-from sandy \
 #
 # Run WRF in docker-space.
 #
-
 docker run --rm -it \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
@@ -45,7 +46,6 @@ docker run --rm -it \
 #
 # Run UPP in docker-space.
 #
-
 docker run --rm -it \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
