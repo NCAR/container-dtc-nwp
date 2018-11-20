@@ -115,7 +115,7 @@ fi
 
 if [ num_procs -eq 1 ]; then
   # Run serial wrf
-  ./wrf.exe >& print.wrf.txt
+  ./wrf.exe > run_wrf.log 2>&1
 else
 
   # Generate machine list
