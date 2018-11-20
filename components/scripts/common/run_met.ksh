@@ -48,6 +48,7 @@ echo "Running MET and writing log file: ${LOG_FILE}" | tee $LOG_FILE
 # Constants for all cases
 export MET_EXE_ROOT=/usr/local/bin
 export MET_CONFIG=/scripts/case/met_config
+export DATAROOT=/
 
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
 cp $SCRIPT_DIR/met_point_verf_all.ksh .
