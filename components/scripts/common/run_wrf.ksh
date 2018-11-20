@@ -101,9 +101,6 @@ ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
 rm namelist*
 
 cp $CASE_DIR/namelist.input .
-sed -e '/nocolons/d' namelist.input > nml
-cp namelist.input namelist.nocolons
-mv nml namelist.input
 
 # If wrfinput_d01.orig exists, rename it to wrfinput_d01 to reset the state
 if [[ -e wrfinput_d01.orig ]]; then
