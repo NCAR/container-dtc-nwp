@@ -56,7 +56,7 @@ do
 done
 
 # Generate animated gifs
-for domain in `ls -1 *.png | awk '{print substr($0, length($0)-6)}' | cut -d'.' -f1 | sort -u`
+for domain in ${domain_list}
 do
   convert -delay 100 plt_Surface_multi_${domain}*.png Surface_multi_${domain}.gif
   convert -delay 100 plt_Precip_multi_total_${domain}*.png Precip_total_${domain}.gif
