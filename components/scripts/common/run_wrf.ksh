@@ -10,7 +10,7 @@ WRF_BUILD="/wrf"
 INPUT_DIR="/case_data"
 SCRIPT_DIR="/scripts/common"
 CASE_DIR="/scripts/case"
-WRFPRD_DIR="/wpsprd"
+WRFPRD_DIR="/wrfprd"
 GSIPRD_DIR="/gsiprd"
 
 # Check for the correct container
@@ -95,7 +95,7 @@ echo "hosts         = " $hosts
 #   Run the WRF forecast model.  #
 ##################################
 
-echo Running wrf.exe 
+echo Running wrf.exe
 
 ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
 rm namelist*
