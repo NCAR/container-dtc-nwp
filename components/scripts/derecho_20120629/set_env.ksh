@@ -5,6 +5,10 @@
 export WPS_VERSION="4.0.2"
 export WRF_VERSION="4.0.2"
 
+# GSI settings
+########################################################################
+export OBS_ROOT=/case_data/obs_data/prepbufr/2012063000
+
 # UPP settings
 
 # Set input format from model
