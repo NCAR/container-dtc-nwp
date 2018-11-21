@@ -1,16 +1,16 @@
 #!/bin/ksh
 
 # WRF settings
-
+########################################################################
 export WPS_VERSION="4.0.2"
 export WRF_VERSION="4.0.2"
 
 # GSI settings
 ########################################################################
-export OBS_ROOT=/case_data/obs_data/prepbufr/2012063000
+export OBS_ROOT=/case_data/obs_data/prepbufr/2012063000/
 
 # UPP settings
-
+########################################################################
 # Set input format from model
 export inFormat="netcdf"
 export outFormat="grib2"
@@ -25,7 +25,7 @@ export incrementhr=03
 export domain_list="d01 d02"
 
 # MET settings
-
+########################################################################
 export START_TIME=2012062912
 export DOMAIN_LIST=d01
 export GRID_VX=FCST
@@ -37,4 +37,4 @@ export OBTYPE=ST2
 # Forecast hours to evaluate
 export FCST_HR_BEG=0
 export FCST_HR_END=24
-export FCST_HR_INC=3 
+export FCST_HR_INC=3

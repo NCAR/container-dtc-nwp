@@ -33,7 +33,7 @@ export MODEL=ARW
 export ACCUM_TIME=3
 export BUCKET_TIME=1
 export OBTYPE=ST2
-  
+
 # Forecast hours to evaluate
 export FCST_HR_BEG=0
 export FCST_HR_END=6
