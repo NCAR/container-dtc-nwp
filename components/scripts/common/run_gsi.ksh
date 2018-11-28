@@ -45,13 +45,16 @@ set -x
   DD=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c11-12`
   HH=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c14-15`
   ANAL_TIME=${YYYY}${MM}${DD}${HH}
-  PREPBUFR=${OBS_ROOT}/ndas.t${HH}z.prepbufr.tm06.nr
   CRTM_ROOT=/gsi_data/CRTM_v2.3.0
   GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
   GSI_BUILD=/gsi/gsi_build
   FIX_ROOT=${GSI_ROOT}/fix/
   GSI_EXE=${GSI_BUILD}/bin/gsi.x
   GSI_NAMELIST=${GSI_ROOT}/ush/comgsi_namelist.sh
+ # using tm06 NDAS prepbufr here, so need have proper date for the observation file, which is ANAL_TIME + 6 hour
+  OBSTIME=`${GSI_BUILD}/bin/ndate.x +6 ${ANAL_TIME} `
+  HHH=`echo $OBSTIME | cut -c9-10`
+  PREPBUFR=/case_data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr
 #
 #------------------------------------------------
 # bk_core= which WRF core is used as background (NMM or ARW or NMMB)
