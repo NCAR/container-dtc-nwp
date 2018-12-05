@@ -1,19 +1,26 @@
-#
 # Setup environment
 #
 setenv PROJ_DIR "/path/to/working/directory"  -or-  export PROJ_DIR="/path/to/working/directory"
 setenv CASE_DIR ${PROJ_DIR}/derecho           -or-  export CASE_DIR=${PROJ_DIR}/derecho
 mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
-mkdir -p wrfprd postprd metprd metviewer/mysql
+mkdir -p gsiprd wpsprd wrfprd postprd metprd metviewer/mysql
 
 #
-# Run WPS/WRF/UPP (NWP: pre-proc, model, post-proc) script in docker-space.
+# Run WPS and real.exe in docker-space.
 #
+
 docker run --rm -it --volumes-from wps_geog --volumes-from derecho \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
- --name run-dtc-nwp-derecho dtc-wps_wrf /scripts/derecho_20120629/run/run-dtc-nwp.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
+ --name run-derecho-wps dtc-wps_wrf /scripts/common/run_wps.ksh
+
+docker run --rm -it --volumes-from derecho \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
+ --name run-derecho-wps dtc-wps_wrf /scripts/common/run_real.ksh
 
 #
 # Example of running select components of the dtc-wps_wrf container.

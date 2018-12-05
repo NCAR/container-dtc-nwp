@@ -6,9 +6,10 @@ mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
 mkdir -p wpsprd gsiprd wrfprd postprd metprd metviewer/mysql
 
-#                                                                                                                                                             
-# Run WPS script in docker-space.
-#                                                                                           
+#
+# Run WPS and real.exe in docker-space.
+#
+                                                                                              
 docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \

@@ -54,10 +54,7 @@ docker run --rm -it --volumes-from snow --volumes-from gsi_data     -v ${PROJ_DI
 #
 # Run NCL to generate plots from WRF output.
 #
-docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
- --name run-dtc-ncl-snow dtc-ncl /scripts/snow_20121027/run/ncl_run_all.ksh
+docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case     -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd      --name run-dtc-ncl-snow dtc-ncl /scripts/common/run_ncl.ksh
 
 #
 # Run MET script in docker-space.
