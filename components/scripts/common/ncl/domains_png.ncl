@@ -21,7 +21,7 @@ begin
 
 ; read the following namelist file
 ;  filename = "./namelist.wps"
-   filename = "/wrfprd/namelist.wps"
+   filename = "/wpsprd/namelist.wps"
 
 
 
