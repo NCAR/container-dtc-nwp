@@ -16,40 +16,40 @@ docker run --rm -it --volumes-from wps_geog --volumes-from snow \
  --name run-dtc-nwp-snow dtc-wps_wrf /scripts/common/run_wps.ksh
 
 docker run --rm -it --volumes-from snow -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd -v ${CASE_DIR}/wpsprd:/wpsprd \
+ -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case \
  --name run-dtc-nwp-snow dtc-wps_wrf /scripts/common/run_real.ksh
 
 
 #
-# Run GSI (tbd)
+# Run GSI
 #
 
-docker run --rm -it --volumes-from snow --volumes-from gsi_data     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common      -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd   -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case  --name run-dtc-gsi-snow dtc-gsi /scripts/common/run_gsi.ksh
+docker run --rm -it --volumes-from snow --volumes-from gsi_data \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case \
+ --name run-dtc-gsi-snow dtc-gsi /scripts/common/run_gsi.ksh
 
 #
-# Run WRF (tbd)
+# Run WRF
 #
 
+docker run --rm -it --volumes-from snow \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case \
+ --name run-dtc-nwp-snow dtc-wps_wrf /scripts/common/run_wrf.ksh
 
 #
-# Run UPP (tbd)
+# Run UPP
 #
 
-
-#
-# Example of running select components of the dtc-wps_wrf container.
-# User may choose to skip WPS, REAL, WRF, or UPP by using the 'skip'
-# command line argument. The example below would allow the user
-# to rureun the UPP component of the container, perhaps to output
-# additional fields. This option assumes the output from this container
-# is already on the local machine.
-#
-#docker run --rm -it --volumes-from wps_geog --volumes-from snow \
-# -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts  \
-# -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
-# --name run-dtc-nwp-snow dtc-wps_wrf /scripts/snow_20160123/run/run-dtc-nwp.ksh -skip wps -skip real -skip wrf
-#
+docker run --rm -it \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case \
+ -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
+ --name run-snow-upp dtc-upp /scripts/common/run_upp.ksh
 
 #
 # Run NCL to generate plots from WRF output.
