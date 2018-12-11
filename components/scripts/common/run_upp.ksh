@@ -251,12 +251,18 @@ fi
 
 # Link microphysic's tables - code will use based on mp_physics option
 # found in data
-ln -fs ${modelDataPath}/ETAMPNEW_DATA nam_micro_lookup.dat
-ln -fs ${modelDataPath}/ETAMPNEW_DATA.expanded_rain hires_micro_lookup.dat
+ln -fs ${UNIPOST_HOME}/parm/nam_micro_lookup.dat .
+ln -fs ${UNIPOST_HOME}/parm/hires_micro_lookup.dat .
 
 # link coefficients for crtm2 (simulated synthetic satellites)
 CRTMDIR=${UNIPOST_HOME}/src/lib/crtm2/src/fix
-ln -fs $CRTMDIR/EmisCoeff/Big_Endian/EmisCoeff.bin           ./
+
+ln -fs $CRTMDIR/EmisCoeff/MW_Water/Big_Endian/FASTEM6.MWwater.EmisCoeff.bin
+ln -fs $CRTMDIR/EmisCoeff/IR_Ice/SEcategory/Big_Endian/NPOESS.IRice.EmisCoeff.bin   ./
+ln -fs $CRTMDIR/EmisCoeff/IR_Snow/SEcategory/Big_Endian/NPOESS.IRsnow.EmisCoeff.bin ./
+ln -fs $CRTMDIR/EmisCoeff/IR_Water/Big_Endian/Nalli.IRwater.EmisCoeff.bin           ./
+ln -fs $CRTMDIR/EmisCoeff/IR_Land/SEcategory/Big_Endian/NPOESS.IRland.EmisCoeff.bin ./
+ln -fs $CRTMDIR/EmisCoeff/IR_Water/Big_Endian/EmisCoeff.bin       ./
 ln -fs $CRTMDIR/AerosolCoeff/Big_Endian/AerosolCoeff.bin     ./
 ln -fs $CRTMDIR/CloudCoeff/Big_Endian/CloudCoeff.bin         ./
 ln -fs $CRTMDIR/SpcCoeff/Big_Endian/imgr_g11.SpcCoeff.bin    ./
@@ -426,7 +432,7 @@ fi
 if test "$err1" -ne 0
 then
 
-echo 'UNIPOST FAILED, EXITTING'
+echo 'UNIPOST FAILED, EXITING'
 exit
 
 fi
