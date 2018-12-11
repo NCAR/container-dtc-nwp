@@ -18,7 +18,7 @@ export outFormat="grib"
 # Set date/time information
 export startdate=2016012300
 export fhr=00
-export lastfhr=06
+export lastfhr=24
 export incrementhr=01
 
 # Set domain lists
