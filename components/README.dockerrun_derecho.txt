@@ -4,7 +4,7 @@ setenv PROJ_DIR "/path/to/working/directory"  -or-  export PROJ_DIR="/path/to/wo
 setenv CASE_DIR ${PROJ_DIR}/derecho           -or-  export CASE_DIR=${PROJ_DIR}/derecho
 mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
-mkdir -p gsiprd wpsprd wrfprd postprd metprd metviewer/mysql
+mkdir -p wpsprd wrfprd gsiprd postprd metprd metviewer/mysql
 
 #
 # Run WPS and real.exe in docker-space.
@@ -23,34 +23,49 @@ docker run --rm -it --volumes-from derecho \
  --name run-derecho-wps dtc-wps_wrf /scripts/common/run_real.ksh
 
 #
-# Example of running select components of the dtc-wps_wrf container.
-# User may choose to skip WPS, REAL, WRF or UPP by using the 'skip'
-# command line argument. The example below would allow the user
-# to rureun the UPP component of the container, perhaps to output
-# additional fields. This option assumes the output from this container
-# is already on the local machine.
+# Run GSI
 #
-#docker run --rm -it --volumes-from wps_geog --volumes-from derecho \
-# -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts  \
-# -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
-# --name run-dtc-nwp-derecho dtc-wps_wrf /scripts/derecho_20120629/run/run-dtc-nwp.ksh -skip wps -skip real -skip wrf
+
+docker run --rm -it --volumes-from derecho --volumes-from gsi_data \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+ --name run-dtc-gsi-derecho dtc-gsi /scripts/common/run_gsi.ksh
+
 #
+# Run WRF
+#
+
+docker run --rm -it --volumes-from derecho \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+ --name run-dtc-nwp-derecho dtc-wps_wrf /scripts/common/run_wrf.ksh
+
+#
+# Run UPP
+#
+
+docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
+     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+      -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
+     --name run-derecho-upp dtc-upp /scripts/common/run_upp.ksh
 
 #
 # Run NCL to generate plots from WRF output.
 #
-docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
- --name run-dtc-ncl-derecho dtc-ncl /scripts/derecho_20120629/run/ncl_run_all.ksh
+docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
+ --name run-dtc-ncl-derecho dtc-ncl /scripts/common/run_ncl.ksh
 
 #
 # Run MET script in docker-space.
 #
-docker run -it --volumes-from derecho \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
+docker run --rm -it --volumes-from derecho -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
  -v ${CASE_DIR}/postprd:/postprd -v ${CASE_DIR}/metprd:/metprd \
- --name run-dtc-met-derecho dtc-met /scripts/derecho_20120629/run/run-dtc-met.ksh
+ --name run-dtc-met-derecho dtc-met /scripts/common/run_met.ksh
 
 #
 # Run docker compose to launch METViewer.

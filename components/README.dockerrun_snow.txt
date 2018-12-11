@@ -4,7 +4,7 @@ setenv PROJ_DIR "/path/to/working/directory"  -or-  export PROJ_DIR="/path/to/wo
 setenv CASE_DIR ${PROJ_DIR}/snow             -or-  export CASE_DIR=${PROJ_DIR}/snow
 mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
-mkdir -p wrfprd postprd metprd metviewer/mysql wpsprd gsiprd
+mkdir -p wpsprd wrfprd gsiprd postprd metprd metviewer/mysql
 
 #
 # Run WPS/real.exe (NWP: pre-processing) scripts in docker-space.
@@ -54,15 +54,18 @@ docker run --rm -it \
 #
 # Run NCL to generate plots from WRF output.
 #
-docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case     -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd      --name run-dtc-ncl-snow dtc-ncl /scripts/common/run_ncl.ksh
+docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
+ --name run-dtc-ncl-derecho dtc-ncl /scripts/common/run_ncl.ksh
 
 #
 # Run MET script in docker-space.
 #
-docker run -it --volumes-from snow \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
+docker run --rm -it --volumes-from snow -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/snow_20160123:/scripts/case \
  -v ${CASE_DIR}/postprd:/postprd -v ${CASE_DIR}/metprd:/metprd \
- --name run-dtc-met-snow dtc-met /scripts/snow_20160123/run/run-dtc-met.ksh
+ --name run-dtc-met-snow dtc-met /scripts/common/run_met.ksh
 
 #
 # Run docker compose to launch METViewer.
