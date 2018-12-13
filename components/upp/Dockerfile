@@ -2,7 +2,7 @@ FROM centos:latest
 MAINTAINER Kate Fossell <fossell@ucar.edu>
 # 
 # This Dockerfile compiles UPP from source during "docker build" step
-ENV UPP_VERSION 4.0_beta2
+ENV UPP_VERSION 4.0_beta3
  
 #SERIAL BUILD
 RUN yum -y update
@@ -19,7 +19,7 @@ WORKDIR /upp
 # Download original sources
 #
 #RUN curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /upp
-RUN curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/UPPV4.0_beta2.tar.gz | tar zxC /upp
+RUN curl -SL http://www.dtcenter.org/upp/users/downloads/UPP_releases/UPPV4.0_beta3.tar.gz | tar zxC /upp
 
 #
 
@@ -50,7 +50,7 @@ RUN pwd \
  && export NETCDF=/upp/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./UPPV4.0_beta2 \
+ && cd ./UPPV4.0_beta3 \
  && ./configure <<< $'7\r' \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
@@ -60,7 +60,6 @@ ENV PATH  /usr/lib64/bin:$PATH
 #
 # copy in a couple custom scripts
 #
-#### KATE TODO: CHANGE RUN SCRIPT ####
 COPY run-upp /upp
 RUN chmod +x /upp/run-upp
 #
