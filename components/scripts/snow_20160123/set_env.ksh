@@ -24,6 +24,13 @@ export incrementhr=01
 # Set domain lists
 export domain_list="d01"
 
+# NCL settings
+#########################################################################
+# Binning for temperature plots
+export tmin=0
+export tmax=90
+export tint=5
+
 # MET settings
 #########################################################################
 export START_TIME=2016012300

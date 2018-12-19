@@ -14,6 +14,11 @@ begin
   domains = str_split(getenv("domain_list"), " ")
   ndoms   = dimsizes(domains)
 
+; These environment variables should have been set in the wrapper script
+  Tmin = getenv("tmin")
+  Tmax = getenv("tmax")
+  Tint = getenv("tint")
+
 do id = 0,ndoms-1
 
   FILES = systemfunc (" ls -1 " + DATADir + "wrfout_"+domains(id)+"*" )
@@ -72,7 +77,7 @@ do id = 0,ndoms-1
     ; Plotting options for T                
       opts = res                         
       opts@cnFillOn = True  
-      opts@ContourParameters = (/ 75.,100., 2./)
+      opts@ContourParameters = (/ Tmin, Tmax, Tint/)
       opts@gsnSpreadColorEnd = -3  ; End third from the last color in color map
       contour_tc = wrf_contour(a[it],wks,tf2(it,:,:),opts)
       delete(opts)
