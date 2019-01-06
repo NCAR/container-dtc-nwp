@@ -134,8 +134,9 @@ OK_wrfout=$?
 
 #Double-check success: sometimes there are output files but WRF did not complete succesfully
 if [ $OK_wrfout -eq 0 ]; then
-grep "SUCCESS COMPLETE WRF" rsl.out.0000
-OK_wrfout=$?
+  grep "SUCCESS COMPLETE WRF" rsl.out.0000
+  OK_wrfout=$?
+fi
 
 if [ $OK_wrfout -eq 0 ]; then
   tail rsl.error.0000
