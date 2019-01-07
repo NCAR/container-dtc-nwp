@@ -76,6 +76,16 @@ set -x
   bk_core=ARW
   bkcv_option=NAM
   if_clean=clean
+
+# Check if background file exists in the right place and is non-zero size
+
+if [[ ! -s $BK_FILE ]]; then
+  echo
+  echo ERROR: The background file $BK_FILE does not exist!
+  echo
+  exit 1
+fi
+
 #
 # setup whether to do single obs test
   if [ ${if_oneob} = Yes ]; then
@@ -261,7 +271,7 @@ fi
 
 
 # Link to the prepbufr data
-#ln -s ${PREPBUFR} ./prepbufr
+ln -s ${PREPBUFR} ./prepbufr
 
 # ln -s ${OBS_ROOT}/gdas1.t${HH}z.sptrmm.tm00.bufr_d tmirrbufr
 # Link to the radiance data
