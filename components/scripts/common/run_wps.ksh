@@ -148,7 +148,7 @@ if [ $OK_metgrid -eq 0 ]; then
   tail run_metgrid.log
   echo
   echo OK metgrid ran fine at `date`
-  echo Completed metgrid, Starting program real
+  echo Completed metgrid
   echo
 else
   echo
