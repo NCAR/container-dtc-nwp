@@ -54,7 +54,7 @@ set -x
  # using tm06 NDAS prepbufr here, so need have proper date for the observation file, which is ANAL_TIME + 6 hour
   OBSTIME=`${GSI_BUILD}/bin/ndate.x +6 ${ANAL_TIME} `
   HHH=`echo $OBSTIME | cut -c9-10`
-  PREPBUFR=/case_data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr
+  PREPBUFR=${PREPBUFR:-/case_data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr}
 #
 #------------------------------------------------
 # bk_core= which WRF core is used as background (NMM or ARW or NMMB)
@@ -238,9 +238,9 @@ fi
 workdir=${WORK_ROOT}
 echo " Create working directory:" ${workdir}
 
-if [ -d "${workdir}" ]; then
-  rm -rf ${workdir}/*
-fi
+#if [ -d "${workdir}" ]; then
+#  rm -rf ${workdir}/*
+#fi
 mkdir -p ${workdir}
 cd ${workdir}
 
@@ -261,7 +261,7 @@ fi
 
 
 # Link to the prepbufr data
-ln -s ${PREPBUFR} ./prepbufr
+#ln -s ${PREPBUFR} ./prepbufr
 
 # ln -s ${OBS_ROOT}/gdas1.t${HH}z.sptrmm.tm00.bufr_d tmirrbufr
 # Link to the radiance data
