@@ -248,9 +248,9 @@ fi
 workdir=${WORK_ROOT}
 echo " Create working directory:" ${workdir}
 
-#if [ -d "${workdir}" ]; then
-#  rm -rf ${workdir}/*
-#fi
+if [ -d "${workdir}" ]; then
+  rm -rf ${workdir}/*
+fi
 mkdir -p ${workdir}
 cd ${workdir}
 
