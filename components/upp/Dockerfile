@@ -50,7 +50,7 @@ RUN pwd \
  && export NETCDF=/upp/netcdf_links \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
- && cd ./UPPV4.0_beta3 \
+ && cd ./UPPV${UPP_VERSION} \
  && ./configure <<< $'7\r' \
  && /bin/csh ./compile > compile_upp.log 2>&1
 #
