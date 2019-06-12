@@ -2,8 +2,8 @@
 
 # WRF settings
 ########################################################################
-export WPS_VERSION="4.0.2"
-export WRF_VERSION="4.0.2"
+export WPS_VERSION="4.1"
+export WRF_VERSION="4.1.1"
 
 # GSI settings
 ########################################################################

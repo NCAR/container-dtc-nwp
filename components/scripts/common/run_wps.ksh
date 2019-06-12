@@ -1,15 +1,15 @@
 #!/bin/ksh
-
+set -x
 #
 # Simplified script to run WPS in Docker world
 #
 
 # Constants
-WRF_BUILD="/wrf"
-INPUT_DIR="/case_data"
-SCRIPT_DIR="/scripts/common"
-CASE_DIR="/scripts/case"
-WPSPRD_DIR="/wpsprd"
+WRF_BUILD="/comsoftware/wrf"
+INPUT_DIR="/data/"
+SCRIPT_DIR="/home/scripts/common"
+CASE_DIR="/home/scripts/case"
+WPSPRD_DIR="/home/wpsprd"
 
 # Check for the correct container
 if [[ ! -e $WRF_BUILD ]]; then

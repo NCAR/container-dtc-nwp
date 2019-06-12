@@ -5,8 +5,8 @@ MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 USER comuser
 RUN mkdir /comsoftware/wrf
 WORKDIR /comsoftware/wrf
-ENV WRF_VERSION 4.0.2
-ENV WPS_VERSION 4.0.2
+ENV WRF_VERSION 4.1.1
+ENV WPS_VERSION 4.1
 #
 # Download original sources
 #
@@ -16,10 +16,10 @@ RUN curl -SL https://github.com/wrf-model/WRF/archive/v${WRF_VERSION}.tar.gz | t
 # Set environment for interactive container shells
 #
 RUN echo export LDFLAGS="-lm" >> /home/.bashrc \
- && echo export LD_LIBRARY_PATH="/usr/lib64/openmpi/lib" >> /home/.bashrc \
+ && echo export LD_LIBRARY_PATH="/usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib" >> /home/.bashrc \
  && echo export PATH="/usr/lib64/openmpi/bin:$PATH" >> /home/.bashrc \
  && echo setenv LDFLAGS "-lm" >> /home/.cshrc \
- && echo setenv LD_LIBRARY_PATH "/usr/lib64/openmpi/lib" >> /home/.cshrc \
+ && echo setenv LD_LIBRARY_PATH "/usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib" >> /home/.cshrc \
  && echo setenv PATH "/usr/lib64/openmpi/bin:$PATH" >> /home/.cshrc
 #
 # Build WRF first
@@ -33,19 +33,24 @@ RUN pwd \
  && ./configure <<< $'34\r1\r' \
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
+# Check build success
+RUN ls WRF-${WRF_VERSION}/main/real.exe WRF-${WRF_VERSION}/main/wrf.exe
 #
 # Build WPS second
 #
 # input 1 to configure script (gfortran serial build)
-RUN cd ./WPS-${WPS_VERSION} \
+RUN ln -sf WRF-${WRF_VERSION} WRF \
+ && cd ./WPS-${WPS_VERSION} \
  && echo export NETCDF=/comsoftware/libs/netcdf/ \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
  && ./configure <<< $'1\r' \
  && sed -i -e 's/-L$(NETCDF)\/lib/-L$(NETCDF)\/lib -lnetcdff /' ./configure.wps \
  && /bin/csh ./compile > compile_wps.log 2>&1
+# Check build success
+RUN ls WPS-${WPS_VERSION}/metgrid.exe WPS-${WPS_VERSION}/ungrib.exe WPS-${WPS_VERSION}/geogrid.exe
 #
-ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib
+ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib
 ENV PATH  /usr/lib64/openmpi/bin:$PATH
 #
 # copy in a couple custom scripts...apparently there's no way to docker COPY with non-root permissions....
