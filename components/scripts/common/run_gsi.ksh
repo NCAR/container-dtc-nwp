@@ -37,7 +37,7 @@ set -x
 # GSI_EXE  = path and name of the gsi executable 
 # ENS_ROOT = path where ensemble background files exist
 
-  WORK_ROOT=/gsiprd
+  WORK_ROOT=/home/gsiprd
   BK_ROOT=${WRFPRD_DIR}
   BK_FILE=${BK_ROOT}/wrfinput_d01
   YYYY=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c3-6`
