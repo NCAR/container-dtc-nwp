@@ -32,6 +32,7 @@ RUN pwd \
  && cd ./WRF-${WRF_VERSION} \
  && ./configure <<< $'34\r1\r' \
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
+ && sed -i '/BUILD_RRTMG_FAST/d' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
 # Check build success
 RUN ls WRF-${WRF_VERSION}/main/real.exe WRF-${WRF_VERSION}/main/wrf.exe
