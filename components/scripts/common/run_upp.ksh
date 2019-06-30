@@ -81,7 +81,7 @@ set -x
 # as recommended in the users guide where UPP will output.
 export TOP_DIR=/
 export DOMAINPATH=${TOP_DIR}
-export UNIPOST_HOME=/upp/UPPV4.0_beta3
+export UNIPOST_HOME=/upp/UPPV4.0
 export POSTEXEC=${UNIPOST_HOME}/bin
 export SCRIPTS=${UNIPOST_HOME}/scripts
 export modelDataPath=/wrfprd            # or nemsprd
