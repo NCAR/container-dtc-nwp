@@ -16,10 +16,10 @@ set -x
             # DARWIN_PGI
 #
 # Constants
-  INPUT_DIR="/case_data"
-  SCRIPT_DIR="/scripts/common"
-  CASE_DIR="/scripts/case"
-  WRFPRD_DIR="/wrfprd"
+  INPUT_DIR="/data/gsi"
+  SCRIPT_DIR="/home/scripts/common"
+  CASE_DIR="/home/scripts/case"
+  WRFPRD_DIR="/home/wrfprd"
 
 # Include case-specific settings
 . $CASE_DIR/set_env.ksh
@@ -45,9 +45,9 @@ set -x
   DD=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c11-12`
   HH=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c14-15`
   ANAL_TIME=${YYYY}${MM}${DD}${HH}
-  CRTM_ROOT=/gsi_data/CRTM_v2.3.0
-  GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
-  GSI_BUILD=/gsi/gsi_build
+  CRTM_ROOT=/data/gsi/CRTM_v2.3.0
+  GSI_ROOT=/comsoftware/gsi/comGSIv3.7_EnKFv1.3
+  GSI_BUILD=/comsoftware/gsi/gsi_build
   FIX_ROOT=${GSI_ROOT}/fix/
   GSI_EXE=${GSI_BUILD}/bin/gsi.x
   GSI_NAMELIST=${GSI_ROOT}/ush/comgsi_namelist.sh

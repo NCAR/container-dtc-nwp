@@ -6,12 +6,12 @@
 #
 
 # Constants
-WRF_BUILD="/wrf"
-INPUT_DIR="/case_data"
-SCRIPT_DIR="/scripts/common"
-CASE_DIR="/scripts/case"
-WRFPRD_DIR="/wrfprd"
-GSIPRD_DIR="/gsiprd"
+WRF_BUILD="/comsoftware/wrf"
+INPUT_DIR="/data/case_data"
+SCRIPT_DIR="/home/scripts/common"
+CASE_DIR="/home/scripts/case"
+WRFPRD_DIR="/home/wrfprd"
+GSIPRD_DIR="/home/gsiprd"
 
 # Check for the correct container
 if [[ ! -e $WRF_BUILD ]]; then
