@@ -14,42 +14,43 @@ mkdir -p ${CASE_DIR}
 cd ${CASE_DIR}
 mkdir -p wpsprd gsiprd wrfprd postprd metprd metviewer/mysql
 
-#                                                                                                                                                             
+#
 # Run WPS script in docker-space.
 #                                                                                           
 docker run --rm -it --volumes-from wps_geog --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd \
- --name run-${CASE_NAME}-wps dtc-wps_wrf /scripts/common/run_wps.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/wpsprd:/home/wpsprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/home/scripts/case \
+ --name run-dtc-nwp-${CASE_NAME} dtc-wps_wrf /home/scripts/common/run_wps.ksh
 
-#                                                                                                                                                             
+#
 # Run real in docker-space.
 #                                                                                           
-
 docker run --rm -it --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-${CASE_NAME}-real dtc-wps_wrf /scripts/common/run_real.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+--name run-${CASE_NAME}-real dtc-wps_wrf /home/scripts/common/run_real.ksh
 
 #
 # Run GSI in docker-space.
 #
-docker run --rm -it --volumes-from gsi_data --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/scripts/case \
- -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-${CASE_NAME}-gsi dtc-gsi /scripts/common/run_gsi.ksh
+docker run --rm -it --volumes-from ${CASE_NAME} --volumes-from gsi_data \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/wpsprd:/home/wpsprd \
+ -v ${CASE_DIR}/gsiprd:/home/gsiprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/home/scripts/case \
+ --name run-dtc-gsi-${CASE_NAME} dtc-gsi /home/scripts/common/run_gsi.ksh
 
 #
 # Run WRF in docker-space.
 #
-docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-${CASE_NAME}-wrf dtc-wps_wrf /scripts/common/run_wrf.ksh
+docker run --rm -it --volumes-from ${CASE_NAME} \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/wpsprd:/home/wpsprd \
+ -v ${CASE_DIR}/gsiprd:/home/gsiprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/home/scripts/case \
+ --name run-dtc-nwp-${CASE_NAME} dtc-wps_wrf /home/scripts/common/run_wrf.ksh
 
 #
 # Run UPP in docker-space.
