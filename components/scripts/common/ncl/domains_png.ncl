@@ -16,12 +16,11 @@ begin
 ; type = "ncgm"
   type = "png"
 
-  PLTDir = "/nclprd/"
+  PLTDir = "/home/nclprd/"
   wks = gsn_open_wks(type,PLTDir+"wps_show_dom")
 
 ; read the following namelist file
-;  filename = "./namelist.wps"
-   filename = "/wpsprd/namelist.wps"
+   filename = "/home/wpsprd/namelist.wps"
 
 
 
