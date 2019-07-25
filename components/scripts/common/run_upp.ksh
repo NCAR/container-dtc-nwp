@@ -22,7 +22,7 @@ set -x
 #--------------------------------------------------------
 
 # Include case-specific settings
-. /scripts/case/set_env.ksh
+. /home/scripts/case/set_env.ksh
 
 #----------------------------------------------------------------------------------
 #--- USER EDIT DESCIPTIONS --------------------------------------------------------
@@ -79,15 +79,15 @@ set -x
 # This script assumes you created a directory $DOMAINPATH/postprd
 # and that your model output is in $DOMAINPATH/wrfprd or $DOMAINPATH/nemsprd
 # as recommended in the users guide where UPP will output.
-export TOP_DIR=/
+export TOP_DIR=/home/
 export DOMAINPATH=${TOP_DIR}
-export UNIPOST_HOME=/upp/UPPV4.0
+export UNIPOST_HOME=/comsoftware/upp/UPPV4.0
 export POSTEXEC=${UNIPOST_HOME}/bin
 export SCRIPTS=${UNIPOST_HOME}/scripts
-export modelDataPath=/wrfprd            # or nemsprd
-export paramFile=/scripts/case/wrf_cntrl.parm   # or nmb_cntrl.parm
-export xmlCntrlFile=/scripts/case/postcntrl.xml # for grib2
-export txtCntrlFile=/scripts/case/postxconfig-NT_WRF.txt # grib2
+export modelDataPath=/home/wrfprd            # or nemsprd
+export paramFile=/home/scripts/case/wrf_cntrl.parm   # or nmb_cntrl.parm
+export xmlCntrlFile=/home/scripts/case/postcntrl.xml # for grib2
+export txtCntrlFile=/home/scripts/case/postxconfig-NT_WRF.txt # grib2
 
 # Specify Dyn Core (ARW or NMM or NMB in upper case)
 export dyncore="ARW"

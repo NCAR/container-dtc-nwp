@@ -56,10 +56,10 @@ docker run --rm -it --volumes-from ${CASE_NAME} \
 # Run UPP in docker-space.
 #
 docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/scripts/case \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
- --name run-${CASE_NAME}-upp dtc-upp /scripts/common/run_upp.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/home/scripts/case \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/postprd:/home/postprd \
+ --name run-${CASE_NAME}-upp dtc-upp /home/scripts/common/run_upp.ksh
 
 #
 # Run NCL to generate plots from WRF output.
