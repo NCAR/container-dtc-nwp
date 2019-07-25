@@ -33,7 +33,7 @@ do id = 0,ndoms-1
 ; type = "ps"
  type = "png"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,PLTDir + "plt_Surface_multi_"+domains(id)+"_")
+  wks = gsn_open_wks(type,PLTDir + "plt_Surface_multi_"+domains(id))
 
 ; Set some basic resources
   res = True

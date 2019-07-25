@@ -28,7 +28,7 @@ do id = 0,ndoms-1
 ; type = "ps"
  type = "png"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,PLTDir+"plt_dbz1"+domains(id)+"_")
+  wks = gsn_open_wks(type,PLTDir+"plt_dbz1"+domains(id))
   gsn_define_colormap(wks,"WhViBlGrYeOrReWh")       ; Overwrite the standard color map
 
 ; Set some basic resources
