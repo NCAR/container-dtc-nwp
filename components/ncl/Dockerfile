@@ -1,5 +1,4 @@
-#
-FROM mkavulich/common-community-container:latest
+FROM mkavulich/common-community-container:gnu7
 MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
 USER root

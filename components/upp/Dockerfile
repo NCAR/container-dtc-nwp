@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:latest
+FROM mkavulich/common-community-container:gnu7
 MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
 # This Dockerfile compiles UPP from source during "docker build" step

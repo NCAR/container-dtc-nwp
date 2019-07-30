@@ -1,5 +1,4 @@
-FROM mkavulich/common-community-container:latest
-#FROM mkavulich/common-community-container:gnu7
+FROM mkavulich/common-community-container:gnu7
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 #
 # This Dockerfile compiles GSI from source during "docker build" step
