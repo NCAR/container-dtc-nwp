@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:latest
+FROM mkavulich/common-community-container:gnu7
 MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
@@ -29,6 +29,7 @@ RUN pwd \
  && export NETCDF=/comsoftware/libs/netcdf/ \
  && export JASPERINC=/usr/include/jasper/ \
  && export JASPERLIB=/usr/lib64/ \
+ && export J='-j 4' \
  && cd ./WRF-${WRF_VERSION} \
  && ./configure <<< $'34\r1\r' \
  && sed -i -e '/^DM_CC/ s/$/ -DMPI2_SUPPORT/' ./configure.wrf \
