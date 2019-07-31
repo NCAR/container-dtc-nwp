@@ -54,7 +54,7 @@ set -x
  # using tm06 NDAS prepbufr here, so need have proper date for the observation file, which is ANAL_TIME + 6 hour
   OBSTIME=`${GSI_BUILD}/bin/ndate.x +6 ${ANAL_TIME} `
   HHH=`echo $OBSTIME | cut -c9-10`
-  PREPBUFR=${PREPBUFR:-/case_data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr}
+  PREPBUFR=${PREPBUFR:-/data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr}
 #
 #------------------------------------------------
 # bk_core= which WRF core is used as background (NMM or ARW or NMMB)
