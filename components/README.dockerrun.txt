@@ -74,10 +74,10 @@ docker run --rm -it \
 # Run MET script in docker-space.
 #
 docker run -it --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/scripts/case \
- -v ${CASE_DIR}/postprd:/postprd -v ${CASE_DIR}/metprd:/metprd \
- --name run-${CASE_NAME}-met dtc-met /scripts/common/run_met.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/home/scripts \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}_${CASE_DATE}:/home/scripts/case \
+ -v ${CASE_DIR}/postprd:/home/postprd -v ${CASE_DIR}/metprd:/home/metprd \
+ --name run-${CASE_NAME}-met dtc-met /home/scripts/common/run_met.ksh
 
 #
 # Run docker compose to launch METViewer.

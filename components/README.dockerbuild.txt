@@ -18,18 +18,28 @@ cd ${PROJ_DIR}/container-dtc-nwp/components
 
 # Build image for WPSGEOG static data
 cd wps_geog ; docker build -t dtc-nwp-wps_geog . ; cd ..
+# Instantiate data container
+docker create -v /data/WPS_GEOG --name wps_geog dtc-nwp-wps_geog
 
 # Build image for GSI input data
 cd gsi_data ; docker build -t dtc-nwp-gsi_data . ; cd ..
+# Instantiate data container
+docker create -v /data/gsi --name gsi_data dtc-nwp-gsi_data
 
 # Build image for input Sandy test case data
 cd case_data/sandy_20121027 ; docker build -t dtc-nwp-sandy . ; cd ../..
+#Instantiate data container
+docker create -v /data/sandy_20121027 --name sandy dtc-nwp-sandy
 
 # Build image for input Derecho test case data
 cd case_data/derecho_20120629 ; docker build -t dtc-nwp-derecho . ; cd ../..
+#Instantiate data container
+docker create -v /data/derecho_20120629 --name derecho dtc-nwp-derecho
 
 # Build image for input snow test case data
 cd case_data/snow_20160123 ; docker build -t dtc-nwp-snow . ; cd ../..
+# Instantiate data container
+docker create -v /data/snow_20160123 --name snow dtc-nwp-snow
 
 # Build image which compiles WPS and WRF from source
 cd wps_wrf ; docker build -t dtc-wps_wrf . ; cd ..
@@ -47,7 +57,7 @@ cd ncl ; docker build -t dtc-ncl . ; cd ..
 cd met/MET ; docker build -t dtc-met . ; cd ../..
 
 # Build images for METViewer
-cd metviewer/METViewer ; docker build -t dtc-metviewer . ; cd ../..
+cd metviewer/METviewer ; docker build -t dtc-metviewer . ; cd ../..
 
 #
 # The steps below are ONLY if you successfully completed all steps above cleanly.
