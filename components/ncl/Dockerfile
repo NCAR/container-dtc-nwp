@@ -1,7 +1,7 @@
-#
-FROM centos:latest
-MAINTAINER Kate Fossell <fossell@ucar.edu>
+FROM mkavulich/common-community-container:gnu7
+MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
+USER root
 RUN yum -y update
 RUN yum -y install fontconfig libgfortran libXext libXrender ImageMagick ksh
 #
@@ -9,6 +9,7 @@ RUN curl -SL https://ral.ucar.edu/sites/default/files/public/projects/ncar-docke
 #
 ENV NCARG_ROOT /usr/local
 #
-RUN mkdir /nclprd
-RUN mkdir /wrfprd
-WORKDIR /nclprd
+USER comuser
+RUN mkdir /home/nclprd
+RUN mkdir /home/wrfprd
+WORKDIR /home/nclprd

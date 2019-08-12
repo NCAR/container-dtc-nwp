@@ -11,61 +11,61 @@ mkdir -p wpsprd wrfprd gsiprd postprd metprd metviewer/mysql
 #
 
 docker run --rm -it --volumes-from wps_geog --volumes-from derecho \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-derecho-wps dtc-wps_wrf /scripts/common/run_wps.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+ --name run-derecho-wps dtc-wps_wrf /home/scripts/common/run_wps.ksh
 
 docker run --rm -it --volumes-from derecho \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-derecho-wps dtc-wps_wrf /scripts/common/run_real.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+ --name run-derecho-wps dtc-wps_wrf /home/scripts/common/run_real.ksh
 
 #
 # Run GSI
 #
 
 docker run --rm -it --volumes-from derecho --volumes-from gsi_data \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
- --name run-dtc-gsi-derecho dtc-gsi /scripts/common/run_gsi.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/gsiprd:/home/gsiprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+ --name run-dtc-gsi-derecho dtc-gsi /home/scripts/common/run_gsi.ksh
 
 #
 # Run WRF
 #
 
 docker run --rm -it --volumes-from derecho \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/wpsprd:/wpsprd \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
- --name run-dtc-nwp-derecho dtc-wps_wrf /scripts/common/run_wrf.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/wpsprd:/home/wpsprd \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+ --name run-dtc-nwp-derecho dtc-wps_wrf /home/scripts/common/run_wrf.ksh
 
 #
 # Run UPP
 #
 
-docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
-     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
-      -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
-     --name run-derecho-upp dtc-upp /scripts/common/run_upp.ksh
+docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+     -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+      -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/postprd:/home/postprd \
+     --name run-derecho-upp dtc-upp /home/scripts/common/run_upp.ksh
 
 #
 # Run NCL to generate plots from WRF output.
 #
-docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
- --name run-dtc-ncl-derecho dtc-ncl /scripts/common/run_ncl.ksh
+docker run --rm -it -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/nclprd:/home/nclprd \
+ --name run-dtc-ncl-derecho dtc-ncl /home/scripts/common/run_ncl.ksh
 
 #
 # Run MET script in docker-space.
 #
-docker run --rm -it --volumes-from derecho -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/scripts/case \
- -v ${CASE_DIR}/postprd:/postprd -v ${CASE_DIR}/metprd:/metprd \
- --name run-dtc-met-derecho dtc-met /scripts/common/run_met.ksh
+docker run --rm -it --volumes-from derecho -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/derecho_20120629:/home/scripts/case \
+ -v ${CASE_DIR}/postprd:/home/postprd -v ${CASE_DIR}/metprd:/home/metprd \
+ --name run-dtc-met-derecho dtc-met /home/scripts/common/run_met.ksh
 
 #
 # Run docker compose to launch METViewer.

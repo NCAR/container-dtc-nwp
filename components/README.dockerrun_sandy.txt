@@ -11,65 +11,61 @@ mkdir -p wpsprd gsiprd wrfprd postprd metprd metviewer/mysql
 #
                                                                                               
 docker run --rm -it --volumes-from wps_geog --volumes-from sandy \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd \
- --name run-sandy-wps dtc-wps_wrf /scripts/common/run_wps.ksh
-
-#                                                                                                                                                             
-# Run real in docker-space.
-#                                                                                           
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd \
+ --name run-sandy-wps dtc-wps_wrf /home/scripts/common/run_wps.ksh
 
 docker run --rm -it --volumes-from sandy \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-sandy-real dtc-wps_wrf /scripts/common/run_real.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+ --name run-sandy-real dtc-wps_wrf /home/scripts/common/run_real.ksh
 
 #
 # Run GSI in docker-space.
 #
 docker run --rm -it --volumes-from gsi_data --volumes-from sandy \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-sandy-gsi dtc-gsi /scripts/common/run_gsi.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/gsiprd:/home/gsiprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+ --name run-sandy-gsi dtc-gsi /home/scripts/common/run_gsi.ksh
 
 #
 # Run WRF in docker-space.
 #
 docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/wpsprd:/wpsprd -v ${CASE_DIR}/gsiprd:/gsiprd -v ${CASE_DIR}/wrfprd:/wrfprd \
- --name run-sandy-wrf dtc-wps_wrf /scripts/common/run_wrf.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/gsiprd:/home/gsiprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+ --name run-sandy-wrf dtc-wps_wrf /home/scripts/common/run_wrf.ksh
 
 #
 # Run UPP in docker-space.
 #
 docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/postprd:/postprd \
- --name run-sandy-upp dtc-upp /scripts/common/run_upp.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/postprd:/home/postprd \
+ --name run-sandy-upp dtc-upp /home/scripts/common/run_upp.ksh
 
 #
 # Run NCL to generate plots from WRF output.
 #
 docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/wrfprd:/wrfprd -v ${CASE_DIR}/nclprd:/nclprd \
- --name run-sandy-ncl dtc-ncl /scripts/common/run_ncl.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/nclprd:/home/nclprd \
+ --name run-sandy-ncl dtc-ncl /home/scripts/common/run_ncl.ksh
  
 #
 # Run MET script in docker-space.
 #
 docker run -it --volumes-from sandy \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/scripts/case \
- -v ${CASE_DIR}/postprd:/postprd -v ${CASE_DIR}/metprd:/metprd \
- --name run-sandy-met dtc-met /scripts/common/run_met.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/sandy_20121027:/home/scripts/case \
+ -v ${CASE_DIR}/postprd:/home/postprd -v ${CASE_DIR}/metprd:/home/metprd \
+ --name run-sandy-met dtc-met /home/scripts/common/run_met.ksh
 
 #
 # Run docker compose to launch METViewer.

@@ -5,12 +5,13 @@
 #
 
 # Constants
-MET_BUILD="/met"
-SCRIPT_DIR="/scripts/common"
-CASE_DIR="/scripts/case"
-POSTPRD_DIR="/postprd"
-METPRD_DIR="/metprd"
+MET_BUILD="/comsoftware/met"
+SCRIPT_DIR="/home/scripts/common"
+CASE_DIR="/home/scripts/case"
+POSTPRD_DIR="/home/postprd"
+METPRD_DIR="/home/metprd"
 LOG_FILE="${METPRD_DIR}/run_met.log"
+OBS_BASE_DIR="/data/obs_data"
 
 # Check for the correct container
 if [[ ! -e $MET_BUILD ]]; then
@@ -46,9 +47,11 @@ fi
 echo "Running MET and writing log file: ${LOG_FILE}" | tee $LOG_FILE
 
 # Constants for all cases
-export MET_EXE_ROOT=/usr/local/bin
-export MET_CONFIG=/scripts/case/met_config
-export DATAROOT=/
+export MET_EXE_ROOT=${MET_BUILD}/bin
+export MET_CONFIG=/home/scripts/case/met_config
+export DATAROOT=/home/
+export CALC_DATE=${SCRIPT_DIR}/calc_date.ksh
+export RUN_CMD=${SCRIPT_DIR}/run_command.ksh
 
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
 cp $SCRIPT_DIR/met_point_verf_all.ksh .
@@ -66,7 +69,7 @@ while [ $FCST_TIME -le $FCST_HR_END ] ; do
   export FCST_TIME
 
   # Do point verification
-  export RAW_OBS=/case_data/obs_data/prepbufr
+  export RAW_OBS=${OBS_BASE_DIR}/prepbufr
   ./met_point_verf_all.ksh | tee -a $LOG_FILE
 
   # Do qpf verification
@@ -75,7 +78,7 @@ while [ $FCST_TIME -le $FCST_HR_END ] ; do
     echo "BUCKET_TIME = $BUCKET_TIME" | tee -a $LOG_FILE
     export ACCUM_TIME
     export BUCKET_TIME
-    export RAW_OBS=/case_data/obs_data/qpe
+    export RAW_OBS=${OBS_BASE_DIR}/qpe
     ./met_qpf_verf_all.ksh | tee -a $LOG_FILE
   fi
 

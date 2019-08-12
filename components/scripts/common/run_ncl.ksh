@@ -6,10 +6,10 @@
 
 # Constants
 NCL_BIN="/usr/local/bin/ncl"
-SCRIPT_DIR="/scripts/common"
-CASE_DIR="/scripts/case"
-WRFPRD_DIR="/wrfprd"
-NCLPRD_DIR="/nclprd"
+SCRIPT_DIR="/home/scripts/common"
+CASE_DIR="/home/scripts/case"
+WRFPRD_DIR="/home/wrfprd"
+NCLPRD_DIR="/home/nclprd"
 
 # Check for the correct container
 if [[ ! -e $NCL_BIN ]]; then

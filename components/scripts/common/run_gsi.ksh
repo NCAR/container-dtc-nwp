@@ -16,10 +16,10 @@ set -x
             # DARWIN_PGI
 #
 # Constants
-  INPUT_DIR="/case_data"
-  SCRIPT_DIR="/scripts/common"
-  CASE_DIR="/scripts/case"
-  WRFPRD_DIR="/wrfprd"
+  INPUT_DIR="/data/gsi"
+  SCRIPT_DIR="/home/scripts/common"
+  CASE_DIR="/home/scripts/case"
+  WRFPRD_DIR="/home/wrfprd"
 
 # Include case-specific settings
 . $CASE_DIR/set_env.ksh
@@ -37,7 +37,7 @@ set -x
 # GSI_EXE  = path and name of the gsi executable 
 # ENS_ROOT = path where ensemble background files exist
 
-  WORK_ROOT=/gsiprd
+  WORK_ROOT=/home/gsiprd
   BK_ROOT=${WRFPRD_DIR}
   BK_FILE=${BK_ROOT}/wrfinput_d01
   YYYY=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c3-6`
@@ -45,16 +45,16 @@ set -x
   DD=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c11-12`
   HH=`ncdump -h ${BK_FILE} | grep ":START_DATE" | cut -f2 -d"=" | cut -c14-15`
   ANAL_TIME=${YYYY}${MM}${DD}${HH}
-  CRTM_ROOT=/gsi_data/CRTM_v2.3.0
-  GSI_ROOT=/gsi/comGSIv3.7_EnKFv1.3
-  GSI_BUILD=/gsi/gsi_build
+  CRTM_ROOT=/data/gsi/CRTM_v2.3.0
+  GSI_ROOT=/comsoftware/gsi/comGSIv3.7_EnKFv1.3
+  GSI_BUILD=/comsoftware/gsi/gsi_build
   FIX_ROOT=${GSI_ROOT}/fix/
   GSI_EXE=${GSI_BUILD}/bin/gsi.x
   GSI_NAMELIST=${GSI_ROOT}/ush/comgsi_namelist.sh
  # using tm06 NDAS prepbufr here, so need have proper date for the observation file, which is ANAL_TIME + 6 hour
   OBSTIME=`${GSI_BUILD}/bin/ndate.x +6 ${ANAL_TIME} `
   HHH=`echo $OBSTIME | cut -c9-10`
-  PREPBUFR=${PREPBUFR:-/case_data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr}
+  PREPBUFR=${PREPBUFR:-/data/obs_data/prepbufr/$OBSTIME/ndas.t${HHH}z.prepbufr.tm06.nr}
 #
 #------------------------------------------------
 # bk_core= which WRF core is used as background (NMM or ARW or NMMB)

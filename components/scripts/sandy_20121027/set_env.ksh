@@ -2,13 +2,13 @@
 
 # WRF settings
 ########################################################################
-export WPS_VERSION="4.0.2"
-export WRF_VERSION="4.0.2"
+export WPS_VERSION="4.1"
+export WRF_VERSION="4.1.1"
 
 # GSI settings
 ########################################################################
-export OBS_ROOT=/case_data/obs_data/prepbufr/
-export PREPBUFR=/case_data/obs_data/prepbufr/2012102718/ndas.t18z.prepbufr.tm06.nr
+export OBS_ROOT=/data/obs_data/prepbufr/
+export PREPBUFR=/data/obs_data/prepbufr/2012102718/ndas.t18z.prepbufr.tm06.nr
 
 # UPP settings
 ########################################################################

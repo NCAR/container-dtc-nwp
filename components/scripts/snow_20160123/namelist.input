@@ -26,7 +26,7 @@
  io_form_input                       = 2
  io_form_boundary                    = 2
  debug_level                         = 0
- history_outname  = "/wrfprd/wrfout_d<domain>_<date>.nc"
+ history_outname  = "wrfout_d<domain>_<date>.nc"
  nocolons                            = .true.
  /
 

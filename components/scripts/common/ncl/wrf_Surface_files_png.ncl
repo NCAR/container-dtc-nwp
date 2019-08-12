@@ -9,8 +9,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 begin
 ;
 ; Make a list of all files we are interested in
-  DATADir = "/wrfprd/"
-  PLTDir = "/nclprd/"
+  DATADir = "/home/wrfprd/"
+  PLTDir = "/home/nclprd/"
   domains = str_split(getenv("domain_list"), " ")
   ndoms   = dimsizes(domains)
 
@@ -33,7 +33,7 @@ do id = 0,ndoms-1
 ; type = "ps"
  type = "png"
 ; type = "ncgm"
-  wks = gsn_open_wks(type,PLTDir + "plt_Surface_multi_"+domains(id)+"_")
+  wks = gsn_open_wks(type,PLTDir + "plt_Surface_multi_"+domains(id))
 
 ; Set some basic resources
   res = True
