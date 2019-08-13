@@ -39,6 +39,7 @@ USER root
 RUN yum -y update \
  && yum -y install cairo-devel freetype-devel unzip g2clib-devel gsl-devel ps2pdf \
  && yum -y install python2 python2-pip python2-devel \
+ && pip install --upgrade pip \
  && pip install xarray numpy
 
 #
