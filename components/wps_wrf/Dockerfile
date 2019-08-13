@@ -36,7 +36,7 @@ RUN pwd \
  && sed -i '/BUILD_RRTMG_FAST/d' ./configure.wrf \
  && /bin/csh ./compile em_real > compile_wrf_arw_opt34.1.log 2>&1
 # Check build success
-RUN ls WRF-${WRF_VERSION}/main/real.exe WRF-${WRF_VERSION}/main/wrf.exe
+RUN ls /comsoftware/wrf/WRF-${WRF_VERSION}/main/real.exe /comsoftware/wrf/WRF-${WRF_VERSION}/main/wrf.exe
 #
 # Build WPS second
 #
@@ -50,7 +50,7 @@ RUN ln -sf WRF-${WRF_VERSION} WRF \
  && sed -i -e 's/-L$(NETCDF)\/lib/-L$(NETCDF)\/lib -lnetcdff /' ./configure.wps \
  && /bin/csh ./compile > compile_wps.log 2>&1
 # Check build success
-RUN ls WPS-${WPS_VERSION}/metgrid.exe WPS-${WPS_VERSION}/ungrib.exe WPS-${WPS_VERSION}/geogrid.exe
+RUN ls /comsoftware/wrf/WPS-${WPS_VERSION}/metgrid.exe /comsoftware/wrf/WPS-${WPS_VERSION}/ungrib.exe /comsoftware/wrf/WPS-${WPS_VERSION}/geogrid.exe
 #
 ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib
 ENV PATH  /usr/lib64/openmpi/bin:$PATH
