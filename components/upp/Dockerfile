@@ -5,21 +5,10 @@ MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.ed
 USER comuser
 RUN mkdir /comsoftware/upp
 WORKDIR /comsoftware/upp
-ENV UPP_VERSION 4.0
+ENV UPP_VERSION 4.0.1
  
-#SERIAL BUILD
-#RUN yum -y update
-#RUN yum -y install file gcc gcc-gfortran gcc-c++ glibc.i686 libgcc.i686 libpng-devel jasper jasper-devel ksh hostname m4 make perl tar tcsh time wget which zlib zlib-devel epel-release
-#
-# now get 3rd party EPEL builds of netcdf dependencies
-#RUN yum -y install netcdf-devel.x86_64 netcdf-fortran-devel.x86_64 netcdf-fortran.x86_64 hdf5.x86_64
-#
-# now get 3rd party EPEL builds of netcdf and openmpi dependencies
-#RUN yum -y install netcdf-openmpi-devel.x86_64 netcdf-fortran-openmpi-devel.x86_64 netcdf-fortran-openmpi.x86_64 hdf5-openmpi.x86_64 openmpi.x86_64 openmpi-devel.x86_64
-#
 # Download original source
-RUN curl -SL https://dtcenter.org/sites/default/files/code/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /comsoftware/upp
-
+RUN curl -SL https://dtcenter.org/sites/default/files/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /comsoftware/upp
 # Set environment for interactive container shells
 #
 RUN echo export LDFLAGS="-lm" >> /home/.bashrc \ 
