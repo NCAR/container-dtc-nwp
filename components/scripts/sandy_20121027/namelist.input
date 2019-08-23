@@ -71,6 +71,7 @@
  num_soil_layers                     = 4,
  num_land_cat                        = 24,
  sf_urban_physics                    = 0,     0,     0,
+ do_radar_ref                        = 1,
  /
 
  &fdda
