@@ -9,8 +9,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 begin
 ;
 ; Make a list of all files we are interested in
-  DATADir = "/wrfprd/"
-  PLTDir = "/nclprd/"
+  DATADir = "/home/wrfprd/"
+  PLTDir = "/home/nclprd/"
   FILES = systemfunc (" ls -1 " + DATADir + "wrfout_d01* ")
   numFILES = dimsizes(FILES)
   print("numFILES = " + numFILES)

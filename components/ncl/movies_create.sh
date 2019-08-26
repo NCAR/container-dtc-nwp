@@ -1,6 +1,6 @@
 #!/bin/bash
 echo convert to animated gif
-cd /wrfprd
+cd /home/wrfprd
 for file in `ls -1 *png`
 do
 #   echo $file
