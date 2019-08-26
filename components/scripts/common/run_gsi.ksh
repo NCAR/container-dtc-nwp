@@ -529,7 +529,7 @@ case $ARCH in
       ${RUN_COMMAND} ./gsi.x < gsiparm.anl > stdout 2>&1  ;;
 
    * )
-      ${RUN_COMMAND} --allow-run-as-root ./gsi.x > stdout 2>&1  ;;
+      ${RUN_COMMAND} ./gsi.x > stdout 2>&1  ;;
 esac
 
 ##################################################################

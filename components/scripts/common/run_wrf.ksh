@@ -4,7 +4,7 @@
 # Simplified script to run WRF in Docker world
 # Optional arguments: -np, -slots, -hosts, -face
 #
-
+set -x
 # Constants
 WRF_BUILD="/comsoftware/wrf"
 INPUT_DIR="/data/case_data"
@@ -124,8 +124,7 @@ else
   for key in "${!ary[@]}"; do echo "${ary[$key]} slots=${process_per_host}" >> $WRFPRD_DIR/hosts; done
   
   # Run wrf using mpi
-  mpirun --allow-run-as-root -np $num_procs ./wrf.exe
-  time mpirun --allow-run-as-root -hostfile $WRFPRD_DIR/hosts -np $num_procs --mca btl self,tcp --mca btl_tcp_if_include $iface ./wrf.exe
+  time mpirun -np $num_procs ./wrf.exe
 fi
 
 # Check success
