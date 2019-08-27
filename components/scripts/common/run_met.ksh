@@ -53,6 +53,8 @@ export DATAROOT=/home/
 export CALC_DATE=${SCRIPT_DIR}/calc_date.ksh
 export RUN_CMD=${SCRIPT_DIR}/run_command.ksh
 
+cd $METPRD_DIR
+
 cp $SCRIPT_DIR/met_qpf_verf_all.ksh .
 cp $SCRIPT_DIR/met_point_verf_all.ksh .
 
