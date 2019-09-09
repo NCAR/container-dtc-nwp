@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM dtcenter/base_image:simple
 
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 

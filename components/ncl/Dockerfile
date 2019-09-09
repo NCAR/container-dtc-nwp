@@ -1,6 +1,11 @@
-FROM mkavulich/common-community-container:gnu7
+FROM dtcenter/base_image:latest
 MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
+USER comuser
+RUN umask 0002 \
+ && mkdir /home/nclprd \
+ && mkdir /home/wrfprd
+WORKDIR /home/nclprd
 USER root
 RUN yum -y update \
  && yum -y install fontconfig libgfortran libXext libXrender ImageMagick ksh
@@ -9,7 +14,3 @@ RUN curl -SL https://ral.ucar.edu/sites/default/files/public/projects/ncar-docke
 #
 ENV NCARG_ROOT /usr/local
 #
-USER comuser
-RUN mkdir /home/nclprd
-RUN mkdir /home/wrfprd
-WORKDIR /home/nclprd

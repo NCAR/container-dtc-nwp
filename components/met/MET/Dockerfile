@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:gnu7
+FROM dtcenter/base_image:latest
 MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 
 # 
@@ -54,17 +54,17 @@ ENV RSCRIPTS_BASE   /usr/local/share/comsoftware/met/Rscripts
 # Download GhostScript fonts
 #
 USER comuser
-RUN echo "Downloading GhostScript fonts from ${GSFONT_URL}" \
+RUN umask 0002 \
+ && echo "Downloading GhostScript fonts from ${GSFONT_URL}" \
  && curl -SL ${GSFONT_URL} | tar zxC /comsoftware/libs
 
 #
 # Download and compile MET source code
 #
-RUN echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
+RUN umask 0002 \
+ && echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
  && mkdir -p /comsoftware/met \
  && curl -SL ${MET_URL} | tar zxC /comsoftware/met \
-# && echo "Downloading met-${MET_VERSION} patches from ${PATCH_URL}" \
-# && curl -SL ${PATCH_URL} | tar zxC /comsoftware/met/met-${MET_VERSION} \
  && cd /comsoftware/met/met-${MET_VERSION} \
  && LOG_FILE=/comsoftware/met/met-${MET_VERSION}/configure.log \
  && echo "Configuring met-${MET_VERSION} and writing log file ${LOG_FILE}" \
@@ -87,3 +87,4 @@ RUN echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
 #
 WORKDIR /comsoftware/met
 
+USER root
