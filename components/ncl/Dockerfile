@@ -2,8 +2,9 @@ FROM dtcenter/base_image:latest
 MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
 USER comuser
-RUN mkdir /home/nclprd
-RUN mkdir /home/wrfprd
+RUN umask 0002 \
+ && mkdir /home/nclprd \
+ && mkdir /home/wrfprd
 WORKDIR /home/nclprd
 USER root
 RUN yum -y update \
