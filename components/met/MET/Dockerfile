@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:gnu7
+FROM dtcenter/base_image:latest
 MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 
 # 
@@ -87,3 +87,4 @@ RUN echo "Downloading met-${MET_VERSION} from ${MET_URL}" \
 #
 WORKDIR /comsoftware/met
 
+USER root

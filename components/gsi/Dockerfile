@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:gnu7
+FROM dtcenter/base_image:latest
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 #
 # This Dockerfile compiles GSI from source during "docker build" step
@@ -63,4 +63,4 @@ RUN mkdir /home/gsi_run
 #    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
 #    && chmod +x /gsi/slave
 #
-CMD ["/home/gsiprd/run-gsi"]
+USER root

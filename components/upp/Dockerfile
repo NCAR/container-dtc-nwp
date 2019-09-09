@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:gnu7
+FROM dtcenter/base_image:latest
 MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
 # This Dockerfile compiles UPP from source during "docker build" step
@@ -45,14 +45,6 @@ RUN pwd \
 ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib
 ENV PATH /usr/lib64/openmpi/bin:$PATH
 #
-# copy in a custom script...apparently there's no way to docker COPY with non-root permissions....
-#
-USER root
-COPY run-upp /comsoftware/upp
-RUN chmod +x /comsoftware/upp/run-upp \
- && chown comuser:comusers /comsoftware/upp/run-upp
-USER comuser
-#
 # set up ssh configuration
 #
 #COPY ssh_config /root/.ssh/config
@@ -69,5 +61,11 @@ USER comuser
 #    && chmod 700 /root/.ssh \
 #    && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys \
 #    && chmod +x /upp/slave
+#
+# copy in a custom script...apparently there's no way to docker COPY with non-root permissions....
+#
+USER root
+COPY run-upp /comsoftware/upp
+RUN chmod +x /comsoftware/upp/run-upp \
+ && chown comuser:comusers /comsoftware/upp/run-upp
 
-CMD ["/upp/run-upp"]
