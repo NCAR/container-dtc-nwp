@@ -98,9 +98,14 @@ echo "hosts         = " $hosts
 echo Running wrf.exe
 
 ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
-rm namelist*
 
-cp $CASE_DIR/namelist.input .
+#If namelist is a symlink, remove it, we don't want it
+if [[ -L namelist.input ]]; then
+  rm namelist.input
+fi                
+if [[ ! -e namelist.input ]]; then
+  cp $CASE_DIR/namelist.input .
+fi
 
 # If wrfinput_d01.orig exists, rename it to wrfinput_d01 to reset the state
 if [[ -e wrfinput_d01.orig ]]; then
