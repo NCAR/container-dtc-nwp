@@ -53,20 +53,13 @@ cd $WRFPRD_DIR
 ##################################
 
 ln -sf $WRF_BUILD/WRF-${WRF_VERSION}/run/* .
+rm namelist*
 
-if [[ ! -e namelist.wps ]]; then
-  cp $CASE_DIR/namelist.wps .
-fi
-#If namelist is a symlink, remove it, we don't want it
-if [[ -L namelist.input ]]; then
-  rm namelist.input
-fi
-if [[ ! -e namelist.input ]]; then
-  cp $CASE_DIR/namelist.input .
-  sed -e '/nocolons/d' namelist.input > nml
-  cp namelist.input namelist.nocolons
-  mv nml namelist.input
-fi
+cp $CASE_DIR/namelist.wps .
+cp $CASE_DIR/namelist.input .
+sed -e '/nocolons/d' namelist.input > nml
+cp namelist.input namelist.nocolons
+mv nml namelist.input
 
 echo Running real.exe
 
