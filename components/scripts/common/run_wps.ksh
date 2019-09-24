@@ -51,10 +51,7 @@ ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
 # The Vtable is dependent on the data that is used
 # Will need to pull this in dynamically somehow, tie to data/namelist
 
-if [[ ! -e namelist.wps ]]; then
-  cp -f $CASE_DIR/namelist.wps .
-fi
-
+cp -f $CASE_DIR/namelist.wps .
 cp -f $CASE_DIR/Vtable.GFS Vtable
 
 # Link input data
