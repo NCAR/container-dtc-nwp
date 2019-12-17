@@ -6,7 +6,7 @@ USER comuser
 RUN umask 0002 \
  && mkdir /comsoftware/wrf
 WORKDIR /comsoftware/wrf
-ENV WRF_VERSION 4.1.1
+ENV WRF_VERSION 4.1.3
 ENV WPS_VERSION 4.1
 #
 # Download original sources
