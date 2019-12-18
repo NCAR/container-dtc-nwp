@@ -2,7 +2,7 @@ FROM dtcenter/base_image:simple
 
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 
-ENV METVIEWER_VERSION 2.8
+ENV METVIEWER_VERSION 2.11
 ENV TOMCAT_MINOR_VERSION 5.23
 ENV TOMCAT_MAJOR_VERSION 8
 ENV TOMCAT_VERSION ${TOMCAT_MAJOR_VERSION}.${TOMCAT_MINOR_VERSION}
@@ -16,12 +16,25 @@ ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METvi
 RUN yum -y update \
  && yum -y install epel-release \
 # Install required packages
- && yum -y install wget tar java R gsl-devel mysql ksh \
+ && yum -y install wget tar java R mysql ksh \
  && rm -rf /var/cache/yum/* \
  && yum clean all
 
 # Setup default cran repo
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
+
+#
+# Build GSL-2.1 manually
+#
+RUN echo "Compiling gsl-2.1 in /gsl" \
+ && mkdir /gsl \
+ && cd /gsl \
+ && wget http://mirrors.syringanetworks.net/gnu/gsl/gsl-2.1.tar.gz \
+ && tar -xf gsl-2.1.tar.gz \
+ && cd gsl-2.1 \
+ && ./configure --prefix=/usr \
+ && make >& make.log \
+ && make install >& make_install.log
 
 #
 # Install required R packages
@@ -30,7 +43,8 @@ RUN Rscript -e "install.packages('boot')" \
  && Rscript -e "install.packages('plotrix')" \
  && Rscript -e "install.packages('gsl')" \
  && Rscript -e "install.packages('data.table')" \
- && Rscript -e "install.packages('stats')"
+ && Rscript -e "install.packages('stats')" \
+ && Rscript -e "install.packages('verification')"
 
 #
 # Install Tomcat
