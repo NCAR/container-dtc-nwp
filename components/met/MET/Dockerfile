@@ -29,7 +29,7 @@ ENV NETCDF4CXX_URL https://github.com/Unidata/netcdf-cxx4/archive/v4.3.0.tar.gz
 ENV BUFRLIB_URL    https://dtcenter.org/sites/default/files/community-code/met/docker_data/BUFRLIB_v10-2-3.tar
 ENV GSFONT_URL     https://dtcenter.org/sites/default/files/community-code/met/docker_data/ghostscript-fonts-std-8.11.tar.gz
 
-ENV MET_URL        https://dtcenter.org/sites/default/files/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
+ENV MET_URL        https://dtcenter.org/sites/default/files/community-code/met/met-${MET_VERSION}.${MET_RELEASE_DATE}.tar.gz
 ENV PATCH_URL      https://dtcenter.org/sites/default/files/met-${MET_VERSION}_patches_latest.tar.gz
 
 #
