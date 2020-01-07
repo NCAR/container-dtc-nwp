@@ -5,6 +5,7 @@
         <database>mv_sandy</database>
         <user>******</user>
         <password>******</password>
+        <management_system>mysql</management_system>
     </connection>
     <rscript>Rscript</rscript>
     <folders>
