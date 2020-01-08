@@ -1,0 +1,2 @@
+http://noaa-gfs-pds.s3.amazonaws.com/TMPK/500%20hPa%20PRES/{INIT_YMD}/{INIT_H}00/{FHR}
+http://noaa-gfs-pds.s3.amazonaws.com/TMPK/850%20hPa%20PRES/{INIT_YMD}/{INIT_H}00/{FHR}
