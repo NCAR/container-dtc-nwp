@@ -14,7 +14,7 @@ export PREPBUFR=/data/obs_data/prepbufr/2012102718/ndas.t18z.prepbufr.tm06.nr
 ########################################################################
 # Set input format from model
 export inFormat="netcdf"
-export outFormat="grib"
+export outFormat="grib2"
 
 # Set date/time information
 export startdate=2012102712
