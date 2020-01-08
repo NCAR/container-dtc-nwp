@@ -24,6 +24,8 @@ INIT_YM=`expr $INIT_YMDH | cut -c1-6`
 INIT_YMD=`expr $INIT_YMDH | cut -c1-8`
 INIT_H=`expr $INIT_YMDH | cut -c9-10`
 while [[ $CUR_FHR -le $MAX_FHR ]]; do
+
+  # Set temp files for the current time
   echo "PULLING: GFS data for the $INIT_YMDH initialization $CUR_FHR forecast hour."
   CUR_TMP_DIR=gfs_f${CUR_FHR}
   CUR_FILE_LIST=aws_s3_gfs_files_${INIT_YMDH}_f${CUR_FHR}.txt
@@ -45,5 +47,10 @@ while [[ $CUR_FHR -le $MAX_FHR ]]; do
   # Concatenate all the files for this time
   cat $CUR_TMP_DIR/${CUR_FHR}* > gfs_4_${INIT_YMD}_${INIT_H}00_${CUR_FHR}.grb2
 
+  # Delete the temporary directory 
+  rm -rf $CUR_TMP_DIR
+
+  # Increment the forecast hour
   CUR_FHR=$(($CUR_FHR + $FHR_INC))
+
 done
