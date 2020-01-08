@@ -13,7 +13,7 @@ export OBS_ROOT=/data/obs_data/prepbufr/2016012300/
 ########################################################################
 # Set input format from model
 export inFormat="netcdf"
-export outFormat="grib"
+export outFormat="grib2"
 
 # Set date/time information
 export startdate=2016012300
