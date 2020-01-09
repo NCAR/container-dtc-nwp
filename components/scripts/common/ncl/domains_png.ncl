@@ -20,7 +20,7 @@ begin
   wks = gsn_open_wks(type,PLTDir+"wps_show_dom")
 
 ; read the following namelist file
-   filename = "/home/wpsprd/namelist.wps"
+   filename = "/home/scripts/case/namelist.wps"
 
 
 
