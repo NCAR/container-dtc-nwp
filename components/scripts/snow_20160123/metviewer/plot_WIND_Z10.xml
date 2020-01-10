@@ -129,7 +129,7 @@
         <y2lab_align>0.5</y2lab_align>
         <legend_box>o</legend_box>
         <legend_inset>c(0, -.25)</legend_inset>
-        <legend_ncol>3</legend_ncol>
+        <legend_ncol>2</legend_ncol>
         <legend_size>0.8</legend_size>
         <caption_weight>1</caption_weight>
         <caption_col>#333333</caption_col>
