@@ -1,0 +1,3 @@
+This base image is built from the Dockerfile in the community software base image repository: 
+
+https://github.com/NCAR/CCCP
