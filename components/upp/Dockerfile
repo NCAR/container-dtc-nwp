@@ -6,11 +6,11 @@ USER comuser
 RUN umask 0002 \
  && mkdir /comsoftware/upp
 WORKDIR /comsoftware/upp
-ENV UPP_VERSION 4.0.1
+ENV UPP_VERSION 4.1.0
  
 # Download original source
 RUN umask 0002 \
- && curl -SL https://dtcenter.org/sites/default/files/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /comsoftware/upp
+ && curl -SL https://dtcenter.org/sites/default/files/code/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /comsoftware/upp
 # Set environment for interactive container shells
 #
 RUN echo export LDFLAGS="-lm" >> /home/.bashrc \ 
