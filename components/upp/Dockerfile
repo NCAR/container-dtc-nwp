@@ -6,7 +6,19 @@ USER comuser
 RUN umask 0002 \
  && mkdir /comsoftware/upp
 WORKDIR /comsoftware/upp
-ENV UPP_VERSION 4.1.0
+ENV UPP_VERSION 4.1
+# Download and install NCEPLIBS
+RUN umask 0002 \
+ && curl -SL https://github.com/NCAR/NCEPlibs/archive/upp_v4.1_release.tar.gz | tar zxC /comsoftware/libs/ \
+ && mkdir /comsoftware/libs/NCEPlibs_build \
+ && cd /comsoftware/libs/NCEPlibs-upp_v4.1_release \
+ && export JASPER_INC=/usr/include/jasper/ \
+ && export PNG_INC=/usr/include/ \
+ && export CC=gcc \
+ && export FCserial=gfortran \
+ && export FC=mpif90 \
+ && export NOCOMPILERCHOICE=true \
+ && ./make_ncep_libs.sh -s linux -c gnu -d /comsoftware/libs/NCEPlibs_build -o 0 -m 1 -a upp
  
 # Download original source
 RUN umask 0002 \
@@ -33,15 +45,15 @@ RUN echo export LDFLAGS="-lm" >> /home/.bashrc \
 #
 #
 # Build UPP 
-# input 7 to configure script (for gfortran serial build)
+# input 8 to configure script (for gfortran parallel build)
+USER root
 
 RUN umask 0002 \
  && export NETCDF=/comsoftware/libs/netcdf/ \
- && export JASPERINC=/usr/include/jasper/ \
- && export JASPERLIB=/usr/lib64/ \
+ && export NCEPLIBS_DIR=/comsoftware/libs/NCEPlibs_build \
  && cd ./UPPV${UPP_VERSION} \
- && ./configure <<< $'7\r' \
- && /bin/csh ./compile > compile_upp.log 2>&1
+ && ./configure <<< $'8\r' \
+ && /bin/bash ./compile > compile_upp.log 2>&1
 #
 #
 ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib
