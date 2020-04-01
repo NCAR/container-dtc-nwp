@@ -203,7 +203,12 @@ ln -fs ${UNIPOST_HOME}/parm/nam_micro_lookup.dat .
 ln -fs ${UNIPOST_HOME}/parm/hires_micro_lookup.dat .
 
 # link coefficients for crtm2 (simulated synthetic satellites)
-CRTMDIR=${UNIPOST_HOME}/src/lib/crtm2/src/fix
+CRTMDIR=${UNIPOST_HOME}/sorc/comlibs/crtm2/src/fix/
+
+if [ ! -d ${CRTMDIR} ]; then
+  echo "ERROR: CRTM fix file directory, '${CRTMDIR}', does not exist"
+  exit 1
+fi
 
 ln -fs $CRTMDIR/EmisCoeff/MW_Water/Big_Endian/FASTEM6.MWwater.EmisCoeff.bin
 ln -fs $CRTMDIR/EmisCoeff/IR_Ice/SEcategory/Big_Endian/NPOESS.IRice.EmisCoeff.bin   ./
@@ -250,6 +255,8 @@ ln -fs $CRTMDIR/TauCoeff/ODPS/Big_Endian/ssmis_f20.TauCoeff.bin   ./
 ln -fs $CRTMDIR/SpcCoeff/Big_Endian/seviri_m10.SpcCoeff.bin   ./   
 ln -fs $CRTMDIR/TauCoeff/ODPS/Big_Endian/seviri_m10.TauCoeff.bin   ./
 ln -fs $CRTMDIR/SpcCoeff/Big_Endian/v.seviri_m10.SpcCoeff.bin   ./   
+ln -fs $CRTMDIR/TauCoeff/ODPS/Big_Endian/abi_gr.TauCoeff.bin   ./
+ln -fs $CRTMDIR/SpcCoeff/Big_Endian/abi_gr.SpcCoeff.bin   ./
 
 #######################################################
 # 1. Run Unipost
