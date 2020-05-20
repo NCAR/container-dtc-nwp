@@ -5,21 +5,12 @@
 #
 
 # Constants
-MET_BUILD="/comsoftware/met"
 SCRIPT_DIR="/home/scripts/common"
 CASE_DIR="/home/scripts/case"
 POSTPRD_DIR="/home/postprd"
 METPRD_DIR="/home/metprd"
 LOG_FILE="${METPRD_DIR}/run_met.log"
 OBS_BASE_DIR="/data/obs_data"
-
-# Check for the correct container
-if [[ ! -e $MET_BUILD ]]; then
-  echo
-  echo ERROR: MET can only be run with the dtc-met container.
-  echo
-  exit 1
-fi
 
 # Check for input directory
 if [[ ! -e $POSTPRD_DIR ]]; then
@@ -47,7 +38,7 @@ fi
 echo "Running MET and writing log file: ${LOG_FILE}" | tee $LOG_FILE
 
 # Constants for all cases
-export MET_EXE_ROOT=${MET_BUILD}/bin
+export MET_EXE_ROOT=${MET_BUILD:-/usr/local}/bin
 export MET_CONFIG=/home/scripts/case/met_config
 export DATAROOT=/home/
 export CALC_DATE=${SCRIPT_DIR}/calc_date.ksh
