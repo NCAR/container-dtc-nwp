@@ -11,7 +11,7 @@ db:
     tty: true
 #
 metviewer:
-    image: dtc-metviewer
+    image: dtcenter/metviewer:2.11
     container_name: metviewer
     ports:
     - "8080:8080"
