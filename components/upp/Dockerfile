@@ -22,7 +22,7 @@ RUN umask 0002 \
  
 # Download original source
 RUN umask 0002 \
- && curl -SL https://dtcenter.org/sites/default/files/code/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /comsoftware/upp
+ && curl -SL https://dtcenter.ucar.edu/dfiles/code/upp/DTC_upp_v${UPP_VERSION}.tar.gz | tar zxC /comsoftware/upp
 # Set environment for interactive container shells
 #
 RUN echo export LDFLAGS="-lm" >> /home/.bashrc \ 

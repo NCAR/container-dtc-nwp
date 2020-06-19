@@ -15,7 +15,7 @@ ENV J 4
 # Download source code
 #
 RUN umask 0002 \
- && curl -SL https://dtcenter.org/com-GSI/users/downloads/GSI_releases/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz | tar -xzC /comsoftware/gsi
+ && curl -SL https://dtcenter.org/sites/default/files/comGSIv${GSI_VERSION}_EnKFv${ENKF_VERSION}.tar.gz | tar -xzC /comsoftware/gsi
 # Set necessary environment variables for GSI build
 #
 ENV LDFLAGS -lm

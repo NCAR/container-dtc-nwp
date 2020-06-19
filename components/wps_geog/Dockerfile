@@ -5,7 +5,7 @@ RUN mkdir -p /data/WPS_GEOG \
  && chown -R comuser:comusers /data
 USER comuser
 #
-RUN curl -SL http://www.dtcenter.org/eval/meso_mod/mmet/data_for_docker/geog_minimum.tar.gz | tar -xzC /data/WPS_GEOG \
+RUN curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/geog_minimum.tar.gz | tar -xzC /data/WPS_GEOG \
  && chmod 6775 -R /data/WPS_GEOG
 VOLUME /data/WPS_GEOG
 USER root

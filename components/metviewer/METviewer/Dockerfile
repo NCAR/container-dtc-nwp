@@ -8,7 +8,7 @@ ENV TOMCAT_MAJOR_VERSION 8
 ENV TOMCAT_VERSION ${TOMCAT_MAJOR_VERSION}.${TOMCAT_MINOR_VERSION}
 ENV UMASK 002
 
-ENV METVIEWER_URL http://www.dtcenter.org/met/users/downloads/MET_releases/METviewer-${METVIEWER_VERSION}.tar.gz
+ENV METVIEWER_URL https://dtcenter.ucar.edu/dfiles/code/METplus/METviewer/METviewer-${METVIEWER_VERSION}.tar.gz
 
 #
 # Install Extra Packages for Enterprise Linux for Rscript install
