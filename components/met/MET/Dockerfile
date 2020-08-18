@@ -10,12 +10,12 @@ ENV MET_RELEASE_DATE 20191031
 #
 # Compilers
 #
-ENV CC  /opt/rh/devtoolset-7/root/usr/bin/gcc
-ENV FC  /opt/rh/devtoolset-7/root/usr/bin/gfortran
-ENV CXX /opt/rh/devtoolset-7/root/usr/bin/g++
-ENV F77 /opt/rh/devtoolset-7/root/usr/bin/gfortran
+ENV CC  /opt/rh/devtoolset-8/root/usr/bin/gcc
+ENV FC  /opt/rh/devtoolset-8/root/usr/bin/gfortran
+ENV CXX /opt/rh/devtoolset-8/root/usr/bin/g++
+ENV F77 /opt/rh/devtoolset-8/root/usr/bin/gfortran
 
-RUN source /opt/rh/devtoolset-7/enable
+RUN source /opt/rh/devtoolset-8/enable
 
 #
 # Package URL's

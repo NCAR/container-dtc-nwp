@@ -1,4 +1,4 @@
-FROM mkavulich/common-community-container:gnu7
+FROM dtcenter/common-community-container
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 
 USER root
