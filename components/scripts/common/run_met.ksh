@@ -5,7 +5,7 @@
 #
 
 # Constants
-MET_BUILD="/comsoftware/met"
+MET_BUILD="/usr/local"
 SCRIPT_DIR="/home/scripts/common"
 CASE_DIR="/home/scripts/case"
 POSTPRD_DIR="/home/postprd"
