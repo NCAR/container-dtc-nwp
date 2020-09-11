@@ -6,7 +6,7 @@ varsinfile = []
 
 # Open the grib2 file using pygrib
 # This object (gribfile) here is an iterator, a special Python object
-gribfile = pygrib.open('/home/postprd/wrfprs_d01.01')
+gribfile = pygrib.open('/home/postprd/wrfprs_d01.03')
 
 # Use the iterator to print information about each grib message object
 for i in gribfile:

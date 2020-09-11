@@ -37,6 +37,7 @@ export init_time=2016012300
 export fhr_beg=1
 export fhr_end=24
 export fhr_inc=1
+domain_list="d01"
 
 # MET settings
 #########################################################################

@@ -20,14 +20,10 @@
 #                            desired on the maps.
 #                          -File structure should be:
 #                            CARTOPY_DIR/shapefiles/natural_earth/cultural/*.shp
-#
+#                       5. Domain (e.g., d01)
 #           		To create plots for forecast hour 24 from 5/7 00Z cycle:
 #                        python plot_allvars.py 2020050700 24 /path/to/expt_dirs
-#                        /experiment/name /path/to/base/cartopy/maps 
-#
-#                       The variable domains in this script can be set to either
-#                         'conus' for a CONUS map or 'regional' where the map
-#                         is defined from variables in the grib2 files
+#                        /experiment/name /path/to/base/cartopy/maps d01 
 #
 ################################################################################
 
@@ -52,6 +48,9 @@ import pyproj
 import argparse
 import yaml
 import cartopy
+
+# Set MPLCONFIGDIR to be under /home dir (need comuser write permission)
+os.environ[ 'MPLCONFIGDIR' ] = 'home/pythonprd/.config/matplotlib'
 
 #--------------Define some functions ------------------#
 
@@ -225,6 +224,7 @@ parser.add_argument("Cycle date/time in YYYYMMDDHH format")
 parser.add_argument("Forecast hour in HH format")
 parser.add_argument("Path to experiment base directory")
 parser.add_argument("Path to base directory of cartopy shapefiles")
+parser.add_argument("Domain in d** format")
 args = parser.parse_args()
               
 # Read date/time, forecast hour, and directory paths from command line
@@ -245,9 +245,14 @@ vtime = ndate(itime,int(fhr))
 
 EXPT_BASEDIR = str(sys.argv[3])
 CARTOPY_DIR = str(sys.argv[4])
+domain = str(sys.argv[5])
 
-# Define the location of the input file
-data1 = pygrib.open(EXPT_BASEDIR+'/wrfprs_d01.'+fhour)
+# Specify plotting domains
+domains=[domain]
+
+for dom in domains:
+     # Define the location of the input file
+     data1 = pygrib.open(EXPT_BASEDIR+'/wrfprs_'+dom+'.'+fhour)
 
 # Get the lats and lons
 grids = [data1]
@@ -297,11 +302,6 @@ Lon0 = data1[1]['LoVInDegrees']
 print(Lat0)
 print(Lon0)
 
-# Specify plotting domains
-# User can add domains here, just need to specify lat/lon information below 
-# (if dom == 'conus' block)
-domains=['conus']    # Other option is 'regional'
-
 ###################################################
 # Read in all variables and calculate differences #
 ###################################################
@@ -332,16 +332,16 @@ cape = data1.select(name='Convective available potential energy',typeOfLevel='su
 # Surface-based CIN
 cin = data1.select(name='Convective inhibition',typeOfLevel='surface')[0].values
 
-# 500 mb height, wind, vorticity
-z500 = data1.select(name='Geopotential Height',level=500)[0].values * 0.1
-z500 = ndimage.filters.gaussian_filter(z500, 6.89)
-vort500 = data1.select(name='Absolute vorticity',level=500)[0].values * 100000
-vort500 = ndimage.filters.gaussian_filter(vort500,1.7225)
-vort500[vort500 > 1000] = 0	# Mask out undefined values on domain edge
-u500 = data1.select(name='U component of wind',level=500)[0].values * 1.94384
-v500 = data1.select(name='V component of wind',level=500)[0].values * 1.94384
-# Rotate winds from grid relative to Earth relative
-u500, v500 = rotate_wind(Lat0,Lon0,lon,u500,v500,'lcc',inverse=False)
+## 500 mb height, wind, vorticity
+#z500 = data1.select(name='Geopotential Height',level=500)[0].values * 0.1
+#z500 = ndimage.filters.gaussian_filter(z500, 6.89)
+#vort500 = data1.select(name='Absolute vorticity',level=500)[0].values * 100000
+#vort500 = ndimage.filters.gaussian_filter(vort500,1.7225)
+#vort500[vort500 > 1000] = 0	# Mask out undefined values on domain edge
+#u500 = data1.select(name='U component of wind',level=500)[0].values * 1.94384
+#v500 = data1.select(name='V component of wind',level=500)[0].values * 1.94384
+## Rotate winds from grid relative to Earth relative
+#u500, v500 = rotate_wind(Lat0,Lon0,lon,u500,v500,'lcc',inverse=False)
 
 # 250 mb winds
 u250 = data1.select(name='U component of wind',level=250)[0].values * 1.94384
@@ -356,13 +356,13 @@ qpf = data1.select(name='Total Precipitation',lengthOfTimeRange=fhr)[0].values *
 # Composite reflectivity
 refc = data1.select(name='Maximum/Composite radar reflectivity')[0].values 
 
-if (fhr > 0):
-# Max/Min Hourly 2-5 km Updraft Helicity
-  maxuh25 = data1.select(stepType='max',parameterName="199",topLevel=5000,bottomLevel=2000)[0].values
-  minuh25 = data1.select(stepType='min',parameterName="200",topLevel=5000,bottomLevel=2000)[0].values
-  maxuh25[maxuh25 < 10] = 0
-  minuh25[minuh25 > -10] = 0
-  uh25 = maxuh25 + minuh25
+#if (fhr > 0):
+## Max/Min Hourly 2-5 km Updraft Helicity
+#  maxuh25 = data1.select(stepType='max',parameterName="199",topLevel=5000,bottomLevel=2000)[0].values
+#  minuh25 = data1.select(stepType='min',parameterName="200",topLevel=5000,bottomLevel=2000)[0].values
+#  maxuh25[maxuh25 < 10] = 0
+#  minuh25[minuh25 > -10] = 0
+#  uh25 = maxuh25 + minuh25
 
 
 t2a = time.perf_counter()
@@ -386,23 +386,13 @@ def plot_all(dom):
   print(('Working on '+dom))
 
   # Map corners for each domain
-  if dom == 'conus':
-    llcrnrlon = -120.5
-    llcrnrlat = 21.0 
-    urcrnrlon = -64.5
-    urcrnrlat = 49.0
-    lat_0 = 35.4
-    lon_0 = -97.6
-    extent=[llcrnrlon-3,urcrnrlon-6,llcrnrlat-1,urcrnrlat+2]
-  elif dom == 'regional':
-    llcrnrlon = np.min(lon)
-    llcrnrlat = np.min(lat)
-    urcrnrlon = np.max(lon)
-    urcrnrlat = np.max(lat)
-    lat_0 = Lat0
-    lon_0 = Lon0
-    extent=[llcrnrlon,urcrnrlon,llcrnrlat-1,urcrnrlat]
-
+  llcrnrlon = np.min(lon)
+  llcrnrlat = np.min(lat)
+  urcrnrlon = np.max(lon)
+  urcrnrlat = np.max(lat)
+  lat_0 = Lat0
+  lon_0 = Lon0
+  extent=[llcrnrlon,urcrnrlon,llcrnrlat-1,urcrnrlat]
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
@@ -413,7 +403,7 @@ def plot_all(dom):
   os.environ["CARTOPY_USER_BACKGROUNDS"]=CARTOPY_DIR+'/raster_files'
 
   back_res='50m'
-  back_img='on'
+  back_img='off'
 
   # set up the map background with cartopy
   myproj=ccrs.LambertConformal(central_longitude=lon_0, central_latitude=lat_0, false_easting=0.0,
@@ -589,7 +579,7 @@ def plot_all(dom):
   units = 'J/kg'
   clevs = [100,250,500,1000,1500,2000,2500,3000,3500,4000,4500,5000]
   clevs2 = [-2000,-500,-250,-100,-25]
-  colorlist = ['blue','dodgerblue','cyan','mediumspringgreen','#FAFAD2','#EEEE00','#EEC900','darkorange','crimson','darkred']
+  colorlist = ['lightblue','blue','dodgerblue','cyan','mediumspringgreen','#FAFAD2','#EEEE00','#EEC900','darkorange','crimson','darkred']
   cm = matplotlib.colors.ListedColormap(colorlist)
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
@@ -611,37 +601,37 @@ def plot_all(dom):
 #################################
   # Plot 500 mb HGT/WIND/VORT
 #################################
-  t1 = time.perf_counter()
-  print(('Working on 500 mb Hgt/Wind/Vort for '+dom))
-
-  # Clear off old plottables but keep all the map info
-  cbar1.remove()
-  clear_plotables(ax,keep_ax_lst,fig)
-
-  units = 'x10${^5}$ s${^{-1}}$'
-  skip = 70
-  barblength = 4
-
-  vortlevs = [16,20,24,28,32,36,40]
-  colorlist = ['yellow','gold','goldenrod','orange','orangered','red']
-  cm = matplotlib.colors.ListedColormap(colorlist)
-  norm = matplotlib.colors.BoundaryNorm(vortlevs, cm.N)
-
-  cs1_a = plt.pcolormesh(lon_shift,lat_shift,vort500,transform=transform,cmap=cm,norm=norm)
-  cs1_a.cmap.set_under('white')
-  cs1_a.cmap.set_over('darkred')
-  cbar1 = plt.colorbar(cs1_a,orientation='horizontal',pad=0.05,shrink=0.6,ticks=vortlevs,extend='both')
-  cbar1.set_label(units,fontsize=8)
-  cbar1.ax.tick_params(labelsize=8)
-  plt.barbs(lon_shift[::skip,::skip],lat_shift[::skip,::skip],u500[::skip,::skip],v500[::skip,::skip],length=barblength,linewidth=0.5,color='steelblue',transform=transform)
-  cs1_b = plt.contour(lon_shift,lat_shift,z500,np.arange(486,600,6),colors='black',linewidths=1,transform=transform)
-  plt.clabel(cs1_b,np.arange(486,600,6),inline_spacing=1,fmt='%d',fontsize=8)
-  ax.text(.5,1.03,'FV3-LAM 500 mb Heights (dam), Winds (kts), and $\zeta$ ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
-
-  compress_and_save('500_'+dom+'_f'+fhour+'.png')
-  t2 = time.perf_counter()
-  t3 = round(t2-t1, 3)
-  print(('%.3f seconds to plot 500 mb Hgt/Wind/Vort for: '+dom) % t3)
+#  t1 = time.perf_counter()
+#  print(('Working on 500 mb Hgt/Wind/Vort for '+dom))
+#
+#  # Clear off old plottables but keep all the map info
+#  cbar1.remove()
+#  clear_plotables(ax,keep_ax_lst,fig)
+#
+#  units = 'x10${^5}$ s${^{-1}}$'
+#  skip = 70
+#  barblength = 4
+#
+#  vortlevs = [16,20,24,28,32,36,40]
+#  colorlist = ['yellow','gold','goldenrod','orange','orangered','red']
+#  cm = matplotlib.colors.ListedColormap(colorlist)
+#  norm = matplotlib.colors.BoundaryNorm(vortlevs, cm.N)
+#
+#  cs1_a = plt.pcolormesh(lon_shift,lat_shift,vort500,transform=transform,cmap=cm,norm=norm)
+#  cs1_a.cmap.set_under('white')
+#  cs1_a.cmap.set_over('darkred')
+#  cbar1 = plt.colorbar(cs1_a,orientation='horizontal',pad=0.05,shrink=0.6,ticks=vortlevs,extend='both')
+#  cbar1.set_label(units,fontsize=8)
+#  cbar1.ax.tick_params(labelsize=8)
+#  plt.barbs(lon_shift[::skip,::skip],lat_shift[::skip,::skip],u500[::skip,::skip],v500[::skip,::skip],length=barblength,linewidth=0.5,color='steelblue',transform=transform)
+#  cs1_b = plt.contour(lon_shift,lat_shift,z500,np.arange(486,600,6),colors='black',linewidths=1,transform=transform)
+#  plt.clabel(cs1_b,np.arange(486,600,6),inline_spacing=1,fmt='%d',fontsize=8)
+#  ax.text(.5,1.03,'FV3-LAM 500 mb Heights (dam), Winds (kts), and $\zeta$ ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+#
+#  compress_and_save('500_'+dom+'_f'+fhour+'.png')
+#  t2 = time.perf_counter()
+#  t3 = round(t2-t1, 3)
+#  print(('%.3f seconds to plot 500 mb Hgt/Wind/Vort for: '+dom) % t3)
 
 
 #################################
@@ -745,40 +735,41 @@ def plot_all(dom):
 #################################
   # Plot Max/Min Hourly 2-5 km UH
 #################################
-  if (fhr > 0):		# Do not make max/min hourly 2-5 km UH plot for forecast hour 0 	
-    t1 = time.perf_counter()
-    print(('Working on Max/Min Hourly 2-5 km UH for '+dom))
-
-    # Clear off old plottables but keep all the map info
-    cbar1.remove()
-    clear_plotables(ax,keep_ax_lst,fig)
-
-    units = 'm${^2}$ s$^{-2}$'
-    clevs = [-150,-100,-75,-50,-25,-10,0,10,25,50,75,100,150,200,250,300]
-#   alternative colormap for just max UH if you don't want to plot the min UH too
-#   colorlist = ['white','skyblue','mediumblue','green','orchid','firebrick','#EEC900','DarkViolet']
-    colorlist = ['blue','#1874CD','dodgerblue','deepskyblue','turquoise','#E5E5E5','#E5E5E5','#EEEE00','#EEC900','darkorange','orangered','red','firebrick','mediumvioletred','darkviolet']
-    cm = matplotlib.colors.ListedColormap(colorlist)
-    norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
-
-    cs_1 = plt.pcolormesh(lon_shift,lat_shift,uh25,transform=transform,cmap=cm,norm=norm)
-    cs_1.cmap.set_under('darkblue')
-    cs_1.cmap.set_over('black')
-    cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,extend='both')
-    cbar1.set_label(units,fontsize=8)
-    cbar1.ax.tick_params(labelsize=8)
-    ax.text(.5,1.03,'FV3-LAM 1-h Max/Min 2-5 km Updraft Helicity ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
-
-    compress_and_save('uh25_'+dom+'_f'+fhour+'.png')
-    t2 = time.perf_counter()
-    t3 = round(t2-t1, 3)
-    print(('%.3f seconds to plot Max/Min Hourly 2-5 km UH for: '+dom) % t3)
-
+#  if (fhr > 0):		# Do not make max/min hourly 2-5 km UH plot for forecast hour 0 	
+#    t1 = time.perf_counter()
+#    print(('Working on Max/Min Hourly 2-5 km UH for '+dom))
+#
+#    # Clear off old plottables but keep all the map info
+#    cbar1.remove()
+#    clear_plotables(ax,keep_ax_lst,fig)
+#
+#    units = 'm${^2}$ s$^{-2}$'
+#    clevs = [-150,-100,-75,-50,-25,-10,0,10,25,50,75,100,150,200,250,300]
+##   alternative colormap for just max UH if you don't want to plot the min UH too
+##   colorlist = ['white','skyblue','mediumblue','green','orchid','firebrick','#EEC900','DarkViolet']
+#    colorlist = ['blue','#1874CD','dodgerblue','deepskyblue','turquoise','#E5E5E5','#E5E5E5','#EEEE00','#EEC900','darkorange','orangered','red','firebrick','mediumvioletred','darkviolet']
+#    cm = matplotlib.colors.ListedColormap(colorlist)
+#    norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
+#
+#    cs_1 = plt.pcolormesh(lon_shift,lat_shift,uh25,transform=transform,cmap=cm,norm=norm)
+#    cs_1.cmap.set_under('darkblue')
+#    cs_1.cmap.set_over('black')
+#    cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,extend='both')
+#    cbar1.set_label(units,fontsize=8)
+#    cbar1.ax.tick_params(labelsize=8)
+#    ax.text(.5,1.03,'FV3-LAM 1-h Max/Min 2-5 km Updraft Helicity ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+#
+#    compress_and_save('uh25_'+dom+'_f'+fhour+'.png')
+#    t2 = time.perf_counter()
+#    t3 = round(t2-t1, 3)
+#    print(('%.3f seconds to plot Max/Min Hourly 2-5 km UH for: '+dom) % t3)
+#
 
 ######################################################
 
   t3dom = round(t2-t1dom, 3)
   print(("%.3f seconds to plot all variables for: "+dom) % t3dom)
+  
   plt.clf()
 
 ######################################################

@@ -20,14 +20,10 @@
 #                            desired on the maps.
 #                          -File structure should be:
 #                            CARTOPY_DIR/shapefiles/natural_earth/cultural/*.shp
-#
+#                       5. Domain (e.g., d01)
 #           		To create plots for forecast hour 24 from 5/7 00Z cycle:
 #                        python plot_allvars.py 2020050700 24 /path/to/expt_dirs
-#                        /experiment/name /path/to/base/cartopy/maps 
-#
-#                       The variable domains in this script can be set to either
-#                         'conus' for a CONUS map or 'regional' where the map
-#                         is defined from variables in the grib2 files
+#                        /experiment/name /path/to/base/cartopy/maps d01 
 #
 ################################################################################
 
@@ -108,28 +104,6 @@ def compress_and_save(filename):
   im2.save(filename, format='PNG')
 
 
-def cmap_t2m():
- # Create colormap for 2-m temperature
- # Modified version of the ncl_t2m colormap
-    r=np.array([255,128,0,  70, 51, 0,  255,0, 0,  51, 255,255,255,255,255,171,128,128,36,162,255])
-    g=np.array([0,  0,  0,  70, 102,162,255,92,128,185,255,214,153,102,0,  0,  0,  68, 36,162,255])
-    b=np.array([255,128,128,255,255,255,255,0, 0,  102,0,  112,0,  0,  0,  56, 0,  68, 36,162,255])
-    xsize=np.arange(np.size(r))
-    r = r/255.
-    g = g/255.
-    b = b/255.
-    red = []
-    green = []
-    blue = []
-    for i in range(len(xsize)):
-        xNorm=np.float(i)/(np.float(np.size(r))-1.0)
-        red.append([xNorm,r[i],r[i]])
-        green.append([xNorm,g[i],g[i]])
-        blue.append([xNorm,b[i],b[i]])
-    colorDict = {"red":red, "green":green, "blue":blue}
-    cmap_t2m_coltbl = matplotlib.colors.LinearSegmentedColormap('CMAP_T2M_COLTBL',colorDict)
-    return cmap_t2m_coltbl
-
 def rotate_wind(true_lat,lov_lon,earth_lons,uin,vin,proj,inverse=False):
   #  Rotate winds from LCC relative to earth relative (or vice-versa if inverse==true)
   #   This routine is vectorized and *should* work on any size 2D vg and ug arrays.
@@ -204,6 +178,7 @@ parser.add_argument("Cycle date/time in YYYYMMDDHH format")
 parser.add_argument("Forecast hour in HH format")
 parser.add_argument("Path to experiment base directory")
 parser.add_argument("Path to base directory of cartopy shapefiles")
+parser.add_argument("Domain in d** format")
 args = parser.parse_args()
               
 # Read date/time, forecast hour, and directory paths from command line
@@ -224,9 +199,14 @@ vtime = ndate(itime,int(fhr))
 
 EXPT_BASEDIR = str(sys.argv[3])
 CARTOPY_DIR = str(sys.argv[4])
+domain = str(sys.argv[5])
 
-# Define the location of the input file
-data1 = pygrib.open(EXPT_BASEDIR+'/wrfprs_d01.'+fhour)
+# Specify plotting domains
+domains=[domain]
+
+for dom in domains:
+     # Define the location of the input file
+     data1 = pygrib.open(EXPT_BASEDIR+'/wrfprs_'+dom+'.'+fhour)
 
 # Get the lats and lons
 grids = [data1]
@@ -276,23 +256,16 @@ Lon0 = data1[1]['LoVInDegrees']
 print(Lat0)
 print(Lon0)
 
-# Specify plotting domains
-# User can add domains here, just need to specify lat/lon information below 
-# (if dom == 'conus' block)
-domains=['conus']    # Other option is 'regional'
-
 ###################################################
 # Read in all variables and calculate differences #
 ###################################################
 t1a = time.perf_counter()
 
-# Sea level pressure
-slp = data1.select(name='Pressure reduced to MSL')[0].values * 0.01
-slpsmooth = ndimage.filters.gaussian_filter(slp, 13.78)
+# Surface-based CAPE
+cape = data1.select(name='Convective available potential energy',typeOfLevel='surface')[0].values
 
-# 2-m temperature
-tmp2m = data1.select(name='2 metre temperature')[0].values
-tmp2m = (tmp2m - 273.15)*1.8 + 32.0
+# Surface-based CIN
+cin = data1.select(name='Convective inhibition',typeOfLevel='surface')[0].values
 
 t2a = time.perf_counter()
 t3a = round(t2a-t1a, 3)
@@ -315,22 +288,13 @@ def plot_all(dom):
   print(('Working on '+dom))
 
   # Map corners for each domain
-  if dom == 'conus':
-    llcrnrlon = -120.5
-    llcrnrlat = 21.0 
-    urcrnrlon = -64.5
-    urcrnrlat = 49.0
-    lat_0 = 35.4
-    lon_0 = -97.6
-    extent=[llcrnrlon-3,urcrnrlon-6,llcrnrlat-1,urcrnrlat+2]
-  elif dom == 'regional':
-    llcrnrlon = np.min(lon)
-    llcrnrlat = np.min(lat)
-    urcrnrlon = np.max(lon)
-    urcrnrlat = np.max(lat)
-    lat_0 = Lat0
-    lon_0 = Lon0
-    extent=[llcrnrlon,urcrnrlon,llcrnrlat-1,urcrnrlat]
+  llcrnrlon = np.min(lon)
+  llcrnrlat = np.min(lat)
+  urcrnrlon = np.max(lon)
+  urcrnrlat = np.max(lat)
+  lat_0 = Lat0
+  lon_0 = Lon0
+  extent=[llcrnrlon,urcrnrlon,llcrnrlat-1,urcrnrlat]
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
@@ -387,64 +351,33 @@ def plot_all(dom):
   # Map/figure has been set up here, save axes instances for use again later
   keep_ax_lst = ax.get_children()[:]
 
-################################
-  # Plot SLP
-################################
-  t1 = time.perf_counter()
-  print(('Working on slp for '+dom))
-
-  units = 'mb'
-  clevs = [976,980,984,988,992,996,1000,1004,1008,1012,1016,1020,1024,1028,1032,1036,1040,1044,1048,1052]
-  clevsdif = [-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12]
-  cm = plt.cm.Spectral_r
-  norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
-
-  cs1_a = plt.pcolormesh(lon_shift,lat_shift,slp,transform=transform,cmap=cm,norm=norm) 
-  cbar1 = plt.colorbar(cs1_a,orientation='horizontal',pad=0.05,shrink=0.6,extend='both')
-  cbar1.set_label(units,fontsize=8)
-  cbar1.ax.tick_params(labelsize=8)
-  cs1_b = plt.contour(lon_shift,lat_shift,slpsmooth,np.arange(940,1060,4),colors='black',linewidths=1.25,transform=transform)
-  plt.clabel(cs1_b,np.arange(940,1060,4),inline=1,fmt='%d',fontsize=8)
-  ax.text(.5,1.03,'WRF SLP ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
-
-  compress_and_save('slp_'+dom+'_f'+fhour+'.png')
-  t2 = time.perf_counter()
-  t3 = round(t2-t1, 3)
-  print(('%.3f seconds to plot slp for: '+dom) % t3)
-
-
 #################################
-  # Plot 2-m T
+  # Plot Surface-Based CAPE/CIN
 #################################
   t1 = time.perf_counter()
-  print(('Working on t2m for '+dom))
+  print(('Working on surface-based CAPE/CIN for '+dom))
 
-  # Clear off old plottables but keep all the map info
-  cbar1.remove()
-  clear_plotables(ax,keep_ax_lst,fig)
-
-  units = '\xb0''F'
-  clevs = np.linspace(-16,134,51)
-  cm = cmap_t2m()
+  units = 'J/kg'
+  clevs = [100,250,500,1000,1500,2000,2500,3000,3500,4000,4500,5000]
+  clevs2 = [-2000,-500,-250,-100,-25]
+  colorlist = ['lightblue','blue','dodgerblue','cyan','mediumspringgreen','#FAFAD2','#EEEE00','#EEC900','darkorange','crimson','darkred']
+  cm = matplotlib.colors.ListedColormap(colorlist)
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-  cs_1 = plt.pcolormesh(lon_shift,lat_shift,tmp2m,transform=transform,cmap=cm,norm=norm)
-  cs_1.cmap.set_under('white')
-  cs_1.cmap.set_over('white')
-  cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=[-16,-4,8,20,32,44,56,68,80,92,104,116,128],extend='both')
+  cs_1 = plt.pcolormesh(lon_shift,lat_shift,cape,transform=transform,cmap=cm,vmin=100,norm=norm)
+  cs_1.cmap.set_under('white',alpha=0.)
+  cs_1.cmap.set_over('darkviolet')
+  cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
   cbar1.set_label(units,fontsize=8)
   cbar1.ax.tick_params(labelsize=8)
-  ax.text(.5,1.03,'WRF 2-m Temperature ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+  cs_1b = plt.contourf(lon_shift,lat_shift,cin,clevs2,colors='none',hatches=['**','++','////','..'],transform=transform)
+  ax.text(.5,1.05,'FV3-LAM Surface-Based CAPE (shaded) and CIN (hatched) ('+units+') \n <-500 (*), -500<-250 (+), -250<-100 (/), -100<-25 (.) \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
-  compress_and_save('2mt_'+dom+'_f'+fhour+'.png')
+  compress_and_save('sfcape_'+dom+'_f'+fhour+'.png')
   t2 = time.perf_counter()
   t3 = round(t2-t1, 3)
-  print(('%.3f seconds to plot 2mt for: '+dom) % t3)
+  print(('%.3f seconds to plot surface-based CAPE/CIN for: '+dom) % t3)
 
-######################################################
-
-  t3dom = round(t2-t1dom, 3)
-  print(("%.3f seconds to plot all variables for: "+dom) % t3dom)
   plt.clf()
 
 ######################################################

@@ -53,9 +53,13 @@ cd $PYTHONPRD_DIR
 fcst_time=$fhr_beg
 while [ $fcst_time -le $fhr_end ] ; do
 
-  # Run all Python scripts found
-  for pythonscript in `ls -1 $SCRIPT_DIR/python/plot_allvars.py`; do
-    python $pythonscript $init_time $fcst_time $POSTPRD_DIR $CARTOPY_DIR
+  for domain in ${domain_list}
+  do
+
+    # Run all Python scripts found
+    for pythonscript in `ls -1 $SCRIPT_DIR/python/plot_*.py`; do
+      python $pythonscript $init_time $fcst_time $POSTPRD_DIR $CARTOPY_DIR $domain
+    done
   done
 
   # Increment the forecast hour
