@@ -71,19 +71,26 @@ done
 echo convert to animated gif
 
 # Trim images
-#for file in `ls -1 *png`
-#do
-#  convert $file -trim $file
-#done
+for file in `ls -1 *png`
+do
+  convert $file -trim $file
+done
 
 # Generate animated gifs
-#for domain in ${domain_list}
-#do
-#  convert -delay 100 plt_Surface_multi_${domain}*.png Surface_multi_${domain}.gif
-#  convert -delay 100 plt_Precip_multi_total_${domain}*.png Precip_total_${domain}.gif
-#  convert -delay 100 plt_dbz1*${domain}*.png DBZ1_${domain}.gif
-#done   
+for domain in ${domain_list}
+do
+  convert -delay 100 10mwin_${domain}*.png 10mwin_${domain}.gif
+  convert -delay 100 250wind_${domain}*.png 250wind_${domain}.gif
+  convert -delay 100 2mdew_${domain}*.png 2mdew_${domain}.gif
+  convert -delay 100 2mt_${domain}*.png 2mt_${domain}.gif
+  convert -delay 100 500_${domain}*.png 500_${domain}.gif
+  convert -delay 100 maxuh25_${domain}*.png maxuh25_${domain}.gif
+  convert -delay 100 qpf_${domain}*.png qpf_${domain}.gif
+  convert -delay 100 refc_${domain}*.png refc_${domain}.gif
+  convert -delay 100 sfcape_${domain}*.png sfcape_${domain}.gif
+  convert -delay 100 slp_${domain}*.png slp_${domain}.gif
+done   
 
-#ls -alh *gif
+ls -alh *gif
 
 echo Done with Python plotting
