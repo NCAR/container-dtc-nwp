@@ -27,6 +27,7 @@
  debug_level                         = 0,
  history_outname  = "wrfout_d<domain>_<date>.nc"
  nocolons                            = .true.
+ nwp_diagnostics                     = 1
  /
 
  &fdda

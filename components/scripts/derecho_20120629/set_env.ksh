@@ -32,6 +32,13 @@ export tmin=70
 export tmax=100
 export tint=2
 
+# Python settings
+#########################################################################
+export init_time=2012062912
+export fhr_beg=00
+export fhr_end=24
+export fhr_inc=03
+
 # MET settings
 ########################################################################
 export START_TIME=2012062912

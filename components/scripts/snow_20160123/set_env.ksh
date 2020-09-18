@@ -31,6 +31,13 @@ export tmin=0
 export tmax=90
 export tint=5
 
+# Python settings
+#########################################################################
+export init_time=2016012300
+export fhr_beg=00
+export fhr_end=24
+export fhr_inc=01
+
 # MET settings
 #########################################################################
 export START_TIME=2016012300
