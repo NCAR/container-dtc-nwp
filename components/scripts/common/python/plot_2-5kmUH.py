@@ -1,12 +1,14 @@
 ################################################################################
 ####  Python Script Documentation Block
 #                      
-# Script name:       	plot_allvars.py
-# Script description:  	Generates plots from FV3-LAM post processed grib2 output
+# Script name:       	plot_2-5kmUH.py
+# Script description:  	Generates plots from WRF post processed grib2 output
 #			over the CONUS
 #
 # Authors:  Ben Blake		Org: NOAA/NWS/NCEP/EMC		Date: 2020-05-07
 #           David Wright 	Org: University of Michigan
+#
+# Notes: Modified for use in DTC NWP containers
 #
 # Instructions:		Make sure all the necessary modules can be imported.
 #                       Five command line arguments are needed:
@@ -262,12 +264,9 @@ print(Lon0)
 t1a = time.perf_counter()
 
 if (fhr > 0):
-# Max/Min Hourly 2-5 km Updraft Helicity
-  maxuh25 = data1.select(stepType='max',parameterName="199",topLevel=5000,bottomLevel=2000)[0].values
-  minuh25 = data1.select(stepType='min',parameterName="200",topLevel=5000,bottomLevel=2000)[0].values
-  maxuh25[maxuh25 < 10] = 0
-  minuh25[minuh25 > -10] = 0
-  uh25 = maxuh25 + minuh25
+# Max Hourly 2-5 km Updraft Helicity
+#  maxuh25 = data1.select(stepType='max',parameterName="418",topLevel=5000,bottomLevel=2000)[0].values
+   maxuh25 = data1.select(name='unknown')[0].values
 
 t2a = time.perf_counter()
 t3a = round(t2a-t1a, 3)
@@ -368,15 +367,15 @@ def plot_all(dom):
     cm = matplotlib.colors.ListedColormap(colorlist)
     norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-    cs_1 = plt.pcolormesh(lon_shift,lat_shift,uh25,transform=transform,cmap=cm,norm=norm)
+    cs_1 = plt.pcolormesh(lon_shift,lat_shift,maxuh25,transform=transform,cmap=cm,norm=norm)
     cs_1.cmap.set_under('darkblue')
     cs_1.cmap.set_over('black')
     cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,extend='both')
     cbar1.set_label(units,fontsize=8)
     cbar1.ax.tick_params(labelsize=8)
-    ax.text(.5,1.03,'FV3-LAM 1-h Max/Min 2-5 km Updraft Helicity ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+    ax.text(.5,1.03,'WRF 1-h Max 2-5 km Updraft Helicity ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
-    compress_and_save('uh25_'+dom+'_f'+fhour+'.png')
+    compress_and_save('maxuh25_'+dom+'_f'+fhour+'.png')
     t2 = time.perf_counter()
     t3 = round(t2-t1, 3)
     print(('%.3f seconds to plot Max/Min Hourly 2-5 km UH for: '+dom) % t3)

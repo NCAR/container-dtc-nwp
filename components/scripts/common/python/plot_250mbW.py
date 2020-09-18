@@ -1,12 +1,14 @@
 ################################################################################
 ####  Python Script Documentation Block
 #                      
-# Script name:       	plot_allvars.py
-# Script description:  	Generates plots from FV3-LAM post processed grib2 output
+# Script name:       	plot_250mbW.py
+# Script description:  	Generates plots from WRF post processed grib2 output
 #			over the CONUS
 #
 # Authors:  Ben Blake		Org: NOAA/NWS/NCEP/EMC		Date: 2020-05-07
 #           David Wright 	Org: University of Michigan
+#
+# Notes: Modified for use in DTC NWP containers
 #
 # Instructions:		Make sure all the necessary modules can be imported.
 #                       Five command line arguments are needed:
@@ -374,7 +376,7 @@ def plot_all(dom):
   cbar1.set_label(units,fontsize=8)
   cbar1.ax.tick_params(labelsize=8)
   plt.barbs(lon_shift[::skip,::skip],lat_shift[::skip,::skip],u250[::skip,::skip],v250[::skip,::skip],length=barblength,linewidth=0.5,color='black',transform=transform)
-  ax.text(.5,1.03,'FV3-LAM 250 mb Winds ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+  ax.text(.5,1.03,'WRF 250 mb Winds ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
   compress_and_save('250wind_'+dom+'_f'+fhour+'.png')
   t2 = time.perf_counter()

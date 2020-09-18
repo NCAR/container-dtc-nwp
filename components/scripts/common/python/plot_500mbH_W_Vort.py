@@ -1,12 +1,14 @@
 ################################################################################
 ####  Python Script Documentation Block
 #                      
-# Script name:       	plot_allvars.py
-# Script description:  	Generates plots from FV3-LAM post processed grib2 output
+# Script name:       	plot_500mbH_W_Vort.py
+# Script description:  	Generates plots from WRF post processed grib2 output
 #			over the CONUS
 #
 # Authors:  Ben Blake		Org: NOAA/NWS/NCEP/EMC		Date: 2020-05-07
 #           David Wright 	Org: University of Michigan
+#
+# Notes: Modified for use in DTC NWP containers
 #
 # Instructions:		Make sure all the necessary modules can be imported.
 #                       Five command line arguments are needed:
@@ -380,7 +382,7 @@ def plot_all(dom):
   plt.barbs(lon_shift[::skip,::skip],lat_shift[::skip,::skip],u500[::skip,::skip],v500[::skip,::skip],length=barblength,linewidth=0.5,color='steelblue',transform=transform)
   cs1_b = plt.contour(lon_shift,lat_shift,z500,np.arange(486,600,6),colors='black',linewidths=1,transform=transform)
   plt.clabel(cs1_b,np.arange(486,600,6),inline_spacing=1,fmt='%d',fontsize=8)
-  ax.text(.5,1.03,'FV3-LAM 500 mb Heights (dam), Winds (kts), and $\zeta$ ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+  ax.text(.5,1.03,'WRF 500 mb Heights (dam), Winds (kts), and $\zeta$ ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
   compress_and_save('500_'+dom+'_f'+fhour+'.png')
   t2 = time.perf_counter()

@@ -1,12 +1,14 @@
 ################################################################################
 ####  Python Script Documentation Block
 #                      
-# Script name:       	plot_allvars.py
-# Script description:  	Generates plots from FV3-LAM post processed grib2 output
+# Script name:       	plot_2mTd.py
+# Script description:  	Generates plots from WRF post processed grib2 output
 #			over the CONUS
 #
 # Authors:  Ben Blake		Org: NOAA/NWS/NCEP/EMC		Date: 2020-05-07
 #           David Wright 	Org: University of Michigan
+#
+# Notes: Modified for use in DTC NWP containers
 #
 # Instructions:		Make sure all the necessary modules can be imported.
 #                       Five command line arguments are needed:
@@ -387,7 +389,7 @@ def plot_all(dom):
   cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,extend='both')
   cbar1.set_label(units,fontsize=8)
   cbar1.ax.tick_params(labelsize=8)
-  ax.text(.5,1.03,'FV3-LAM 2-m Dew Point Temperature ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+  ax.text(.5,1.03,'WRF 2-m Dew Point Temperature ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
   compress_and_save('2mdew_'+dom+'_f'+fhour+'.png')
   t2 = time.perf_counter()

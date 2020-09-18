@@ -1,12 +1,14 @@
 ################################################################################
 ####  Python Script Documentation Block
 #                      
-# Script name:       	plot_allvars.py
-# Script description:  	Generates plots from FV3-LAM post processed grib2 output
+# Script name:       	plot_sbCAPE_CIN.py
+# Script description:  	Generates plots from WRF post processed grib2 output
 #			over the CONUS
 #
 # Authors:  Ben Blake		Org: NOAA/NWS/NCEP/EMC		Date: 2020-05-07
 #           David Wright 	Org: University of Michigan
+#
+# Notes: Modified for use in DTC NWP containers
 #
 # Instructions:		Make sure all the necessary modules can be imported.
 #                       Five command line arguments are needed:
@@ -371,7 +373,7 @@ def plot_all(dom):
   cbar1.set_label(units,fontsize=8)
   cbar1.ax.tick_params(labelsize=8)
   cs_1b = plt.contourf(lon_shift,lat_shift,cin,clevs2,colors='none',hatches=['**','++','////','..'],transform=transform)
-  ax.text(.5,1.05,'FV3-LAM Surface-Based CAPE (shaded) and CIN (hatched) ('+units+') \n <-500 (*), -500<-250 (+), -250<-100 (/), -100<-25 (.) \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+  ax.text(.5,1.05,'WRF Surface-Based CAPE (shaded) and CIN (hatched) ('+units+') \n <-500 (*), -500<-250 (+), -250<-100 (/), -100<-25 (.) \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
   compress_and_save('sfcape_'+dom+'_f'+fhour+'.png')
   t2 = time.perf_counter()
