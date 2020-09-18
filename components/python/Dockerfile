@@ -16,7 +16,7 @@ ENV MINIC_VERS 4.8.3
 
 USER root
 RUN yum -y update \
- && yum -y install curl bzip2 ksh imagemagick \
+ && yum -y install curl bzip2 ksh ImageMagick \
  && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-py${PYTHON_VERS}_${MINIC_VERS}-Linux-x86_64.sh -o /tmp/miniconda.sh \
  && bash /tmp/miniconda.sh -bfp /usr/local/ \
  && rm -rf /tmp/miniconda.sh \
