@@ -154,6 +154,13 @@
        </param>
 
        <param>
+       <shortname>ABSV_ON_ISOBARIC_SFC</shortname>
+       <pname>ABSV</pname>
+       <level>50000.</level>
+       <scale>3.0</scale>
+       </param>
+
+       <param>
        <shortname>CICE_ON_ISOBARIC_SFC</shortname>
        <pname>CICE</pname>
        <level>200. 500. 700. 1000. 2000. 3000. 5000. 7000. 7500. 10000. 12500. 15000. 17500. 20000. 22500. 25000. 27500. 30000. 32500. 35000. 37500. 40000. 42500. 45000. 
@@ -391,7 +398,7 @@
        <param>
        <shortname>HLCY_ON_SPEC_HGT_LVL_ABOVE_GRND</shortname>
        <pname>HLCY</pname>
-       <level>3000. 1000.</level>
+       <level>5000. 3000. 2000. 1000.</level>
        <scale>4.0</scale>
        </param>
 
@@ -709,6 +716,20 @@
       <param>
       <shortname>SBT114_ON_TOP_OF_ATMOS</shortname>
       <scale>4.0</scale>
+      </param>
+
+      <param>
+      <shortname>MAX_UPHL_ON_SPEC_HGT_LVL_ABOVE_GRND_2-5km</shortname>
+      <pname>MXUPHL</pname>
+      <table_info>NCEP</table_info>
+      <scale>-3.0</scale>
+      </param>
+
+      <param>
+      <shortname>GSD_MIN_UPHL_ON_SPEC_HGT_LVL_ABOVE_GRND_2-5km</shortname>
+      <pname>MNUPHL</pname>
+      <table_info>NCEP</table_info>
+      <scale>-3.0</scale>
       </param>
 
 
