@@ -11,6 +11,7 @@ CASE_DIR="/home/scripts/case"
 POSTPRD_DIR="/home/postprd"
 PYTHONPRD_DIR="/home/pythonprd"
 CARTOPY_DIR="$SCRIPT_DIR/python/shapefiles"
+mkdir -p $CARTOPY_DIR
 
 # Check for the correct container
 if [[ ! -e $PYTHON_BIN ]]; then
