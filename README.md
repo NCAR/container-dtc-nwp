@@ -1,3 +1,5 @@
 # container-dtc-nwp
-DTC developed NWP end-to-end systems in Docker containers for community exploration purposes.
-Unsupported by DTC staff, yet community discussions and feedback will be channeled through google group or here on github soon.
+The DTC developed NWP end-to-end systems in Docker containers for community use and exploration purposes.
+
+For general infomration on DTC NWP containers, please see: https://dtcenter.org/community-code/numerical-weather-prediction-nwp-containers
+For accessing the DTC NWP containers online tutorial, please see: https://dtcenter.org/nwp-containers-online-tutorial/introduction
