@@ -80,7 +80,7 @@ done
 # Generate animated gifs
 for domain in ${domain_list}
 do
-  convert -delay 100 10mwin_${domain}*.png 10mwin_${domain}.gif
+  convert -delay 100 10mwind_${domain}*.png 10mwind_${domain}.gif
   convert -delay 100 250wind_${domain}*.png 250wind_${domain}.gif
   convert -delay 100 2mdew_${domain}*.png 2mdew_${domain}.gif
   convert -delay 100 2mt_${domain}*.png 2mt_${domain}.gif
