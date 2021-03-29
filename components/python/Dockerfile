@@ -28,6 +28,7 @@ RUN yum -y update \
 
 RUN conda install -c conda-forge pygrib \
   && conda install -c conda-forge cartopy \
-  && conda install -c conda-forge netCDF4 
+  && conda install -c conda-forge netCDF4 \
+  && conda install -c conda-forge pyyaml
 
 ENV MPLCONFIGDIR /home/user

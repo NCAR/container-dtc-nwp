@@ -9,7 +9,7 @@
 
 	<folder_tmpl>/data/{met_tool}</folder_tmpl>
 
-	<met_version>V6.0</met_version>
+	<met_version>V9.1</met_version>
 
 	<verbose>false</verbose>
 	<insert_size>1</insert_size>
