@@ -361,7 +361,9 @@ def plot_all(dom):
   print(('Working on 10mwspd for '+dom))
 
   units = 'kts'
-  skip = 50
+  # Places a wind barb every ~180 km, optimized for CONUS domain
+  skip = round(177.28*(dx/1000.)**-.97)
+  print('skipping every '+str(skip)+' grid points to plot')
   barblength = 4
 
   clevs = [5,10,15,20,25,30,35,40,45,50,55,60]

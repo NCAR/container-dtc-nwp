@@ -543,7 +543,9 @@ def plot_all(dom):
   clear_plotables(ax,keep_ax_lst,fig)
 
   units = 'kts'
-  skip = 50
+  # Places a wind barb every ~180 km, optimized for CONUS domain
+  skip = round(177.28*(dx/1000.)**-.97)
+  print('skipping every '+str(skip)+' grid points to plot')
   barblength = 4
 
   clevs = [5,10,15,20,25,30,35,40,45,50,55,60]
@@ -609,7 +611,9 @@ def plot_all(dom):
 #  clear_plotables(ax,keep_ax_lst,fig)
 #
 #  units = 'x10${^5}$ s${^{-1}}$'
-#  skip = 70
+## Places a wind barb every ~180 km, optimized for CONUS domain
+#  skip = round(177.28*(dx/1000.)**-.97)
+#  print('skipping every '+str(skip)+' grid points to plot')
 #  barblength = 4
 #
 #  vortlevs = [16,20,24,28,32,36,40]
@@ -645,7 +649,9 @@ def plot_all(dom):
   clear_plotables(ax,keep_ax_lst,fig)
 
   units = 'kts'
-  skip = 70
+  # Places a wind barb every ~180 km, optimized for CONUS domain
+  skip = round(177.28*(dx/1000.)**-.97)
+  print('skipping every '+str(skip)+' grid points to plot')
   barblength = 4
 
   clevs = [50,60,70,80,90,100,110,120,130,140,150]

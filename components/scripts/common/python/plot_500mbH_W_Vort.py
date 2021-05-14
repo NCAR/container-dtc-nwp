@@ -365,7 +365,9 @@ def plot_all(dom):
   print(('Working on 500 mb Hgt/Wind/Vort for '+dom))
 
   units = 'x10${^5}$ s${^{-1}}$'
-  skip = 70
+  # Places a wind barb every ~180 km, optimized for CONUS domain
+  skip = round(177.28*(dx/1000.)**-.97)
+  print('skipping every '+str(skip)+' grid points to plot')
   barblength = 4
 
   vortlevs = [16,20,24,28,32,36,40]
