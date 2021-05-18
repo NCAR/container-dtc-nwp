@@ -14,7 +14,7 @@
  j_parent_start    =   1,  17,
  e_we              = 50, 112,
  e_sn              = 50,  97,
- geog_data_res     = '2deg+gtopo_10m+usgs_10m+10m+nesdis_greenfrac', '2deg+gtopo_10m+usgs_10m+10m+nesdis_greenfrac'
+ geog_data_res     = 'lowres', 'lowres',
  dx = 40000,
  dy = 40000,
  map_proj = 'lambert',

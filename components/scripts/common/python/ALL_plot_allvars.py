@@ -543,8 +543,14 @@ def plot_all(dom):
   clear_plotables(ax,keep_ax_lst,fig)
 
   units = 'kts'
-  skip = 50
-  barblength = 4
+  if dx < 5000:
+    skip = round(75.*(dx/1000.)**-.97)
+    print('skipping every '+str(skip)+' grid points to plot')
+    barblength = 4
+  else:
+    skip = round(177.28*(dx/1000.)**-.97)
+    print('skipping every '+str(skip)+' grid points to plot')
+    barblength = 4
 
   clevs = [5,10,15,20,25,30,35,40,45,50,55,60]
   colorlist = ['turquoise','dodgerblue','blue','#FFF68F','#E3CF57','peru','brown','crimson','red','fuchsia','DarkViolet']
@@ -609,8 +615,14 @@ def plot_all(dom):
 #  clear_plotables(ax,keep_ax_lst,fig)
 #
 #  units = 'x10${^5}$ s${^{-1}}$'
-#  skip = 70
-#  barblength = 4
+#  if dx < 5000:
+#    skip = round(75.*(dx/1000.)**-.97)
+#    print('skipping every '+str(skip)+' grid points to plot')
+#    barblength = 4
+#  else:
+#    skip = round(177.28*(dx/1000.)**-.97)
+#    print('skipping every '+str(skip)+' grid points to plot')
+#    barblength = 4
 #
 #  vortlevs = [16,20,24,28,32,36,40]
 #  colorlist = ['yellow','gold','goldenrod','orange','orangered','red']
@@ -645,8 +657,14 @@ def plot_all(dom):
   clear_plotables(ax,keep_ax_lst,fig)
 
   units = 'kts'
-  skip = 70
-  barblength = 4
+  if dx < 5000:
+    skip = round(75.*(dx/1000.)**-.97)
+    print('skipping every '+str(skip)+' grid points to plot')
+    barblength = 4
+  else:
+    skip = round(177.28*(dx/1000.)**-.97)
+    print('skipping every '+str(skip)+' grid points to plot')
+    barblength = 4
 
   clevs = [50,60,70,80,90,100,110,120,130,140,150]
   colorlist = ['turquoise','deepskyblue','dodgerblue','#1874CD','blue','beige','khaki','peru','brown','crimson']
