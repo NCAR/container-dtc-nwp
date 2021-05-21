@@ -15,14 +15,14 @@ export OBS_ROOT=/data/obs_data/prepbufr/2016012300/
 export inFormat="netcdf"
 export outFormat="grib2"
 
-# Set date/time information
-export startdate=2016012300
-export fhr=00
-export lastfhr=24
-export incrementhr=01
-
 # Set domain lists
 export domain_list="d01"
+
+# Set date/time information
+export startdate_d01=2016012300
+export fhr_d01=00
+export lastfhr_d01=24
+export incrementhr_d01=01
 
 # NCL settings
 #########################################################################
