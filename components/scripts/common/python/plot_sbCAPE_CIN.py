@@ -296,7 +296,7 @@ def plot_all(dom):
   urcrnrlat = np.max(lat)
   lat_0 = Lat0
   lon_0 = Lon0
-  extent=[llcrnrlon,urcrnrlon,llcrnrlat-1,urcrnrlat]
+  extent=[llcrnrlon,urcrnrlon,llcrnrlat,urcrnrlat]
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))

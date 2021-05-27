@@ -16,14 +16,19 @@ export PREPBUFR=/data/obs_data/prepbufr/2012063000/ndas.t00z.prepbufr.tm12.nr
 export inFormat="netcdf"
 export outFormat="grib2"
 
-# Set date/time information
-export startdate=2012062912
-export fhr=00
-export lastfhr=24
-export incrementhr=03
-
 # Set domain lists
 export domain_list="d01 d02"
+
+# Set date/time information for each domain. Set the same if no difference.
+export startdate_d01=2012062912
+export fhr_d01=00
+export lastfhr_d01=24
+export incrementhr_d01=03
+
+export startdate_d02=2012062912
+export fhr_d02=15
+export lastfhr_d02=21
+export incrementhr_d02=03
 
 # NCL settings
 #########################################################################

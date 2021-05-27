@@ -265,6 +265,17 @@ ln -fs $CRTMDIR/SpcCoeff/Big_Endian/abi_gr.SpcCoeff.bin   ./
 # output and put out isobaric state fields and derived fields.
 #######################################################
 
+# Begin looping through domains list
+# ie. for domain in d01 d02 d03
+for domain in ${domain_list}
+do
+
+# Assign date/time info for domain
+startdate=$( eval "echo \${startdate_$domain}" )
+fhr=$( eval "echo \${fhr_$domain}" )
+incrementhr=$( eval "echo \${incrementhr_$domain}" )
+lastfhr=$( eval "echo \${lastfhr_$domain}" )
+
 export NEWDATE=$startdate
 
 YYY=`echo $startdate | cut -c1-4`
@@ -286,11 +297,6 @@ HH=`echo $NEWDATE | cut -c9-10`
 
 echo 'NEWDATE' $NEWDATE
 echo 'YY' $YY
-
-# Begin looping through domains list
-# ie. for domain in d01 d02 d03
-for domain in ${domain_list}
-do
 
 # Create model file name (inFileName)
 dom_id=`echo "${domain}" | cut -d 'd' -f 2`
@@ -400,12 +406,11 @@ fi
 mv WRFPRS_${domain}.${fhr} wrfprs_temp
 mv wrfprs_temp wrfprs_${domain}.${fhr}
 
-done 
-
 fhr=$((10#${fhr}+$((${incrementhr}))))
 
 NEWDATE=`date '+%Y%m%d%H' --date="$YYY$MMM$DDD $HHH $((10#${fhr})) hour"`
 
+done
 done
 
 date
