@@ -140,6 +140,11 @@ if [ -n "${IS_AWS}" ]; then
 else
   RUN_CMD docker-compose up -d
 fi
+
+# Sleep for 2 minutes before loading data
+RUN_CMD sleep 120
+
+# Load data into METviewer
 RUN_CMD docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
 # Run METviewer to create plots
