@@ -3,8 +3,8 @@
     <connection>
         <host>mysql_mv</host>
         <database>mv_snow</database>
-        <user>******</user>
-        <password>******</password>
+        <user>root</user>
+        <password>mvuser</password>
         <management_system>mysql</management_system>
     </connection>
     <rscript>Rscript</rscript>
