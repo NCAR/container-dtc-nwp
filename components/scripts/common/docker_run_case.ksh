@@ -138,7 +138,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 
 # Load MET output into METviewer
 RUN_CMD cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
-if [ -n "${IS_AWS}" ]; then
+if [[ -e $IS_AWS ]]; then
   RUN_CMD docker-compose -f docker-compose-AWS.yml up -d
 else
   RUN_CMD docker-compose up -d
