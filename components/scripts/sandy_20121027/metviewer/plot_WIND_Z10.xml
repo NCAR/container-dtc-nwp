@@ -3,8 +3,8 @@
     <connection>
         <host>mysql_mv</host>
         <database>mv_sandy</database>
-        <user>******</user>
-        <password>******</password>
+        <user>root</user>
+        <password>mvuser</password>
         <management_system>mysql</management_system>
     </connection>
     <rscript>Rscript</rscript>
@@ -56,9 +56,9 @@
         </indep>
         <plot_stat>sum</plot_stat>
         <tmpl>
-            <data_file>plot_20180104_165902.data</data_file>
-            <plot_file>plot_20180104_165902.png</plot_file>
-            <r_file>plot_20180104_165902.R</r_file>
+            <data_file>plot_sandy_WIND_Z10.data</data_file>
+            <plot_file>plot_sandy_WIND_Z10.png</plot_file>
+            <r_file>plot_sandy_WIND_Z10.R</r_file>
             <title>Sandy 10-meter Wind by Lead Time</title>
             <x_label>Lead Time</x_label>
             <y1_label>Error (m/s)</y1_label>

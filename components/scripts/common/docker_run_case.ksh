@@ -5,6 +5,15 @@
 # This script should be run OUTSIDE of the containers.
 #
 
+# Determine if on AWS based on the user name
+if [ $USER == "ec2-user" ]; then
+  IS_AWS="true"
+  echo "Running on AWS."
+  if [[ ! -e $PROJ_DIR ]]; then
+    export PROJ_DIR="/home/ec2-user"
+  fi
+fi
+
 # Make sure that ${PROJ_DIR} has been set
 if [[ ! -e $PROJ_DIR ]]; then
   echo 
@@ -22,78 +31,128 @@ if [ $# -ne 1 ]; then
 fi
 CASE_NAME=$1
 
-# Locate run_command.ksh script 
-SCRIPT_DIR=`dirname $0`
-export RUN_CMD=${SCRIPT_DIR}/run_command.ksh
+# Function for executing and timing commands
+RUN_CMD () {
+
+  if [ $# -eq 0 ]; then
+    echo
+    echo "ERROR: ${SCRIPT} zero arguments."
+    echo
+    exit 1
+  fi
+
+  # Run the command
+  echo
+  echo "RUNNING: time $*"
+  echo
+  time $*
+
+  # Check the return status
+  error=$?
+  if [ ${error} -ne 0 ]; then
+    echo "ERROR:"
+    echo "ERROR: $* exited with status = ${error}"
+    echo "ERROR:"
+    exit ${error}
+  fi
+}
+
+# Locate case-specific scripts
+CASE_SCRIPT=`basename ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*`
 
 # Setup the environment
-${RUN_CMD} setenv CASE_DIR ${PROJ_DIR}/${CASE_NAME}; mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
-${RUN_CMD} mkdir -p wpsprd wrfprd gsiprd postprd nclprd metprd metviewer/mysql
+RUN_CMD export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
+RUN_CMD mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
+RUN_CMD mkdir -p wpsprd wrfprd gsiprd postprd pythonprd metprd metviewer/mysql
 
-# Run WPS 
-${RUN_CMD} time \
- docker run --rm -it --volumes-from wps_geog --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/wpsprd:/home/wpsprd \
- --name run-${CASE_NAME}-wps dtc-wps_wrf /home/scripts/common/run_wps.ksh
+# Run WPS
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+-v ${PROJ_DIR}/container-dtc-nwp/data/WPS_GEOG:/data/WPS_GEOG \
+-v ${PROJ_DIR}/container-dtc-nwp/data:/data \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+-v ${CASE_DIR}/wpsprd:/home/wpsprd \
+--name run-${CASE_NAME}-wps dtcenter/wps_wrf:3.4 \
+/home/scripts/common/run_wps.ksh
 
 # Run Real
-${RUN_CMD} time \
- docker run --rm -it --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
- --name run-${CASE_NAME}-real dtc-wps_wrf /home/scripts/common/run_real.ksh
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+-v ${PROJ_DIR}/container-dtc-nwp/data:/data \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+-v ${CASE_DIR}/wpsprd:/home/wpsprd \
+-v ${CASE_DIR}/wrfprd:/home/wrfprd \
+--name run-${CASE_NAME}-real dtcenter/wps_wrf:3.4 \
+/home/scripts/common/run_real.ksh
 
 # Run GSI
-${RUN_CMD} time \
- docker run --rm -it --volumes-from gsi_data --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/gsiprd:/home/gsiprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
- --name run-${CASE_NAME}-gsi dtc-gsi /home/scripts/common/run_gsi.ksh
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+-v ${PROJ_DIR}/container-dtc-nwp/data:/data \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+-v ${CASE_DIR}/gsiprd:/home/gsiprd \
+-v ${CASE_DIR}/wrfprd:/home/wrfprd \
+--name run-${CASE_NAME}-gsi dtcenter/gsi:3.4 \
+/home/scripts/common/run_gsi.ksh
 
 # Run WRF
-${RUN_CMD} time \
- docker run --rm -it \
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/gsiprd:/home/gsiprd -v ${CASE_DIR}/wrfprd:/home/wrfprd \
- --name run-${CASE_NAME}-wrf dtc-wps_wrf /home/scripts/common/run_wrf.ksh
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+ -v ${CASE_DIR}/wpsprd:/home/wpsprd \
+ -v ${CASE_DIR}/gsiprd:/home/gsiprd \
+ -v ${CASE_DIR}/wrfprd:/home/wrfprd \
+ --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:3.4 /home/scripts/common/run_wrf.ksh
 
 # Run UPP 
-${RUN_CMD} time \
- docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/postprd:/home/postprd \
- --name run-${CASE_NAME}-upp dtc-upp /home/scripts/common/run_upp.ksh
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+-v ${CASE_DIR}/wrfprd:/home/wrfprd \
+-v ${CASE_DIR}/postprd:/home/postprd \
+--name run-${CASE_NAME}-upp dtcenter/upp:3.4 /home/scripts/common/run_upp.ksh
 
 # Run NCL
-${RUN_CMD} time \
- docker run --rm -it \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/wpsprd:/home/wpsprd -v ${CASE_DIR}/wrfprd:/home/wrfprd -v ${CASE_DIR}/nclprd:/home/nclprd \
- --name run-${CASE_NAME}-ncl dtc-ncl /home/scripts/common/run_ncl.ksh
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+-v ${CASE_DIR}/postprd:/home/postprd \
+-v ${CASE_DIR}/pythonprd:/home/pythonprd \
+--name run-${CASE_NAME}-python dtcenter/python:3.4 /home/scripts/common/run_python.ksh
 
 # Run MET
-${RUN_CMD} time \
- docker run --rm -it --volumes-from ${CASE_NAME} \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
- -v ${CASE_DIR}/postprd:/home/postprd -v ${CASE_DIR}/metprd:/home/metprd \
- --name run-${CASE_NAME}-met dtc-met /home/scripts/common/run_met.ksh
+RUN_CMD \
+docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+-v ${PROJ_DIR}/container-dtc-nwp/data:/data \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
+-v ${CASE_DIR}/postprd:/home/postprd \
+-v ${CASE_DIR}/metprd:/home/metprd \
+--name run-${CASE_NAME}-met dtcenter/nwp-container-met:3.4 /home/scripts/common/run_met.ksh
 
 # Load MET output into METviewer
-${RUN_CMD} cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
-${RUN_CMD} docker-compose up -d
-${RUN_CMD} time docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
+RUN_CMD cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
+if [[ -e $IS_AWS ]]; then
+  RUN_CMD docker-compose -f docker-compose-AWS.yml up -d
+else
+  RUN_CMD docker-compose up -d
+fi
+
+# Sleep for 2 minutes before loading data
+RUN_CMD sleep 120
+
+# Load data into METviewer
+RUN_CMD docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
 # Run METviewer to create plots
-for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*/metviewer/*.xml`; do
-  ${RUN_CMD} time docker exec -it metviewer /METviewer/bin/mv_batch.sh /home/scripts/case/metviewer/`basename ${XML_FILE}` 
+for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
+  RUN_CMD docker exec -it metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
 done
 
 echo "Done with the ${CASE_NAME} case."

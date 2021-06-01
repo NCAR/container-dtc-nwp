@@ -3,8 +3,8 @@
     <connection>
         <host>mysql_mv</host>
         <database>mv_derecho</database>
-        <user>******</user>
-        <password>******</password>
+        <user>root</user>
+        <password>mvuser</password>
         <management_system>mysql</management_system>
     </connection>
     <rscript>Rscript</rscript>
@@ -52,10 +52,10 @@
         </indep>
         <plot_stat>median</plot_stat>
         <tmpl>
-            <data_file>plot_20180103_235307.data</data_file>
-            <plot_file>plot_20180103_235307.png</plot_file>
-            <r_file>plot_20180103_235307.R</r_file>
-            <title>Temperature RMSE by Vertical Level</title>
+            <data_file>plot_derecho_TMP_RMSE.data</data_file>
+            <plot_file>plot_derecho_TMP_RMSE.png</plot_file>
+            <r_file>plot_derecho_TMP_RMSE.R</r_file>
+            <title>Derecho Temperature RMSE by Vertical Level</title>
             <x_label>Lead Time</x_label>
             <y1_label>RMSE</y1_label>
             <y2_label/>
