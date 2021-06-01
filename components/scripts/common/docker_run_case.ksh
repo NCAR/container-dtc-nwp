@@ -40,7 +40,7 @@ RUN_CMD () {
 
   # Run the command
   echo
-  echo "CALLING: time $*"
+  echo "RUNNING: time $*"
   echo
   time $*
 
