@@ -63,7 +63,7 @@ CASE_SCRIPT=`basename ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NA
 # Setup the environment
 RUN_CMD export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
 RUN_CMD mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
-RUN_CMD mkdir -p wpsprd wrfprd gsiprd postprd nclprd metprd metviewer/mysql
+RUN_CMD mkdir -p wpsprd wrfprd gsiprd postprd pythonprd metprd metviewer/mysql
 
 # Run WPS
 RUN_CMD \
