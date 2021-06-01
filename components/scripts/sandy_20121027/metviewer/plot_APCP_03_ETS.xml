@@ -61,9 +61,9 @@
         </indep>
         <plot_stat>median</plot_stat>
         <tmpl>
-            <data_file>plot_20180104_164905.data</data_file>
-            <plot_file>plot_20180104_164905.png</plot_file>
-            <r_file>plot_20180104_164905.R</r_file>
+            <data_file>plot_sandy_APCP_03_ETS.data</data_file>
+            <plot_file>plot_sandy_APCP_03_ETS.png</plot_file>
+            <r_file>plot_sandy_APCP_03_ETS.R</r_file>
             <title>Sandy 3-hourly APCP ETS by Threshold</title>
             <x_label>Threshold</x_label>
             <y1_label>ETS</y1_label>

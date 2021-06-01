@@ -63,10 +63,10 @@
         </indep>
         <plot_stat>median</plot_stat>
         <tmpl>
-            <data_file>plot_20180103_234644.data</data_file>
-            <plot_file>plot_20180103_234644.png</plot_file>
-            <r_file>plot_20180103_234644.R</r_file>
-            <title>3-hourly APCP over CONUS by Threshold</title>
+            <data_file>plot_derecho_APCP_03_ETS.data</data_file>
+            <plot_file>plot_derecho_APCP_03_ETS.png</plot_file>
+            <r_file>plot_derecho_APCP_03_ETS.R</r_file>
+            <title>Derecho 3-hourly APCP by Threshold</title>
             <x_label>Lead Time</x_label>
             <y1_label>Equitable Threat Score</y1_label>
             <y2_label>Base Rate</y2_label>
