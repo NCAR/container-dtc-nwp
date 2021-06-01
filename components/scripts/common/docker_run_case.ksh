@@ -28,17 +28,42 @@ if [ $USER == "ec2-user" ]; then
   IS_AWS="true"
 fi
 
+# Function for executing and timing commands
+RUN_CMD () {
+
+  if [ $# -eq 0 ]; then
+    echo
+    echo "ERROR: ${SCRIPT} zero arguments."
+    echo
+    exit 1
+  fi
+
+  # Run the command
+  echo
+  echo "CALLING: time $*"
+  echo
+  time $*
+
+  # Check the return status
+  error=$?
+  if [ ${error} -ne 0 ]; then
+    echo "ERROR:"
+    echo "ERROR: $* exited with status = ${error}"
+    echo "ERROR:"
+    exit ${error}
+  fi
+}
+
 # Locate run_command.ksh script 
 SCRIPT_DIR=`dirname $0`
-export RUN_CMD=${SCRIPT_DIR}/run_command.ksh
 
 # Setup the environment
-${RUN_CMD} export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
-${RUN_CMD} mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
-${RUN_CMD} mkdir -p wpsprd wrfprd gsiprd postprd nclprd metprd metviewer/mysql
+RUN_CMD export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
+RUN_CMD mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
+RUN_CMD mkdir -p wpsprd wrfprd gsiprd postprd nclprd metprd metviewer/mysql
 
 # Run WPS
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data/WPS_GEOG:/data/WPS_GEOG \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
@@ -49,7 +74,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 /home/scripts/common/run_wps.ksh
 
 # Run Real
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
@@ -60,7 +85,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 /home/scripts/common/run_real.ksh
 
 # Run GSI
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
@@ -71,7 +96,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 /home/scripts/common/run_gsi.ksh
 
 # Run WRF
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
@@ -81,7 +106,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
  --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:3.4 /home/scripts/common/run_wrf.ksh
 
 # Run UPP 
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
@@ -90,7 +115,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 --name run-${CASE_NAME}-upp dtcenter/upp:3.4 /home/scripts/common/run_upp.ksh
 
 # Run NCL
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
@@ -99,7 +124,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 --name run-${CASE_NAME}-python dtcenter/python:3.4 /home/scripts/common/run_python.ksh
 
 # Run MET
-${RUN_CMD} time \
+RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
@@ -109,17 +134,17 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 --name run-${CASE_NAME}-met dtcenter/nwp-container-met:3.4 /home/scripts/common/run_met.ksh
 
 # Load MET output into METviewer
-${RUN_CMD} cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
+RUN_CMD cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
 if [ -n "${IS_AWS}" ]; then
-  ${RUN_CMD} time docker-compose -f docker-compose-AWS.yml up -d
+  RUN_CMD docker-compose -f docker-compose-AWS.yml up -d
 else
-  ${RUN_CMD} time docker-compose up -d
+  RUN_CMD docker-compose up -d
 fi
-${RUN_CMD} time docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
+RUN_CMD docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
 # Run METviewer to create plots
 for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*/metviewer/*.xml`; do
-  ${RUN_CMD} time docker exec -it metviewer /METviewer/bin/mv_batch.sh /home/scripts/case/metviewer/`basename ${XML_FILE}` 
+  RUN_CMD docker exec -it metviewer /METviewer/bin/mv_batch.sh /home/scripts/case/metviewer/`basename ${XML_FILE}`
 done
 
 echo "Done with the ${CASE_NAME} case."
