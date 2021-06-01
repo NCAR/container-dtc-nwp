@@ -54,8 +54,8 @@ RUN_CMD () {
   fi
 }
 
-# Locate run_command.ksh script 
-SCRIPT_DIR=`dirname $0`
+# Locate case-specific scripts
+CASE_SCRIPT=`basename ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*`
 
 # Setup the environment
 RUN_CMD export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
@@ -68,7 +68,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data/WPS_GEOG:/data/WPS_GEOG \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
--v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wpsprd:/home/wpsprd \
 --name run-${CASE_NAME}-wps dtcenter/wps_wrf:3.4 \
 /home/scripts/common/run_wps.ksh
@@ -78,7 +78,7 @@ RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
--v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wpsprd:/home/wpsprd \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
 --name run-${CASE_NAME}-real dtcenter/wps_wrf:3.4 \
@@ -89,7 +89,7 @@ RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
--v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/gsiprd:/home/gsiprd \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
 --name run-${CASE_NAME}-gsi dtcenter/gsi:3.4 \
@@ -99,7 +99,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
  -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
- -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+ -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
  -v ${CASE_DIR}/wpsprd:/home/wpsprd \
  -v ${CASE_DIR}/gsiprd:/home/gsiprd \
  -v ${CASE_DIR}/wrfprd:/home/wrfprd \
@@ -109,7 +109,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
--v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
 -v ${CASE_DIR}/postprd:/home/postprd \
 --name run-${CASE_NAME}-upp dtcenter/upp:3.4 /home/scripts/common/run_upp.ksh
@@ -118,7 +118,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
--v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/postprd:/home/postprd \
 -v ${CASE_DIR}/pythonprd:/home/pythonprd \
 --name run-${CASE_NAME}-python dtcenter/python:3.4 /home/scripts/common/run_python.ksh
@@ -128,7 +128,7 @@ RUN_CMD \
 docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data:/data \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
--v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*:/home/scripts/case \
+-v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/postprd:/home/postprd \
 -v ${CASE_DIR}/metprd:/home/metprd \
 --name run-${CASE_NAME}-met dtcenter/nwp-container-met:3.4 /home/scripts/common/run_met.ksh
@@ -143,7 +143,7 @@ fi
 RUN_CMD docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
 # Run METviewer to create plots
-for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_NAME}*/metviewer/*.xml`; do
+for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
   RUN_CMD docker exec -it metviewer /METviewer/bin/mv_batch.sh /home/scripts/case/metviewer/`basename ${XML_FILE}`
 done
 
