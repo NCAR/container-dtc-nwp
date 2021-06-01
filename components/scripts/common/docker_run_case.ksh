@@ -152,7 +152,7 @@ RUN_CMD docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NA
 
 # Run METviewer to create plots
 for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
-  RUN_CMD docker exec -it metviewer /METviewer/bin/mv_batch.sh /scripts/case/metviewer/`basename ${XML_FILE}`
+  RUN_CMD docker exec -it metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
 done
 
 echo "Done with the ${CASE_NAME} case."
