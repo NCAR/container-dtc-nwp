@@ -33,7 +33,8 @@ SCRIPT_DIR=`dirname $0`
 export RUN_CMD=${SCRIPT_DIR}/run_command.ksh
 
 # Setup the environment
-${RUN_CMD} export CASE_DIR=${PROJ_DIR}/${CASE_NAME}; mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
+${RUN_CMD} export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
+${RUN_CMD} mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
 ${RUN_CMD} mkdir -p wpsprd wrfprd gsiprd postprd nclprd metprd metviewer/mysql
 
 # Run WPS
