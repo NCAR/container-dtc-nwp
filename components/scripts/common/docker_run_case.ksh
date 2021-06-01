@@ -5,6 +5,15 @@
 # This script should be run OUTSIDE of the containers.
 #
 
+# Determine if on AWS based on the user name
+if [ $USER == "ec2-user" ]; then
+  IS_AWS="true"
+  echo "Running on AWS."
+  if [[ ! -e $PROJ_DIR ]]; then
+    export PROJ_DIR="/home/ec2-user"
+  fi
+fi
+
 # Make sure that ${PROJ_DIR} has been set
 if [[ ! -e $PROJ_DIR ]]; then
   echo 
@@ -21,12 +30,6 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 CASE_NAME=$1
-
-# Determine if on AWS based on the user name
-if [ $USER == "ec2-user" ]; then
-  echo "Running on AWS."
-  IS_AWS="true"
-fi
 
 # Function for executing and timing commands
 RUN_CMD () {
