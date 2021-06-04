@@ -8,7 +8,7 @@ export WRF_VERSION="4.1.3"
 # GSI settings
 ########################################################################
 export OBS_ROOT=/data/obs_data/prepbufr/
-export PREPBUFR=/data/obs_data/prepbufr/2012102718/ndas.t18z.prepbufr.tm06.nr
+export PREPBUFR=/data/obs_data/prepbufr/2012102800/ndas.t00z.prepbufr.tm06.nr
 
 # UPP settings
 ########################################################################
@@ -20,7 +20,7 @@ export outFormat="grib2"
 export domain_list="d01"
 
 # Set date/time information
-export startdate_d01=2012102712
+export startdate_d01=2012102718
 export fhr_d01=00
 export lastfhr_d01=06
 export incrementhr_d01=01
@@ -34,14 +34,14 @@ export tint=2
 
 # Python settings
 #########################################################################
-export init_time=2012102712
+export init_time=2012102718
 export fhr_beg=00
 export fhr_end=06
 export fhr_inc=01
 
 # MET settings
 ########################################################################
-export START_TIME=2012102712
+export START_TIME=2012102718
 export DOMAIN_LIST=d01
 export GRID_VX=FCST
 export MODEL=ARW
