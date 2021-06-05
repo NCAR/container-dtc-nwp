@@ -6,13 +6,13 @@
  start_year                          = 2012, 2000, 2000,
  start_month                         = 10,   01,   01,
  start_day                           = 27,   24,   24,
- start_hour                          = 12,   12,   12,
+ start_hour                          = 18,   12,   12,
  start_minute                        = 00,   00,   00,
  start_second                        = 00,   00,   00,
  end_year                            = 2012, 2000, 2000,
  end_month                           = 10,   01,   01,
- end_day                             = 27,   25,   25,
- end_hour                            = 18,   12,   12,
+ end_day                             = 28,   25,   25,
+ end_hour                            = 00,   12,   12,
  end_minute                          = 00,   00,   00,
  end_second                          = 00,   00,   00,
  interval_seconds                    = 10800
@@ -109,26 +109,5 @@
  &namelist_quilt
  nio_tasks_per_group = 0,
  nio_groups = 1,
- /
-
- &dfi_control
- dfi_opt                             = 3
- dfi_nfilter                         = 7
- dfi_write_filtered_input            = .true.
- dfi_write_dfi_history               = .false.
- dfi_cutoff_seconds                  = 3600
- dfi_time_dim                        = 1000
- dfi_bckstop_year                    = 2012
- dfi_bckstop_month                   = 10
- dfi_bckstop_day                     = 27
- dfi_bckstop_hour                    = 11
- dfi_bckstop_minute                  = 00
- dfi_bckstop_second                  = 00
- dfi_fwdstop_year                    = 2012
- dfi_fwdstop_month                   = 10
- dfi_fwdstop_day                     = 27
- dfi_fwdstop_hour                    = 12
- dfi_fwdstop_minute                  = 30
- dfi_fwdstop_second                  = 00
  /
 
