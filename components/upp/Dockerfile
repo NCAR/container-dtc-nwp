@@ -59,10 +59,5 @@ RUN umask 0002 \
 ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib
 ENV PATH /usr/lib64/openmpi/bin:$PATH
 #
-# copy in a custom script...apparently there's no way to docker COPY with non-root permissions....
 #
 USER root
-COPY run-upp /comsoftware/upp
-RUN chmod +x /comsoftware/upp/run-upp \
- && chown comuser:comusers /comsoftware/upp/run-upp
-

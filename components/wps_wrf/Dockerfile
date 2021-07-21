@@ -58,12 +58,5 @@ RUN ls /comsoftware/wrf/WPS-${WPS_VERSION}/metgrid.exe /comsoftware/wrf/WPS-${WP
 ENV LD_LIBRARY_PATH /usr/lib64/openmpi/lib:/comsoftware/libs/netcdf/lib
 ENV PATH  /usr/lib64/openmpi/bin:$PATH
 #
-# copy in a couple custom scripts...apparently there's no way to docker COPY with non-root permissions....
 #
 USER root
-COPY docker-clean /comsoftware/wrf
-COPY run-wps-wrf /comsoftware/wrf
-RUN chmod +x /comsoftware/wrf/docker-clean \
- && chmod +x /comsoftware/wrf/run-wps-wrf \
- && chown comuser:comusers /comsoftware/wrf/docker-clean \
- && chown comuser:comusers /comsoftware/wrf/run-wps-wrf
