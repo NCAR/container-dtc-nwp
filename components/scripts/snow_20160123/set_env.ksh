@@ -7,7 +7,8 @@ export WRF_VERSION="4.1.3"
 
 # GSI settings
 ########################################################################
-export OBS_ROOT=/data/obs_data/prepbufr/2016012300/
+export OBS_ROOT=/data/obs_data/prepbufr
+export PREPBUFR=/data/obs_data/prepbufr/2016012300/ndas.t00z.prepbufr.tm06.nr
 
 # UPP settings
 ########################################################################
