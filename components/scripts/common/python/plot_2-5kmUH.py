@@ -360,7 +360,7 @@ def plot_all(dom):
     print(('Working on Max/Min Hourly 2-5 km UH for '+dom))
 
     units = 'm${^2}$ s$^{-2}$'
-    clevs = [-150,-100,-75,-50,-25,-10,0,10,25,50,75,100,150,200,250,300]
+    clevs = [-50,-25,-20,-15,-10,-5,0,5,10,15,20,25,50,75,100,150]
 #   alternative colormap for just max UH if you don't want to plot the min UH too
 #   colorlist = ['white','skyblue','mediumblue','green','orchid','firebrick','#EEC900','DarkViolet']
     colorlist = ['blue','#1874CD','dodgerblue','deepskyblue','turquoise','#E5E5E5','#E5E5E5','#EEEE00','#EEC900','darkorange','orangered','red','firebrick','mediumvioletred','darkviolet']

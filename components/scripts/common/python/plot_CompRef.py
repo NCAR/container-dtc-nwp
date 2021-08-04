@@ -353,28 +353,29 @@ def plot_all(dom):
 #################################
   # Plot composite reflectivity
 #################################
-  t1 = time.perf_counter()
-  print(('Working on composite reflectivity for '+dom))
+  if (fhr > 0):         # Do not make composite reflectivity plot for forecast hour 0
+    t1 = time.perf_counter()
+    print(('Working on composite reflectivity for '+dom))
 
-  units = 'dBZ'
-  clevs = np.linspace(5,70,14)
-  clevsdif = [20,1000]
-  colorlist = ['turquoise','dodgerblue','mediumblue','lime','limegreen','green','#EEEE00','#EEC900','darkorange','red','firebrick','darkred','fuchsia']
-  cm = matplotlib.colors.ListedColormap(colorlist)
-  norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
+    units = 'dBZ'
+    clevs = np.linspace(5,70,14)
+    clevsdif = [20,1000]
+    colorlist = ['turquoise','dodgerblue','mediumblue','lime','limegreen','green','#EEEE00','#EEC900','darkorange','red','firebrick','darkred','fuchsia']
+    cm = matplotlib.colors.ListedColormap(colorlist)
+    norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-  cs_1 = plt.pcolormesh(lon_shift,lat_shift,refc,transform=transform,cmap=cm,vmin=5,norm=norm)
-  cs_1.cmap.set_under('white',alpha=0.)
-  cs_1.cmap.set_over('black')
-  cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
-  cbar1.set_label(units,fontsize=8)
-  cbar1.ax.tick_params(labelsize=8)
-  ax.text(.5,1.03,'WRF Composite Reflectivity ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
+    cs_1 = plt.pcolormesh(lon_shift,lat_shift,refc,transform=transform,cmap=cm,vmin=5,norm=norm)
+    cs_1.cmap.set_under('white',alpha=0.)
+    cs_1.cmap.set_over('black')
+    cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
+    cbar1.set_label(units,fontsize=8)
+    cbar1.ax.tick_params(labelsize=8)
+    ax.text(.5,1.03,'WRF Composite Reflectivity ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
-  compress_and_save('refc_'+dom+'_f'+fhour+'.png')
-  t2 = time.perf_counter()
-  t3 = round(t2-t1, 3)
-  print(('%.3f seconds to plot composite reflectivity for: '+dom) % t3)
+    compress_and_save('refc_'+dom+'_f'+fhour+'.png')
+    t2 = time.perf_counter()
+    t3 = round(t2-t1, 3)
+    print(('%.3f seconds to plot composite reflectivity for: '+dom) % t3)
 
   plt.clf()
 

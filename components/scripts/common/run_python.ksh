@@ -4,6 +4,9 @@
 # Simplified script to run Python in Docker world
 #
 
+# Print start time
+echo "Python plotting starting at: `date`"
+
 # Constants
 PYTHON_BIN="/usr/local/bin/python"
 SCRIPT_DIR="/home/scripts/common"
@@ -57,8 +60,14 @@ while [ $fcst_time -le $fhr_end ] ; do
   for domain in ${domain_list}
   do
 
-    # Run all Python scripts found
-    for pythonscript in `ls -1 $SCRIPT_DIR/python/plot_*.py`; do
+    # Run Python script(s)
+    # To run individual plots, uncomment the line below and comment out the ALL* line.
+    # This option is slower than plotting with the ALL_plot_allvars.py script,
+    # but allows for more flexibility in choosing what variables to plot.
+#    for pythonscript in `ls -1 $SCRIPT_DIR/python/plot_*.py`; do
+    # The ALL_plot_allvars.py script plots all 10 plot types in one script,
+    # reducing I/O and allowing for a shorter run time.
+    for pythonscript in `ls -1 $SCRIPT_DIR/python/ALL_*.py`; do
       python $pythonscript $init_time $fcst_time $POSTPRD_DIR $CARTOPY_DIR $domain
     done
   done
@@ -94,4 +103,5 @@ done
 
 ls -alh *gif
 
-echo Done with Python plotting
+# Print done time
+echo "Python plotting done at: `date`"
