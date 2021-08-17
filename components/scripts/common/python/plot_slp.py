@@ -267,6 +267,11 @@ t1a = time.perf_counter()
 slp = data1.select(name='Pressure reduced to MSL')[0].values * 0.01
 slpsmooth = ndimage.filters.gaussian_filter(slp, 13.78)
 
+# Calculate the min/max/range of smoothed SLP
+min_slpsmooth = slpsmooth.min()
+max_slpsmooth = slpsmooth.max()
+range_slpsmooth = abs(max_slpsmooth - min_slpsmooth)
+
 t2a = time.perf_counter()
 t3a = round(t2a-t1a, 3)
 print(("%.3f seconds to read all messages") % t3a)
@@ -362,13 +367,13 @@ def plot_all(dom):
   clevsdif = [-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12]
   cm = plt.cm.Spectral_r
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
-
   cs1_a = plt.pcolormesh(lon_shift,lat_shift,slp,transform=transform,cmap=cm,norm=norm) 
   cbar1 = plt.colorbar(cs1_a,orientation='horizontal',pad=0.05,shrink=0.6,extend='both')
   cbar1.set_label(units,fontsize=8)
   cbar1.ax.tick_params(labelsize=8)
-  cs1_b = plt.contour(lon_shift,lat_shift,slpsmooth,np.arange(940,1060,4),colors='black',linewidths=1.25,transform=transform)
-  plt.clabel(cs1_b,np.arange(940,1060,4),inline=1,fmt='%d',fontsize=8)
+  if range_slpsmooth > 3.:
+    cs1_b = plt.contour(lon_shift,lat_shift,slpsmooth,np.arange(940,1060,4),colors='black',linewidths=1.25,transform=transform)
+    plt.clabel(cs1_b,np.arange(940,1060,4),inline=1,fmt='%d',fontsize=8)
   ax.text(.5,1.03,'WRF SLP ('+units+') \n initialized: '+itime+' valid: '+vtime + ' (f'+fhour+')',horizontalalignment='center',fontsize=8,transform=ax.transAxes,bbox=dict(facecolor='white',alpha=0.85,boxstyle='square,pad=0.2'))
 
   compress_and_save('slp_'+dom+'_f'+fhour+'.png')
