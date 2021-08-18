@@ -53,12 +53,20 @@ cd $PYTHONPRD_DIR
 # Include case-specific settings
 . $CASE_DIR/set_env.ksh
 
-# Loop through the forecast hours
+# Loop through the 2-digit forecast hours
+typeset -Z2 fcst_time
 fcst_time=$fhr_beg
-while [ $fcst_time -le $fhr_end ] ; do
+while [ $fcst_time -le $fhr_end ]; do
 
-  for domain in ${domain_list}
-  do
+  for domain in ${domain_list}; do
+
+    # Get the filename to be plotted
+    cur_file="${POSTPRD_DIR}/wrfprs_${domain}.${fcst_time}"
+
+    # Skip files that do not exist
+    if [[ ! -e ${cur_file} ]]; then
+      continue
+    fi
 
     # Run Python script(s)
     # To run individual plots, uncomment the line below and comment out the ALL* line.
@@ -68,7 +76,7 @@ while [ $fcst_time -le $fhr_end ] ; do
     # The ALL_plot_allvars.py script plots all 10 plot types in one script,
     # reducing I/O and allowing for a shorter run time.
     for pythonscript in `ls -1 $SCRIPT_DIR/python/ALL_*.py`; do
-      python $pythonscript $init_time $fcst_time $POSTPRD_DIR $CARTOPY_DIR $domain
+      python $pythonscript $init_time $fcst_time $cur_file $CARTOPY_DIR $domain
     done
   done
 
@@ -81,14 +89,12 @@ done
 echo convert to animated gif
 
 # Trim images
-for file in `ls -1 *png`
-do
+for file in `ls -1 *png`; do
   convert $file -trim $file
 done
 
 # Generate animated gifs
-for domain in ${domain_list}
-do
+for domain in ${domain_list}; do
   convert -delay 100 10mwind_${domain}*.png 10mwind_${domain}.gif
   convert -delay 100 250wind_${domain}*.png 250wind_${domain}.gif
   convert -delay 100 2mdew_${domain}*.png 2mdew_${domain}.gif
