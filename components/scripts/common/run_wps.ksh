@@ -47,12 +47,19 @@ echo Running WPS
 
 ln -sf $WRF_BUILD/WPS-${WPS_VERSION}/*.exe .
 
-# Get namelist and correct Vtable based on data
-# The Vtable is dependent on the data that is used
-# Will need to pull this in dynamically somehow, tie to data/namelist
-
+# Copy namelist.wps from the case directory to container space
 cp -f $CASE_DIR/namelist.wps .
-cp -f $CASE_DIR/Vtable.GFS Vtable
+
+# Check to see if a Vtable exists in the case directory.
+# If yes, then use it, probably custom or different version
+# to work with certain data.  If no, then use default from
+# WPS based on input data model type. 
+# input_data is set in set_env.ksh of specific case scripts.
+if [ -e $CASE_DIR/Vtable.${input_data} ]; then
+   cp -f $CASE_DIR/Vtable.${input_data} Vtable
+else
+   cp -f $WRF_BUILD/WPS-${WPS_VERSION}/ungrib/Variable_Tables/Vtable.${input_data} Vtable
+fi
 
 # Link input data
 $WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
