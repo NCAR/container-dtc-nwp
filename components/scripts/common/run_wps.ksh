@@ -64,7 +64,7 @@ fi
 # Link input data. case_name is set in set_env.ksh of specific case scripts
 # and should match subdirectory name under ${PROJ_DIR}/data/model_data/ where
 # your data resides locally.  
-$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/${case_name}/*_*
+$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/${case_name}/*
 
 ##################################
 #     Run the geogrid program    #
