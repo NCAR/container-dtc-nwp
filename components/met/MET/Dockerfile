@@ -5,7 +5,7 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 # This Dockerfile compiles MET from source during "docker build" step
 #
 
-ENV MET_GIT_NAME    v9.1.3
+ENV MET_GIT_NAME    v10.0.0
 ENV MET_GIT_URL     https://github.com/dtcenter/MET.git
 ENV MET_DEVELOPMENT true
 
@@ -77,7 +77,7 @@ RUN umask 0002 \
     MET_PYTHON_CC='-I/usr/include/python3.6m' MET_PYTHON_LD='-lpython3.6m' > ${LOG_FILE} \
  && LOG_FILE=/comsoftware/met/met-${MET_GIT_NAME}/met/make_install.log \
  && echo "Compiling met-${MET_GIT_NAME} and writing log file ${LOG_FILE}" \
- && make install > ${LOG_FILE}
+ && make install > ${LOG_FILE} 
 # && LOG_FILE=/comsoftware/met/met-${MET_GIT_NAME}/met/make_test.log \
 # && echo "Testing met-${MET_GIT_NAME} and writing log file ${LOG_FILE}" \
 # && make test > ${LOG_FILE} 2>&1

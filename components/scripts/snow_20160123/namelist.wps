@@ -24,7 +24,7 @@
  truelat2  =  39.0,
  stand_lon = -97.0,
  geog_data_path = '/data/WPS_GEOG/',
- opt_geogrid_tbl_path = '/comsoftware/wrf/WPS-4.1/geogrid',
+ opt_geogrid_tbl_path = '/comsoftware/wrf/WPS-4.3/geogrid',
 /
 
 &ungrib
@@ -35,5 +35,5 @@
 &metgrid
  fg_name = 'FILE'
  io_form_metgrid = 2, 
- opt_metgrid_tbl_path = '/comsoftware/wrf/WPS-4.1/metgrid',
+ opt_metgrid_tbl_path = '/comsoftware/wrf/WPS-4.3/metgrid',
 /
