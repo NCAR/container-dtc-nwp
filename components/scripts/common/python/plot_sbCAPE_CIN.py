@@ -14,8 +14,8 @@
 #                       Five command line arguments are needed:
 #                       1. Cycle date/time in YYYYMMDDHH format
 #                       2. Forecast hour
-#                       3. EXPT_BASEDIR: Experiment base directory
-#                       4. CARTOPY_DIR:  Base directory of cartopy shapefiles
+#                       3. GRIB_FILE: Input GRIB file to be plotted
+#                       4. CARTOPY_DIR: Base directory of cartopy shapefiles
 #                          -Shapefiles cannot be directly downloaded to NOAA
 #                            machines from the internet, so shapefiles need to
 #                            be downloaded if geopolitical boundaries are
@@ -199,16 +199,18 @@ print('fhour '+fhour)
 itime = ymdh
 vtime = ndate(itime,int(fhr))
 
-EXPT_BASEDIR = str(sys.argv[3])
+GRIB_FILE = str(sys.argv[3])
 CARTOPY_DIR = str(sys.argv[4])
 domain = str(sys.argv[5])
 
 # Specify plotting domains
 domains=[domain]
 
-for dom in domains:
-     # Define the location of the input file
-     data1 = pygrib.open(EXPT_BASEDIR+'/wrfprs_'+dom+'.'+fhour)
+# Open the input file, if it exists
+if os.path.exists(GRIB_FILE):
+    data1 = pygrib.open(GRIB_FILE)
+else:
+    sys.exit('Error - input file does not exist ('+GRIB_FILE+').  Exit!')
 
 # Get the lats and lons
 grids = [data1]
