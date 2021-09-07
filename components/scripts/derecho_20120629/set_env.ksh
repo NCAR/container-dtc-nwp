@@ -5,7 +5,6 @@
 export WPS_VERSION="4.3"
 export WRF_VERSION="4.3"
 export input_data="GFS"
-export case_name="derecho"
 
 # GSI settings
 ########################################################################
