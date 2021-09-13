@@ -13,7 +13,8 @@ SCRIPT_DIR="/home/scripts/common"
 CASE_DIR="/home/scripts/case"
 POSTPRD_DIR="/home/postprd"
 PYTHONPRD_DIR="/home/pythonprd"
-CARTOPY_DIR="$SCRIPT_DIR/python/shapefiles"
+DATA_DIR="/home/data"
+CARTOPY_DIR="$DATA_DIR"
 mkdir -p $CARTOPY_DIR
 
 # Check for the correct container
