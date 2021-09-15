@@ -6,7 +6,7 @@
 For multiple reviewers, list specific instructions for each:</br>
 
 - [ ] Are any changes to the online tutorial required for this PR? **[Yes or No]**</br>
-If **yes**, please describe:</br>.
+If **yes**, please describe:</br>
 
 - [ ] Will this PR change the output of any of the existing cases? **[Yes or No]**</br>
 If **yes**, please describe:</br>
