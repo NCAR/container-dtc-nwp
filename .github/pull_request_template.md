@@ -13,3 +13,11 @@ If **yes**, please describe:</br>
 
 - [ ] Please complete this pull request review by **[Fill in date]**.</br>
 
+## Pull Request Checklist ##
+- [ ] Ensure the PR title matches the feature or bugfix branch name.
+- [ ] Define the PR metadata, as permissions allow:
+Select: **Reviewer(s)**, **Projects(s)**, and **Milestone**.
+- [ ] After submitting the PR, select **Linked issues** with the original issue number.
+- [ ] After the PR is approved, merge your changes, as permissions allow.
+- [ ] Close the linked issue and delete your feature or bugfix branch from GitHub.
+
