@@ -62,7 +62,7 @@ else
 fi
 
 # Link input data. 
-$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/gfs/*_*
+$WRF_BUILD/WPS-${WPS_VERSION}/link_grib.csh $INPUT_DIR/model_data/${case_name}/*
 
 ##################################
 #     Run the geogrid program    #
