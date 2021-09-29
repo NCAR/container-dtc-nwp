@@ -20,7 +20,7 @@ fi
 # Make sure that ${PROJ_DIR} has been set
 if [[ ! -e $PROJ_DIR ]]; then
   echo 
-  echo "ERROR: The ${PROJ_DIR} environment variable must be set."
+  echo "ERROR: The \${PROJ_DIR} environment variable must be set."
   echo
   exit 1
 fi
