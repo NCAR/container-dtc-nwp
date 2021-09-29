@@ -5,6 +5,9 @@
 # This script should be run OUTSIDE of the containers.
 #
 
+# Software container version number to be run
+VERSION=3.5
+
 # Determine if on AWS based on the user name
 if [ $USER == "ec2-user" ]; then
   IS_AWS="true"
@@ -73,7 +76,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wpsprd:/home/wpsprd \
---name run-${CASE_NAME}-wps dtcenter/wps_wrf:3.5 \
+--name run-${CASE_NAME}-wps dtcenter/wps_wrf:${VERSION} \
 /home/scripts/common/run_wps.ksh
 
 # Run Real
@@ -84,7 +87,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wpsprd:/home/wpsprd \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
---name run-${CASE_NAME}-real dtcenter/wps_wrf:3.5 \
+--name run-${CASE_NAME}-real dtcenter/wps_wrf:${VERSION} \
 /home/scripts/common/run_real.ksh
 
 # Run GSI
@@ -95,7 +98,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/gsiprd:/home/gsiprd \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
---name run-${CASE_NAME}-gsi dtcenter/gsi:3.5 \
+--name run-${CASE_NAME}-gsi dtcenter/gsi:${VERSION} \
 /home/scripts/common/run_gsi.ksh
 
 # Run WRF
@@ -106,7 +109,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
  -v ${CASE_DIR}/wpsprd:/home/wpsprd \
  -v ${CASE_DIR}/gsiprd:/home/gsiprd \
  -v ${CASE_DIR}/wrfprd:/home/wrfprd \
- --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:3.5 /home/scripts/common/run_wrf.ksh
+ --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:${VERSION} /home/scripts/common/run_wrf.ksh
 
 # Run UPP 
 RUN_CMD \
@@ -115,7 +118,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
 -v ${CASE_DIR}/postprd:/home/postprd \
---name run-${CASE_NAME}-upp dtcenter/upp:3.5 /home/scripts/common/run_upp.ksh
+--name run-${CASE_NAME}-upp dtcenter/upp:${VERSION} /home/scripts/common/run_upp.ksh
 
 # Run Python
 RUN_CMD \
@@ -125,7 +128,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/data/shapefiles:/home/data/shapefiles \
 -v ${CASE_DIR}/postprd:/home/postprd \
 -v ${CASE_DIR}/pythonprd:/home/pythonprd \
---name run-${CASE_NAME}-python dtcenter/python:3.5 /home/scripts/common/run_python.ksh
+--name run-${CASE_NAME}-python dtcenter/python:${VERSION} /home/scripts/common/run_python.ksh
 
 # Run MET
 RUN_CMD \
@@ -135,7 +138,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/postprd:/home/postprd \
 -v ${CASE_DIR}/metprd:/home/metprd \
---name run-${CASE_NAME}-met dtcenter/nwp-container-met:3.5 /home/scripts/common/run_met.ksh
+--name run-${CASE_NAME}-met dtcenter/nwp-container-met:${VERSION} /home/scripts/common/run_met.ksh
 
 # Load MET output into METviewer
 RUN_CMD cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
