@@ -1,5 +1,6 @@
-FROM dtcenter/base_image:latest
-MAINTAINER Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu>
+ARG BASE_IMAGE=dtcenter/base_image:latest
+FROM $BASE_IMAGE
+MAINTAINER Michael Kavulich <kavulich@ucar.edu> or Jamie Wolff <jwolff@ucar.edu> or Michelle Harrold <harrold@ucar.edu> 
 # 
 # This Dockerfile compiles WRF from source during "docker build" step
 USER comuser
