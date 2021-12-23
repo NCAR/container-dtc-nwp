@@ -2,6 +2,7 @@ services:
   db:
     image: mysql:5.7
     container_name: mysql_mv
+    user: "mysql:mysql"
     ports:
         - "6603:3306"
     volumes:
@@ -13,7 +14,7 @@ services:
 
     # For AWS, map ports using "80:8080"
   metviewer:
-    image: dtcenter/nwp-container-metviewer:3.5
+    image: dtcenter/nwp-container-metviewer:3.5.1
     container_name: metviewer
     ports:
     - "80:8080"
