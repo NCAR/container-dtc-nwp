@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker build -t dtcenter/wps_wrf:latest .
+docker build -t dtcenter/wps_wrf:$DOCKER_TAG .
 
-docker build -t dtcenter/wps_wrf:singularity \
---build-arg BASE_IMAGE=dtcenter/common-community-container:1.0 .
+docker build -t dtcenter/wps_wrf:singularity_$DOCKER_TAG \
+--build-arg BASE_IMAGE=dtcenter/common-community-container:1.1 .
