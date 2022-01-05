@@ -1,6 +1,8 @@
-db:
+services:
+  db:
     image: mysql:5.7
     container_name: mysql_mv
+    user: "mysql:mysql"
     ports:
         - "6603:3306"
     volumes:
@@ -10,8 +12,8 @@ db:
         MYSQL_ROOT_PASSWORD: mvuser
     tty: true
 #
-metviewer:
-    image: dtcenter/nwp-container-metviewer:3.5
+  metviewer:
+    image: dtcenter/nwp-container-metviewer:3.5.1
     container_name: metviewer
     ports:
     - "8080:8080"

@@ -1,4 +1,4 @@
-FROM dtcenter/common-community-container:1.0
+FROM dtcenter/common-community-container:1.1
 MAINTAINER Michael Kavulich <kavulich@ucar.edu>
 
 USER root

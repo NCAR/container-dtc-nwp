@@ -5,14 +5,14 @@ MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 #
 # This Dockerfile checks out METviewer from GitHub and builds the specified branch or tag.
 #
-ENV METVIEWER_GIT_NAME v4.0.0
+ENV METVIEWER_GIT_NAME v4.0.2
 ENV METCALCPY_GIT_NAME v1.0.0
 ENV METPLOTPY_GIT_NAME v1.0.0
 
 #
 # Constants
 #
-ENV TOMCAT_MINOR_VERSION 5.23
+ENV TOMCAT_MINOR_VERSION 5.61
 ENV TOMCAT_MAJOR_VERSION 8
 ENV TOMCAT_VERSION ${TOMCAT_MAJOR_VERSION}.${TOMCAT_MINOR_VERSION}
 
@@ -90,8 +90,7 @@ RUN Rscript -e "install.packages('boot')" \
  && Rscript -e "install.packages('plotrix')" \
  && Rscript -e "install.packages('gsl')" \
  && Rscript -e "install.packages('data.table')" \
- && Rscript -e "install.packages('verification')" \
- && Rscript -e "install.packages('reticulate')"
+ && Rscript -e "install.packages('verification')"
 
 #
 # Install Tomcat
@@ -186,19 +185,20 @@ RUN yum install -y python3 python3-devel python3-pip
 # Install Python packages
 #
 RUN pip-3 install kiwisolver==1.0.1 \
- && pip-3 install bootstrapped \
+ && pip-3 install pillow==7.2.0 \
+ && pip-3 install bootstrapped==0.0.2 \
  && pip-3 install plotly==4.9.0 \
- && pip-3 install kaleido \
- && pip-3 install pandas \
- && pip-3 install numpy \
- && pip-3 install scipy \
- && pip-3 install PyYAML \
- && pip-3 install psutil \
- && pip-3 install requests \
- && pip-3 install matplotlib \
- && pip-3 install lxml \
- && pip-3 install pymysql \
- && pip-3 install retrying
+ && pip-3 install kaleido==0.2.1 \
+ && pip-3 install pandas==1.0.1 \
+ && pip-3 install numpy==1.17.0 \
+ && pip-3 install scipy==1.5.1 \
+ && pip-3 install pingouin==0.3.8 \
+ && pip-3 install PyYAML==5.3.1 \
+ && pip-3 install psutil==5.7.2 \
+ && pip-3 install requests==2.24.0 \
+ && pip-3 install matplotlib==3.3.0 \
+ && pip-3 install lxml==4.5.2 \
+ && pip-3 install pymysql==0.9.3
 
 #
 # Create a link for python3
@@ -214,7 +214,10 @@ ENV METPLOTPY_BASE "/METviewer-python/METplotpy/metplotpy/"
 #
 # Change permission on exe's
 #
-RUN chmod +x /METviewer/bin/*.sh
+RUN chmod 755 /METviewer/bin/mv_batch.sh \
+  && chmod 755 /METviewer/bin/mv_load.sh \
+  && chmod 755 /METviewer/bin/mv_prune.sh \
+  && chmod 755 /METviewer/bin/mv_scorecard.sh
 
 ENTRYPOINT ${CATALINA_HOME}/bin/startup.sh && /bin/bash
 CMD ["true"]
