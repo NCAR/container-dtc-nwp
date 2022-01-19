@@ -10,7 +10,7 @@ on:
 
 jobs:
   event_info:
-    name: "Trigger: ${{ github.event_name }} from ${{ github.event.inputs.pusher_email }}"
+    name: "Trigger: ${{ github.event_name }} from ${{ github.actor }}"
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub values for reference
