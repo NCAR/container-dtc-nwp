@@ -2,4 +2,4 @@
 
 docker push dtcenter/wps_wrf:$DOCKER_TAG
 
-docker push dtcenter/wps_wrf:singularity_$DOCKER_TAG
+docker push dtcenter/wps_wrf:$DOCKER_TAG_for_singularity
