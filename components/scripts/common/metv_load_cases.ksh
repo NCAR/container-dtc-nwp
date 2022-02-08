@@ -36,6 +36,8 @@ dbname=$1
 datadir=`basename $2`
 mvflag=$3
 
+hostname=mysql_mv
+
 if [[ ${mvflag} == "YES"  ]]; then
   # Drop existing database
   mysql -h${hostname} -uroot -pmvuser -e"drop database ${dbname};"
