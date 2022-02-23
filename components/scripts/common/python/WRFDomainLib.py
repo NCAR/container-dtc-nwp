@@ -43,22 +43,36 @@ def get_proj_lcc(wps_file):
     return lccproj
 
 def get_proj_merc(wps_file):
+    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
     ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
-    min_lat = get_wps_param_value(wps_file, 'truelat2', 1, 'float')
-    max_lat = get_wps_param_value(wps_file, 'truelat1', 1, 'float')
-    standard_lon = get_wps_param_value(wps_file, 'stand_lon', 1, 'float')
+    true_lat = get_wps_param_value(wps_file, 'truelat1', 1, 'float')
+    moad_lat = 0.5*(true_lat)
+    min_lat = true_lat - moad_lat
+    max_lat = true_lat + moad_lat
 
-    mercproj = ccrs.Mercator(central_longitude=ref_lon, min_latitude=-75, max_latitude=75,
-                                    globe=None, latitude_true_scale=0.0)
+    mercproj = ccrs.Mercator(central_longitude=0, min_latitude=-75, max_latitude=75,
+                                    globe=None, latitude_true_scale=0)
     return mercproj
 
 def get_proj_ps(wps_file):
+    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
     ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
+
+    # Add logic for choosing correct hemisphere (North/South)
+    #psproj = ccrs.NorthPolarStereo(central_longitude=0.0, globe=None)
+    psproj = ccrs.Stereographic(central_latitude=ref_lat, central_longitude=ref_lon, false_easting=0.0, false_northing=0.0, true_scale_latitude=None, globe=None)
+    return psproj
+
+def get_proj_latlon(wps_file):
+    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
+    ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
+    pole_lat = get_wps_param_value(wps_file, 'pole_lat', 1, 'float')
+    pole_lon = get_wps_param_value(wps_file, 'pole_lon', 1, 'float')
     standard_lon = get_wps_param_value(wps_file, 'stand_lon', 1, 'float')
 
-    # Add logic for North/South
-    psproj = ccrs.NorthPolarStereo(central_longitude=0.0, globe=None)
-    return psproj
+    llproj = ccrs.PlateCarree(central_longitude=ref_lon, globe=None)
+
+    return llproj
 
 def calc_corner_point_latlon(center_lat, center_lon, e_we, e_ns, dx, dy, wpsproj, latlonproj, loc):
     center_x, center_y = wpsproj.transform_point(center_lon, center_lat, latlonproj)
@@ -119,8 +133,15 @@ def calc_wps_domain_info(wps_file):
     # Mercator
     if proj_name=='mercator':
         wpsproj = get_proj_merc(wps_file)
+
+    # Polar Stereographic
+    if proj_name=='polar':
+        wpsproj = get_proj_ps(wps_file)
     
     # Geodetic, for lat/lon projection
+    if proj_name=='lat-lon':   
+        wpsproj = get_proj_latlon(wps_file)
+
     latlonproj = ccrs.Geodetic()
     
     # d01
@@ -224,7 +245,7 @@ def lambert_xticks(ax, ticks, size):
     
 
 def lambert_yticks_left(ax, ticks, size):
-    """Draw ricks on the left y-axis of a Lamber Conformal projection."""
+    """Draw ticks on the left y-axis of a Lamber Conformal projection."""
     te = lambda xy: xy[1]
     lc = lambda t, n, b: np.vstack((np.linspace(b[0], b[1], n), np.zeros(n) + t)).T
     yticks, yticklabels = _lambert_ticks(ax, ticks, 'left', lc, te)
@@ -234,7 +255,7 @@ def lambert_yticks_left(ax, ticks, size):
 
     
 def lambert_yticks_right(ax, ticks, size):
-    """Draw ricks on the left y-axis of a Lamber Conformal projection."""
+    """Draw ticks on the left y-axis of a Lamber Conformal projection."""
     te = lambda xy: xy[1]
     lc = lambda t, n, b: np.vstack((np.linspace(b[0], b[1], n), np.zeros(n) + t)).T
     yticks, yticklabels = _lambert_ticks(ax, ticks, 'right', lc, te)
