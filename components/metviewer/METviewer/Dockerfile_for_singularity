@@ -1,4 +1,4 @@
-FROM dtcenter/base_image:simple
+FROM centos:7
 
 MAINTAINER Tatiana Burek <tatiana@ucar.edu>
 
@@ -56,25 +56,26 @@ RUN if [ "x${METPLOTPY_GIT_NAME}" = "x" ]; then \
 # Install system updates
 #
 RUN yum -y update \
- && yum -y install epel-release \
- && yum -y install 'dnf-command(config-manager)' \
- && yum-config-manager --enable PowerTools
+  && yum -y install 'dnf-command(config-manager)' \
+  && yum-config-manager --enable PowerTools
+
+#
+# Install MariaDB server
+#
+RUN yum -y install --setopt=tsflags=nodocs epel-release && \
+    yum -y install --setopt=tsflags=nodocs mariadb-server bind-utils pwgen psmisc hostname && \
+    yum -y erase vim-minimal && \
+    yum -y update && yum clean all
 
 #
 # Install required packages
 #
-RUN yum -y install wget tar git ant java R mysql ksh \
+USER root
+RUN yum -y install wget tar git ant java R ksh \
  && rm -rf /var/cache/yum/* \
  && yum clean all
 
 
-#
-# TODO:
-# - Install MySQL server (see Dockerfile_mysql for example)
-# - Run prepare-image.sh to setup the environment
-# - Update the ENTRYPOINTS logic correctly.
-# - Modify the METviewer build.properties accordinatly.
-#
 
 #
 # Install gsl-2.5 on which the R gsl package depends.
@@ -135,7 +136,7 @@ RUN echo "Checking out METviewer ${METVIEWER_GIT_NAME} from ${METVIEWER_GIT_URL}
  && cd /METviewer \
  && git checkout ${METVIEWER_GIT_NAME} \
  && echo "Configuring and building METviewer" \
- && cd /METviewer \ 
+ && cd /METviewer \
  && cat webapp/metviewer/WEB-INF/classes/build.properties | \
     sed -r 's%db.host=.*%db.host=mysql_mv%g' | \
     sed -r 's%db.user=.*%db.user=root%g' | \
@@ -228,5 +229,30 @@ RUN chmod 755 /METviewer/bin/mv_batch.sh \
   && chmod 755 /METviewer/bin/mv_prune.sh \
   && chmod 755 /METviewer/bin/mv_scorecard.sh
 
-ENTRYPOINT ${CATALINA_HOME}/bin/startup.sh && /bin/bash
-CMD ["true"]
+
+#
+# database install
+#
+
+#
+# Fix permissions to allow for running on openshift
+#
+COPY fix-permissions.sh ./
+RUN chmod 777 ./fix-permissions.sh
+RUN ./fix-permissions.sh /var/lib/mysql/   && \
+    ./fix-permissions.sh /var/log/mariadb/ && \
+    ./fix-permissions.sh /var/run/
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+#
+# Place VOLUME statement below all changes to /var/lib/mysql
+#
+VOLUME /var/lib/mysql
+
+#
+# Change to mysql user to start the database server
+#
+USER 27
+CMD ["mysqld_safe"]
