@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 import cartopy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-
+import os
 import WRFDomainLib
 
 
-WPSFile = 'namelist.wps'
+WPSFile = '/home/scripts/case/namelist.wps'
 
 wpsproj, latlonproj, corner_lat_full, corner_lon_full, length_x, length_y, ndomains = WRFDomainLib.calc_wps_domain_info(WPSFile)
 
@@ -79,5 +79,14 @@ gl.xlabel_style = {'size': 6}
 gl.ylabel_style = {'size': 6}
 
 ax1.set_title('WRF domain setup', size=14)
+
+path = os.path.join(parent_dir, directory)
+ 
+# Create the directory
+# 'ihritik'
+os.makedirs(path)
 #plt.show()
-fig1.savefig('WRF_derecho_domain.png')
+#fig_path = "/home/pythonprd"
+#os.mkdir(fig_path)
+#fig_name = "WRF_domain.png" 
+#fig1.savefig("/home/pythonprd/WRF_domain.png")

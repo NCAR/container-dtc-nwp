@@ -27,13 +27,6 @@ export fhr_d01=00
 export lastfhr_d01=24
 export incrementhr_d01=01
 
-# NCL settings
-#########################################################################
-# Binning for temperature plots
-export tmin=0
-export tmax=90
-export tint=5
-
 # Python settings
 #########################################################################
 export init_time=2016012300
