@@ -138,7 +138,7 @@ RUN echo "Checking out METviewer ${METVIEWER_GIT_NAME} from ${METVIEWER_GIT_URL}
  && echo "Configuring and building METviewer" \
  && cd /METviewer \
  && cat webapp/metviewer/WEB-INF/classes/build.properties | \
-    sed -r 's%db.host=.*%db.host=mysql_mv%g' | \
+    sed -r 's%db.host=.*%db.host=localhost%g' | \
     sed -r 's%db.user=.*%db.user=root%g' | \
     sed -r 's%db.password=.*%db.password=mvuser%g' | \
     sed -r 's%db.management.system=.*%db.management.system=mysql%g' | \
