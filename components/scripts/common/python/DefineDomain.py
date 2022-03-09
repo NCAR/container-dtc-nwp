@@ -1,8 +1,10 @@
-import numpy as np
+# Define WPS/WRF domain
+
 import cartopy.crs as ccrs
-import shapely.geometry as sgeom
 from copy import copy
-import re  # regular expression
+import numpy as np
+import re
+import shapely.geometry as sgeom
 
 def get_wps_param_value(wps_file, param_name, noutput, vartype):
     with open(wps_file, 'r') as file:
@@ -46,11 +48,8 @@ def get_proj_merc(wps_file):
     ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
     ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
     true_lat = get_wps_param_value(wps_file, 'truelat1', 1, 'float')
-    moad_lat = 0.5*(true_lat)
-    min_lat = true_lat - moad_lat
-    max_lat = true_lat + moad_lat
 
-    mercproj = ccrs.Mercator(central_longitude=0, min_latitude=-75, max_latitude=75,
+    mercproj = ccrs.Mercator(central_longitude=0, min_latitude=-80, max_latitude=80,
                                     globe=None, latitude_true_scale=0)
     return mercproj
 
@@ -118,8 +117,8 @@ def calc_wps_domain_info(wps_file):
     center_lon_full = np.zeros((ndomain, 1))
     half_size_ns_full = np.zeros((ndomain, 1))
     half_size_we_full = np.zeros((ndomain, 1))
-    corner_lat_full = np.zeros((ndomain, 4)) # ll, lr, uf, ur
-    corner_lon_full = np.zeros((ndomain, 4)) # ll, lr, uf, ur
+    corner_lat_full = np.zeros((ndomain, 4)) # ll, lr, ul, ur
+    corner_lon_full = np.zeros((ndomain, 4)) # ll, lr, ul, ur
     dx_full = np.zeros((ndomain, 1))
     dy_full = np.zeros((ndomain, 1))
     length_x = np.zeros((ndomain, 1))
@@ -138,13 +137,13 @@ def calc_wps_domain_info(wps_file):
     if proj_name=='polar':
         wpsproj = get_proj_ps(wps_file)
     
-    # Geodetic, for lat/lon projection
+    # Lat-lon 
     if proj_name=='lat-lon':   
         wpsproj = get_proj_latlon(wps_file)
 
     latlonproj = ccrs.Geodetic()
     
-    # d01
+    # d01 definitions
     dx_full[0] = dx_d01
     dy_full[0] = dy_d01
     center_lat_full[0] = cen_lat_d01
@@ -219,7 +218,7 @@ def reproject_corners(corner_lons, corner_lats, wpsproj, latlonproj):
 
     return corner_x, corner_y
 
-# all these functions below are necessary only when LCC projection is used.
+# All these functions below are necessary only when LCC projection is used
 def find_side(ls, side):
     """
     Given a shapely LineString which is assumed to be rectangular, return the
@@ -233,7 +232,6 @@ def find_side(ls, side):
               'top': [(minx, maxy), (maxx, maxy)],}
     return sgeom.LineString(points[side])
 
-
 def lambert_xticks(ax, ticks, size):
     """Draw ticks on the bottom x-axis of a Lambert Conformal projection."""
     te = lambda xy: xy[0]
@@ -243,7 +241,6 @@ def lambert_xticks(ax, ticks, size):
     ax.set_xticks(xticks)
     ax.set_xticklabels([ax.xaxis.get_major_formatter()(xtick) for xtick in xticklabels], size=size)
     
-
 def lambert_yticks_left(ax, ticks, size):
     """Draw ticks on the left y-axis of a Lamber Conformal projection."""
     te = lambda xy: xy[1]
@@ -253,7 +250,6 @@ def lambert_yticks_left(ax, ticks, size):
     ax.set_yticks(yticks)
     ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) for ytick in yticklabels], size=size)
 
-    
 def lambert_yticks_right(ax, ticks, size):
     """Draw ticks on the left y-axis of a Lamber Conformal projection."""
     te = lambda xy: xy[1]
