@@ -11,11 +11,16 @@
 import cartopy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import io
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 import DefineDomain
+
+# Set MPLCONFIGDIR to be under /home dir (need comuser write permission)
+os.environ[ 'MPLCONFIGDIR' ] = '/home/pythonprd/.config/matplotlib'
 
 # Location and name of namelist.wps
 WPSFile = '/home/scripts/case/namelist.wps'
@@ -53,9 +58,14 @@ if ndomains==3:
              fontweight='bold', size=15, color='red', zorder=2)
 
 
+# Define where Cartopy Maps are located
+CARTOPY_DIR = "/home/data"
+cartopy.config['data_dir'] = CARTOPY_DIR
+os.environ["CARTOPY_USER_BACKGROUNDS"] = CARTOPY_DIR
+
 # map settings
 states = cartopy.feature.NaturalEarthFeature(category='cultural', scale='50m', facecolor='none',
-                             name='admin_1_states_provinces_shp')
+                             name='admin_1_states_provinces')
 borders = cartopy.feature.NaturalEarthFeature(category='cultural', scale='50m', facecolor='none',
                              name='admin_0_countries')
 lakes= cartopy.feature.NaturalEarthFeature('physical','lakes', scale='50m', facecolor='none',
@@ -66,23 +76,16 @@ ax1.add_feature(lakes, linewidth=0.5,edgecolor='k')
 
 ax1.stock_img()
 
-#gl = ax1.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle='--', alpha=1)
-#gl.top_labels = False
-#gl.bottom_labels = False
-#gl.left_labels = True
-#gl.right_labels = True
-#gl.xlocator = matplotlib.ticker.FixedLocator(np.arange(-180,-49,10))
-#gl.ylocator = matplotlib.ticker.FixedLocator(np.arange(0,81,10))
-#gl.xlabel_style = {'size': 6}
-#gl.ylabel_style = {'size': 6}
+gl = ax1.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle='--', x_inline=False, y_inline=False, alpha=1)
+gl.top_labels = False
+gl.bottom_labels = True
+gl.left_labels = True
+gl.right_labels = True
+gl.xlocator = matplotlib.ticker.FixedLocator(np.arange(-180,180,10))
+gl.ylocator = matplotlib.ticker.FixedLocator(np.arange(-90,90,10))
+gl.xlabel_style = {'size': 6,'rotation': 45}
+gl.ylabel_style = {'size': 6}
 
 ax1.set_title('WRF domain setup', size=14)
-#plt.show()
-fig1.savefig('WRF_mercator_domain.png')
+fig1.savefig("WRF_domain.png")
 
-#os.makedirs(path)
-#plt.show()
-#fig_path = "/home/pythonprd"
-#os.mkdir(fig_path)
-#fig_name = "WRF_domain.png"
-#fig1.savefig("/home/pythonprd/WRF_domain.png")
