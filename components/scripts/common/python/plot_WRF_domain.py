@@ -1,10 +1,8 @@
 # This script takes a WPS namelist and plots the domain
 # Current limitations/areas to improve: 
-#   - Mercator and Polar Stereographic a work in progress
+#   - Mercator and Polar Stereographic a work in progress: Not supported!!
 #   - Only supports up to three domains
 #   - Would be nice to use f90nml for reading namelist
-#   - Would be nice to make plotting gridlines more universal
-#     based on projection
 # This script is heavily based off code from:
 # https://github.com/lucas-uw/WRF-tools/tree/master/WRF_input_tools
 

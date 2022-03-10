@@ -44,23 +44,21 @@ def get_proj_lcc(wps_file):
                                     standard_parallels=(par_lat1, par_lat2), globe=None, cutoff=10)
     return lccproj
 
-def get_proj_merc(wps_file):
-    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
-    ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
-    true_lat = get_wps_param_value(wps_file, 'truelat1', 1, 'float')
+#def get_proj_merc(wps_file):
+#    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
+#    ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
+#    true_lat = get_wps_param_value(wps_file, 'truelat1', 1, 'float')
+#
+#    mercproj = ccrs.Mercator(central_longitude=0, min_latitude=-80, max_latitude=80,
+#                                    globe=None, latitude_true_scale=0)
+#    return mercproj
 
-    mercproj = ccrs.Mercator(central_longitude=0, min_latitude=-80, max_latitude=80,
-                                    globe=None, latitude_true_scale=0)
-    return mercproj
-
-def get_proj_ps(wps_file):
-    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
-    ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
-
-    # Add logic for choosing correct hemisphere (North/South)
-    #psproj = ccrs.NorthPolarStereo(central_longitude=0.0, globe=None)
-    psproj = ccrs.Stereographic(central_latitude=ref_lat, central_longitude=ref_lon, false_easting=0.0, false_northing=0.0, true_scale_latitude=None, globe=None)
-    return psproj
+#def get_proj_ps(wps_file):
+#    ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
+#    ref_lon = get_wps_param_value(wps_file, 'ref_lon', 1, 'float')
+#
+#    psproj = ccrs.Stereographic(central_latitude=ref_lat, central_longitude=ref_lon, false_easting=0.0, false_northing=0.0, true_scale_latitude=None, globe=None)
+#    return psproj
 
 def get_proj_latlon(wps_file):
     ref_lat = get_wps_param_value(wps_file, 'ref_lat', 1, 'float')
