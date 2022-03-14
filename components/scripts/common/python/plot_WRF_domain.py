@@ -66,11 +66,13 @@ states = cartopy.feature.NaturalEarthFeature(category='cultural', scale='50m', f
                              name='admin_1_states_provinces')
 borders = cartopy.feature.NaturalEarthFeature(category='cultural', scale='50m', facecolor='none',
                              name='admin_0_countries')
-lakes= cartopy.feature.NaturalEarthFeature('physical','lakes', scale='50m', facecolor='none',
-                             edgecolor='k')
+lakes = cartopy.feature.NaturalEarthFeature('physical', 'lakes', scale='50m', facecolor='none')
+coastlines = cartopy.feature.NaturalEarthFeature('physical', 'coastline', scale='50m', facecolor='none')
+
 ax1.add_feature(states, linewidth=0.5,edgecolor='k')
 ax1.add_feature(borders, linewidth=0.5,edgecolor='k')
 ax1.add_feature(lakes, linewidth=0.5,edgecolor='k')
+ax1.add_feature(coastlines, linewidth=0.5,edgecolor='k')
 
 ax1.stock_img()
 
