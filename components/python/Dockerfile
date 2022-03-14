@@ -32,3 +32,4 @@ RUN conda install -c conda-forge pygrib \
   && conda install -c conda-forge pyyaml
 
 ENV MPLCONFIGDIR /home/user
+ENV PYTHONDONTWRITEBYTECODE 1
