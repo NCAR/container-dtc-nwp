@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mysql:5.7
+    container_name: mysql_mv
+    user: "mysql:mysql"
+    ports:
+        - "6603:3306"
+    volumes:
+        - ${PROJ_DIR}/metviewer/mysql:/var/lib/mysql
+
+    environment:
+        MYSQL_ROOT_PASSWORD: mvuser
+    tty: true
+
+    # For AWS, map ports using "80:8080"
+  metviewer:
+    image: dtcenter/nwp-container-metviewer:3.5.1
+    container_name: metviewer
+    ports:
+    - "80:8080"
+    volumes:
+      - ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts
+      - ${PROJ_DIR}/cases:/data
+      - ${PROJ_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
+      - ${PROJ_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
+      - ${PROJ_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
+      - ${PROJ_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
+    links:
+      - db:mysql_mv
+    tty: true
+#
