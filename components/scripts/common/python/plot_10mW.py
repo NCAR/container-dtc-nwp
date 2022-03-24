@@ -303,7 +303,6 @@ def plot_all(dom):
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
-  ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
 
   # Define where Cartopy Maps are located    
   cartopy.config['data_dir'] = CARTOPY_DIR
@@ -377,7 +376,7 @@ def plot_all(dom):
   cm = matplotlib.colors.ListedColormap(colorlist)
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-  cs_1 = plt.pcolormesh(lon_shift,lat_shift,wspd10m,transform=transform,cmap=cm,vmin=5,norm=norm)
+  cs_1 = plt.pcolormesh(lon_shift,lat_shift,wspd10m,transform=transform,cmap=cm,norm=norm)
   cs_1.cmap.set_under('white',alpha=0.)
   cs_1.cmap.set_over('black')
   cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')

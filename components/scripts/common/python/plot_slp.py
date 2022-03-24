@@ -267,7 +267,7 @@ t1a = time.perf_counter()
 
 # Sea level pressure
 slp = data1.select(name='Pressure reduced to MSL')[0].values * 0.01
-slpsmooth = ndimage.filters.gaussian_filter(slp, 13.78)
+slpsmooth = ndimage.gaussian_filter(slp, 13.78)
 
 # Calculate the min/max/range of smoothed SLP
 min_slpsmooth = slpsmooth.min()
@@ -305,7 +305,6 @@ def plot_all(dom):
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
-  ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
 
   # Define where Cartopy Maps are located    
   cartopy.config['data_dir'] = CARTOPY_DIR

@@ -311,7 +311,7 @@ t1a = time.perf_counter()
 
 # Sea level pressure
 slp = data1.select(name='Pressure reduced to MSL')[0].values * 0.01
-slpsmooth = ndimage.filters.gaussian_filter(slp, 13.78)
+slpsmooth = ndimage.gaussian_filter(slp, 13.78)
 
 # Calculate the min/max/range of smoothed SLP
 min_slpsmooth = slpsmooth.min()
@@ -340,14 +340,14 @@ cape = data1.select(name='Convective available potential energy',typeOfLevel='su
 cin = data1.select(name='Convective inhibition',typeOfLevel='surface')[0].values
 
 # 500 mb height, wind, vorticity
-z500 = data1.select(name='Geopotential Height',level=500)[0].values * 0.1
-z500 = ndimage.filters.gaussian_filter(z500, 6.89)
+z500 = data1.select(name='Geopotential height',level=500)[0].values * 0.1
+z500 = ndimage.gaussian_filter(z500, 6.89)
 # Calculate the min/max/range of filteres 500 height
 min_z500 = z500.min()
 max_z500 = z500.max()
 range_z500 = abs(max_z500 - min_z500)
 vort500 = data1.select(name='Absolute vorticity',level=500)[0].values * 100000
-vort500 = ndimage.filters.gaussian_filter(vort500,0.5)
+vort500 = ndimage.gaussian_filter(vort500,0.5)
 vort500[vort500 > 1000] = 0     # Mask out undefined values on domain edge
 u500 = data1.select(name='U component of wind',level=500)[0].values * 1.94384
 v500 = data1.select(name='V component of wind',level=500)[0].values * 1.94384
@@ -402,7 +402,6 @@ def plot_all(dom):
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
-  ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
 
   # Define where Cartopy Maps are located    
   cartopy.config['data_dir'] = CARTOPY_DIR
@@ -565,7 +564,7 @@ def plot_all(dom):
   cm = matplotlib.colors.ListedColormap(colorlist)
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-  cs_1 = plt.pcolormesh(lon_shift,lat_shift,wspd10m,transform=transform,cmap=cm,vmin=5,norm=norm)
+  cs_1 = plt.pcolormesh(lon_shift,lat_shift,wspd10m,transform=transform,cmap=cm,norm=norm)
   cs_1.cmap.set_under('white',alpha=0.)
   cs_1.cmap.set_over('black')
   cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
@@ -597,7 +596,7 @@ def plot_all(dom):
   cm = matplotlib.colors.ListedColormap(colorlist)
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-  cs_1 = plt.pcolormesh(lon_shift,lat_shift,cape,transform=transform,cmap=cm,vmin=100,norm=norm)
+  cs_1 = plt.pcolormesh(lon_shift,lat_shift,cape,transform=transform,cmap=cm,norm=norm)
   cs_1.cmap.set_under('white',alpha=0.)
   cs_1.cmap.set_over('darkviolet')
   cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
@@ -680,7 +679,7 @@ def plot_all(dom):
   cm = matplotlib.colors.ListedColormap(colorlist)
   norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-  cs_1 = plt.pcolormesh(lon_shift,lat_shift,wspd250,transform=transform,cmap=cm,vmin=50,norm=norm)
+  cs_1 = plt.pcolormesh(lon_shift,lat_shift,wspd250,transform=transform,cmap=cm,norm=norm)
   cs_1.cmap.set_under('white',alpha=0.)
   cs_1.cmap.set_over('red')
   cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
@@ -713,7 +712,7 @@ def plot_all(dom):
     cm = matplotlib.colors.ListedColormap(colorlist)
     norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
 
-    cs_1 = plt.pcolormesh(lon_shift,lat_shift,qpf,transform=transform,cmap=cm,vmin=0.01,norm=norm)
+    cs_1 = plt.pcolormesh(lon_shift,lat_shift,qpf,transform=transform,cmap=cm,norm=norm)
     cs_1.cmap.set_under('white',alpha=0.)
     cs_1.cmap.set_over('pink')
     cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')
@@ -746,7 +745,7 @@ def plot_all(dom):
     cm = matplotlib.colors.ListedColormap(colorlist)
     norm = matplotlib.colors.BoundaryNorm(clevs, cm.N)
   
-    cs_1 = plt.pcolormesh(lon_shift,lat_shift,refc,transform=transform,cmap=cm,vmin=5,norm=norm)
+    cs_1 = plt.pcolormesh(lon_shift,lat_shift,refc,transform=transform,cmap=cm,norm=norm)
     cs_1.cmap.set_under('white',alpha=0.)
     cs_1.cmap.set_over('black')
     cbar1 = plt.colorbar(cs_1,orientation='horizontal',pad=0.05,shrink=0.6,ticks=clevs,extend='max')

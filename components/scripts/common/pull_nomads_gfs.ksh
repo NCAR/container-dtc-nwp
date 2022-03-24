@@ -18,7 +18,7 @@ INIT_YM=`expr $INIT_YMDH | cut -c1-6`
 INIT_YMD=`expr $INIT_YMDH | cut -c1-8`
 INIT_H=`expr $INIT_YMDH | cut -c9-10`
 while [[ $CUR_FHR -le $MAX_FHR ]]; do
-  echo "PULLING: wget ftp://nomads.ncdc.noaa.gov/GFS/Grid4/${INIT_YM}/${INIT_YMD}/gfs_4_${INIT_YMD}_${INIT_H}00_${CUR_FHR}.grb2"
-  wget ftp://nomads.ncdc.noaa.gov/GFS/Grid4/${INIT_YM}/${INIT_YMD}/gfs_4_${INIT_YMD}_${INIT_H}00_${CUR_FHR}.grb2
+  echo "PULLING: curl -LO https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.${INIT_YMD}/${INIT_H}/atmos/gfs.t${INIT_H}z.pgrb2.0p25.f${CUR_FHR}"
+  curl -LO https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.${INIT_YMD}/${INIT_H}/atmos/gfs.t${INIT_H}z.pgrb2.0p25.f${CUR_FHR}
   CUR_FHR=$(($CUR_FHR + $FHR_INC))
 done
