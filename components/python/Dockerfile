@@ -26,10 +26,10 @@ RUN yum -y update \
  && rpm -e --nodeps curl bzip2 \
  && yum clean all
 
-RUN conda install -c conda-forge pygrib \
-  && conda install -c conda-forge cartopy \
-  && conda install -c conda-forge netCDF4 \
-  && conda install -c conda-forge pyyaml
+RUN conda install -c conda-forge pygrib=2.1.4 \
+  && conda install -c conda-forge cartopy=0.20.2 \
+  && conda install -c conda-forge netCDF4=1.5.8 \
+  && conda install -c conda-forge pyyaml=6.0
 
 ENV MPLCONFIGDIR /home/user
 ENV PYTHONDONTWRITEBYTECODE 1
