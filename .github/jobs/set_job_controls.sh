@@ -56,8 +56,12 @@ if grep -q "ci-run-case-" <<< "$commit_msg"; then
                   sed -r 's/$/ /g'    | tr -d '\n'`
 fi
 
+# get branch name
+branch_name=`${GITHUB_WORKSPACE}/.github/jobs/print_branch_name.py`
+
 # build job control output file
 touch job_control_status
+echo branch_name=${branch_name} >> job_control_status
 echo build_base=${build_base} >> job_control_status
 echo build_wps_wrf=${build_wps_wrf} >> job_control_status
 echo build_gsi=${build_gsi} >> job_control_status
@@ -70,6 +74,7 @@ echo run_case_names=${run_case_names} >> job_control_status
 echo Job Control Settings:
 cat job_control_status
 
+echo ::set-output name=branch_name::$branch_name
 echo ::set-output name=build_base::$build_base
 echo ::set-output name=build_wps_wrf::$build_wps_wrf
 echo ::set-output name=build_gsi::$build_gsi
