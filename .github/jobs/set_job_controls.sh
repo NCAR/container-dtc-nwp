@@ -52,7 +52,7 @@ fi
 # check for specific case names being requested
 if grep -q "ci-run-case-" <<< "$commit_msg"; then
   run_case_names=`echo ${commit_msg}  | sed -r 's/ /\n/g' | \
-                  grep "ci-run-case-" | sed -r 's/ci-run-case//g' | \
+                  grep "ci-run-case-" | sed -r 's/ci-run-case-//g' | \
                   sed -r 's/$/,/g'    | tr -d '\n'`
 fi
 
