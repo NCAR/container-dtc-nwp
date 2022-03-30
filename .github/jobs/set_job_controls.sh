@@ -49,6 +49,8 @@ if [ $build_base == "true" ]; then
   build_metviewer=true
 fi
 
+echo "TESTING: which sed ... `which sed`"
+
 # check for specific case names being requested
 if grep -q "ci-run-case-" <<< "$commit_msg"; then
   run_case_names=`echo ${commit_msg}  | sed -r 's/ /\n/g' | \
@@ -65,6 +67,7 @@ echo build_upp=${build_upp} >> job_control_status
 echo build_python=${build_python} >> job_control_status
 echo build_met=${build_met} >> job_control_status
 echo build_metviewer=${build_metviewer} >> job_control_status
+echo run_case_names=${run_case_names} >> job_control_status
 
 echo Job Control Settings:
 cat job_control_status
@@ -76,3 +79,4 @@ echo ::set-output name=build_upp::$build_upp
 echo ::set-output name=build_python::$build_python
 echo ::set-output name=build_met::$build_met
 echo ::set-output name=build_metviewer::$build_metviewer
+echo ::set-output name=run_case_names::$run_case_names
