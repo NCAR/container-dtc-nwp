@@ -2,7 +2,7 @@
   <connection>
     <management_system>mariadb</management_system>
     <host>localhost:3306</host>
-    <database>DATABASE_NAME</database>
+    <database>mv_sandy</database>
     <user>root</user>
     <password>mvuser</password>
   </connection>
