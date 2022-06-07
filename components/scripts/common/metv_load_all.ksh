@@ -9,7 +9,9 @@
 #
 #    Released: 11/03/2017
 #
-# Description:
+# Description: This script provides functionality for creating and loading
+#              a METviewer database for a single case of MET output.
+#              This script should be used with the docker-compose.yml.
 #
 ##########################################################################
 

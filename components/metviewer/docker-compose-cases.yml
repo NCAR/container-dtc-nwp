@@ -6,7 +6,7 @@ services:
     ports:
         - "6603:3306"
     volumes:
-        - ${CASE_DIR}/metviewer/mysql:/var/lib/mysql
+        - ${PROJ_DIR}/metviewer/mysql:/var/lib/mysql
 
     environment:
         MYSQL_ROOT_PASSWORD: mvuser
@@ -19,11 +19,11 @@ services:
     - "8080:8080"
     volumes:
       - ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts
-      - ${CASE_DIR}/metprd:/data
-      - ${CASE_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
-      - ${CASE_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
-      - ${CASE_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
-      - ${CASE_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
+      - ${PROJ_DIR}/cases:/data
+      - ${PROJ_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
+      - ${PROJ_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
+      - ${PROJ_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
+      - ${PROJ_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
     links:
       - db:mysql_mv
     tty: true
