@@ -7,7 +7,7 @@
     <password>mvuser</password>
   </connection>
 
-  <folder_tmpl>/home/ec2-user/sandy/metprd/{met_tool}</folder_tmpl>
+  <folder_tmpl>CASE_DIR/metprd/{met_tool}</folder_tmpl>
 
 	<verbose>false</verbose>
 	<insert_size>1</insert_size>
