@@ -12,6 +12,7 @@ build_upp=false
 build_python=false
 build_met=false
 build_metviewer=false
+run_sandy=true
 run_case_names="sandy"
 
 # TODO: Check to see what files have changed and set flags accordingly
@@ -69,6 +70,7 @@ echo build_upp=${build_upp} >> job_control_status
 echo build_python=${build_python} >> job_control_status
 echo build_met=${build_met} >> job_control_status
 echo build_metviewer=${build_metviewer} >> job_control_status
+echo run_sandy=${run_sandy} >> job_control_status
 echo run_case_names=${run_case_names} >> job_control_status
 
 echo Job Control Settings:
@@ -82,4 +84,5 @@ echo ::set-output name=build_upp::$build_upp
 echo ::set-output name=build_python::$build_python
 echo ::set-output name=build_met::$build_met
 echo ::set-output name=build_metviewer::$build_metviewer
+echo ::set-output name=run_sandy::$run_sandy
 echo ::set-output name=run_case_names::$run_case_names

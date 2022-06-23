@@ -1,4 +1,8 @@
 name: Testing
+
+# Pull or build component images and run one or more test cases
+# for pull requests into the main branch
+
 on:
   push:
     branches:
@@ -9,6 +13,7 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
+
   event_info:
     name: "Trigger: ${{ github.event_name }} from ${{ github.actor }}"
     runs-on: ubuntu-latest
@@ -17,6 +22,7 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+
   job_control:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
@@ -28,7 +34,7 @@ jobs:
       build_python: ${{ steps.job_status.outputs.build_python }}
       build_met: ${{ steps.job_status.outputs.build_met }}
       build_metviewer: ${{ steps.job_status.outputs.build_metviewer }}
-      run_case_names: ${{ steps.job_status.outputs.run_case_names }}
+      run_sandy: ${{ steps.job_status.outputs.run_sandy }}
     steps:
       - uses: actions/checkout@v2
       - name: Set job controls
@@ -40,3 +46,71 @@ jobs:
         with:
           name: job_control_status
           path: job_control_status
+
+  components:
+    name: Software Components
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create directories to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Build or Pull Docker Images
+        run: .github/jobs/build_docker_image.sh
+        env:
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_WPS_WRF: ${{ needs.job_control.outputs.build_wps_wrf }}
+          BUILD_GSI: ${{ needs.job_control.outputs.build_gsi }}
+          BUILD_UPP: ${{ needs.job_control.outputs.build_upp }}
+          BUILD_PYTHON: ${{ needs.job_control.outputs.build_python }}
+          BUILD_MET: ${{ needs.job_control.outputs.build_met }}
+          BUILD_METVIEWER: ${{ needs.job_control.outputs.build_metviewer }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/build_docker_image.log ${RUNNER_WORKSPACE}/logs/
+
+      - name: Push Docker Image
+        run: .github/jobs/push_docker_image.sh
+        if: always()
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
+
+  sandy:
+    name: Run Sandy
+    runs-on: ubuntu-latest
+    needs: [job_control, components]
+    if: ${{ needs.job_control.outputs.run_sandy == 'true' }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Unit Tests in Docker
+        run: .github/jobs/run_case.sh sandy
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+
+      - name: Upload output as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: sandy
+          path: ${{ runner.workspace }}/output
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
