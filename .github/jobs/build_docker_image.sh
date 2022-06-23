@@ -22,8 +22,45 @@ else
    time_command docker pull dtcenter/wps_wrf:latest
 fi
 
-# GSI
-# UPP
-# PYTHON
-# MET
-# METVIEWER
+# GSI image
+if [ "${BULID_GSI}" == "true" ]; then
+   time_command docker build -t dtcenter/gsi \
+      -f ${GITHUB_WORKSPACE}/components/gsi/Dockerfile
+else
+   time_command docker pull dtcenter/gsi:latest
+fi
+
+# UPP image
+if [ "${BULID_UPP}" == "true" ]; then
+   time_command docker build -t dtcenter/upp \
+      -f ${GITHUB_WORKSPACE}/components/upp/Dockerfile
+else
+   time_command docker pull dtcenter/upp:latest
+fi
+
+# Python image
+if [ "${BULID_PYTHON}" == "true" ]; then
+   time_command docker build -t dtcenter/python \
+      -f ${GITHUB_WORKSPACE}/components/python/Dockerfile
+else
+   time_command docker pull dtcenter/python:latest
+fi
+
+# MET image
+if [ "${BULID_MET}" == "true" ]; then
+   time_command docker build -t dtcenter/nwp-container-met \
+      -f ${GITHUB_WORKSPACE}/components/met/MET/Dockerfile
+else
+   time_command docker pull dtcenter/nwp-container-met:latest
+fi
+
+# METviewer image
+if [ "${BULID_METVIEWER}" == "true" ]; then
+   time_command docker build -t dtcenter/nwp-container-metviewer \
+      -f ${GITHUB_WORKSPACE}/components/metviewer/METviewer/Dockerfile
+else
+   time_command docker pull dtcenter/nwp-container-metviewer:latest
+fi
+
+# List the images
+docker images
