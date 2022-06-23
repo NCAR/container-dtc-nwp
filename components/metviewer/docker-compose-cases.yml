@@ -13,7 +13,7 @@ services:
     tty: true
 #
   metviewer:
-    image: dtcenter/nwp-container-metviewer:3.5.1
+    image: dtcenter/nwp-container-metviewer:4.0.0
     container_name: metviewer
     ports:
     - "8080:8080"

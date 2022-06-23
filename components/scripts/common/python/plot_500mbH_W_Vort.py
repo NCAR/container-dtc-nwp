@@ -267,13 +267,13 @@ t1a = time.perf_counter()
 
 # 500 mb height, wind, vorticity
 z500 = data1.select(name='Geopotential Height',level=500)[0].values * 0.1
-z500 = ndimage.filters.gaussian_filter(z500, 6.89)
+z500 = ndimage.gaussian_filter(z500, 6.89)
 # Calculate the min/max/range of filters 500 height
 min_z500 = z500.min()
 max_z500 = z500.max()
 range_z500 = abs(max_z500 - min_z500)
 vort500 = data1.select(name='Absolute vorticity',level=500)[0].values * 100000
-vort500 = ndimage.filters.gaussian_filter(vort500,0.5)
+vort500 = ndimage.gaussian_filter(vort500,0.5)
 vort500[vort500 > 1000] = 0     # Mask out undefined values on domain edge
 u500 = data1.select(name='U component of wind',level=500)[0].values * 1.94384
 v500 = data1.select(name='V component of wind',level=500)[0].values * 1.94384
@@ -311,7 +311,6 @@ def plot_all(dom):
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
-  ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
 
   # Define where Cartopy Maps are located    
   cartopy.config['data_dir'] = CARTOPY_DIR

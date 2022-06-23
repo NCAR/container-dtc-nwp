@@ -301,7 +301,6 @@ def plot_all(dom):
 
   # create figure and axes instances
   fig = plt.figure(figsize=(10,10))
-  ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
 
   # Define where Cartopy Maps are located    
   cartopy.config['data_dir'] = CARTOPY_DIR
