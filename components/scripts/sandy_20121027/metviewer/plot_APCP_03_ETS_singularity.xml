@@ -11,9 +11,9 @@
     <folders>
         <r_tmpl>/opt/tomcat/webapps/metviewer/R_tmpl</r_tmpl>
         <r_work>/opt/tomcat/webapps/metviewer/R_work</r_work>
-        <plots>/opt/tomcat/webapps/metviewer_output/plots</plots>
-        <data>/opt/tomcat/webapps/metviewer_output/data</data>
-        <scripts>/opt/tomcat/webapps/metviewer_output/scripts</scripts>
+        <plots>METV_OUT_PATH/plots</plots>
+        <data>METV_OUT_PATH/data</data>
+        <scripts>METV_OUT_PATH/scripts</scripts>
     </folders>
     <plot>
         <template>series_plot.R_tmpl</template>
