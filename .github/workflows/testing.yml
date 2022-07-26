@@ -70,7 +70,7 @@ jobs:
 
       - name: Copy Docker build log into logs directory
         if: always()
-        run: cp ${GITHUB_WORKSPACE}/build_docker_image.log ${RUNNER_WORKSPACE}/logs/
+        run: cp ${GITHUB_WORKSPACE}/docker_build.log ${RUNNER_WORKSPACE}/logs/
 
       - name: Push Docker Image
         run: .github/jobs/push_docker_image.sh
