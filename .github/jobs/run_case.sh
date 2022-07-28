@@ -8,7 +8,7 @@ source ${GITHUB_WORKSPACE}/.github/jobs/bash_functions.sh
 
 # If not set, set PROJ_DIR to the top-level directory
 if [[ ! -e $PROJ_DIR ]]; then
-  PROJ_DIR=${GITHUB_WORKSPACE}
+  export PROJ_DIR=${GITHUB_WORKSPACE}
 fi
 
 # Make sure there is exactly 1 argument and store the case name
@@ -38,18 +38,19 @@ fi
 
 # Retrieve input data
 DATA_DIR=${PROJ_DIR}/data
-time_command mkdir -p ${DATA_DIR}; cd ${DATA_DIR}
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/wps_geog.tar.gz | tar zxC .
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/CRTM_v2.3.0.tar.gz | tar zxC .
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/shapefiles.tar.gz | tar zxC .
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${CASE_DATA_FILE} | tar zxC .
+time_command "mkdir -p ${DATA_DIR}; cd ${DATA_DIR}"
+echo "JHG which curl = `which curl`"
+time_command "curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/wps_geog.tar.gz | tar zxC ."
+time_command "curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/CRTM_v2.3.0.tar.gz | tar zxC ."
+time_command "curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/shapefiles.tar.gz | tar zxC ."
+time_command "curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${CASE_DATA_FILE} | tar zxC ."
 
 # Locate case-specific scripts
 CASE_SCRIPT=`basename ${PROJ_DIR}/components/scripts/${CASE_NAME}*`
 
 # Setup the environment
-time_command export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
-time_command mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
+export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
+time_command "mkdir -p ${CASE_DIR}; cd ${CASE_DIR}"
 time_command mkdir -p wpsprd wrfprd gsiprd postprd pythonprd metprd metviewer/mysql
 
 # Get WPS/WRF image, if needed
