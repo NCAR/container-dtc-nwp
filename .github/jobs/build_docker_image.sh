@@ -66,5 +66,5 @@ if [ "${BUILD_IMAGE}" == "true" ]; then
    time_command docker push ${COMPONENT_IMAGE}
 
 else
-   echo "No work to be done for the \"${COMPONENT}\" component since \${BUILD_IMAGE} = ${BUILD_IMAGE}"
+   time_command echo "No work to be done for the \"${COMPONENT}\" component since \${BUILD_IMAGE} = ${BUILD_IMAGE}"
 fi
