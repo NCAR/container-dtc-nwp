@@ -2,65 +2,69 @@
 
 source ${GITHUB_WORKSPACE}/.github/jobs/bash_functions.sh
 
-DOCKERHUB_TAG=${DOCKERHUB_REPO}:${SOURCE_BRANCH}
-
-CMD_LOGFILE=${GITHUB_WORKSPACE}/docker_build.log
-
-# Base image
-if [ "${BULID_BASE}" == "true" ]; then
-   time_command docker build -t dtcenter/base_image \
-      -f ${GITHUB_WORKSPACE}/components/base/Dockerfile
+# Check required arguments
+if [ $# != 3 ]; then
+   echo "ERROR: $0 requires 3 arguments:"
+   echo "ERROR:   1. Software component name"
+   echo "ERROR:   2. Docker image name"
+   echo "ERROR:   3. Path to component Dockerfile"
+   exit 0
 else
-   time_command docker pull dtcenter/base_image:latest
+   COMPONENT=$1
+   IMAGE_NAME=$2
+   DOCKERFILE_PATH=$3
 fi
 
-# WPS/WRF image
-if [ "${BULID_WPS_WRF}" == "true" ]; then
-   time_command docker build -t dtcenter/wps_wrf \
-      -f ${GITHUB_WORKSPACE}/components/wps_wrf/Dockerfile
-else
-   time_command docker pull dtcenter/wps_wrf:latest
+# Check environment variables required to push
+if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
+    echo "ERROR: DockerHub credentials not set!"
+    exit 0
 fi
 
-# GSI image
-if [ "${BULID_GSI}" == "true" ]; then
-   time_command docker build -t dtcenter/gsi \
-      -f ${GITHUB_WORKSPACE}/components/gsi/Dockerfile
-else
-   time_command docker pull dtcenter/gsi:latest
+# Check required environment variables
+if [ -z ${SOURCE_BRANCH+x} ] || [ -z ${BASE_IMAGE+x}  ] ||
+   [ -z ${BUILD_BASE+x}   ]  || [ -z ${BUILD_IMAGE+x} ]; then
+   echo "ERROR: Required environment variables not set!"
+   echo "ERROR:    \${SOURCE_BRANCH} = \"${SOURCE_BRANCH}\""
+   echo "ERROR:    \${BASE_IMAGE}    = \"${BASE_IMAGE}\""
+   echo "ERROR:    \${BUILD_BASE}    = \"${BUILD_BASE}\""
+   echo "ERROR:    \${BUILD_IMAGE}   = \"${BUILD_IMAGE}\""
+   exit 0
 fi
 
-# UPP image
-if [ "${BULID_UPP}" == "true" ]; then
-   time_command docker build -t dtcenter/upp \
-      -f ${GITHUB_WORKSPACE}/components/upp/Dockerfile
-else
-   time_command docker pull dtcenter/upp:latest
-fi
+CMD_LOGFILE=${GITHUB_WORKSPACE}/docker_build_${COMPONENT}.log
 
-# Python image
-if [ "${BULID_PYTHON}" == "true" ]; then
-   time_command docker build -t dtcenter/python \
-      -f ${GITHUB_WORKSPACE}/components/python/Dockerfile
-else
-   time_command docker pull dtcenter/python:latest
-fi
+# Software component image
+if [ "${BUILD_IMAGE}" == "true" ]; then
 
-# MET image
-if [ "${BULID_MET}" == "true" ]; then
-   time_command docker build -t dtcenter/nwp-container-met \
-      -f ${GITHUB_WORKSPACE}/components/met/MET/Dockerfile
-else
-   time_command docker pull dtcenter/nwp-container-met:latest
-fi
+   # Base image: either build locally or pull
+   if [ "${BUILD_BASE}" == "true" ]; then
 
-# METviewer image
-if [ "${BULID_METVIEWER}" == "true" ]; then
-   time_command docker build -t dtcenter/nwp-container-metviewer \
-      -f ${GITHUB_WORKSPACE}/components/metviewer/METviewer/Dockerfile
-else
-   time_command docker pull dtcenter/nwp-container-metviewer:latest
-fi
+      # Check for Dockerfile or Dockerfile_simple
+      BASE_DOCKERFILE="Dockerfile"
+      if [ "${BASE_IMAGE}" =~ "simple" ]; then
+         BASE_DOCKERFILE="Dockerfile_simple"
+      fi
 
-# List the images
-docker images
+      time_command docker build -t ${BASE_IMAGE} \
+         -f ${GITHUB_WORKSPACE}/components/base/${BASE_DOCKERFILE}
+   fi
+
+   COMPONENT_IMAGE=dtcenter/container-dtc-nwp-dev:${COMPONENT}_${SOURCE_BRANCH}
+
+   # Build the software component image
+   time_command docker build -t ${COMPONENT_IMAGE} \
+      -f ${GITHUB_WORKSPACE}/components/${DOCKERFILE_PATH}/Dockerfile \
+      ${GITHUB_WORKSPACE}/components/${DOCKERFILE_PATH}
+
+   # List the images
+   time_command docker images
+
+   # Push the image up the DockerHub
+   echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+
+   time_command docker push ${COMPONENT_IMAGE}
+
+else
+   echo "No work to be done for the \"${COMPONENT}\" component since \${BUILD_IMAGE} = ${BUILD_IMAGE}"
+fi

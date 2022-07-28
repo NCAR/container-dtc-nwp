@@ -47,8 +47,8 @@ jobs:
           name: job_control_status
           path: job_control_status
 
-  components:
-    name: Software Components
+  build_wps_wrf:
+    name: Build WPS/WRF Image
     runs-on: ubuntu-latest
     needs: job_control
     steps:
@@ -57,28 +57,179 @@ jobs:
       - name: Create directories to store output
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
-      - name: Build or Pull Docker Images
-        run: .github/jobs/build_docker_image.sh
-        env:
-          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
-          BUILD_WPS_WRF: ${{ needs.job_control.outputs.build_wps_wrf }}
-          BUILD_GSI: ${{ needs.job_control.outputs.build_gsi }}
-          BUILD_UPP: ${{ needs.job_control.outputs.build_upp }}
-          BUILD_PYTHON: ${{ needs.job_control.outputs.build_python }}
-          BUILD_MET: ${{ needs.job_control.outputs.build_met }}
-          BUILD_METVIEWER: ${{ needs.job_control.outputs.build_metviewer }}
-
-      - name: Copy Docker build log into logs directory
-        if: always()
-        run: cp ${GITHUB_WORKSPACE}/docker_build.log ${RUNNER_WORKSPACE}/logs/
-
-      - name: Push Docker Image
-        run: .github/jobs/push_docker_image.sh
-        if: always()
+      - name: Build and push the WPS/WRF Image, as needed
+        run: .github/jobs/build_docker_image.sh wps_wrf wps_wrf wps_wrf
         env:
           SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          BASE_IMAGE: "dtcenter/base_image:simple"
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_IMAGE: ${{ needs.job_control.outputs.build_wps_wrf }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/docker_build_wps_wrf.log ${RUNNER_WORKSPACE}/logs/.
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
+
+  build_gsi:
+    name: Build GSI Image
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create directories to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Build and push the GSI Image, as needed
+        run: .github/jobs/build_docker_image.sh gsi gsi gsi
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          BASE_IMAGE: "dtcenter/base_image:latest"
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_IMAGE: ${{ needs.job_control.outputs.build_gsi }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/docker_build_gsi.log ${RUNNER_WORKSPACE}/logs/.
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
+
+  build_upp:
+    name: Build UPP Image
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create directories to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Build and push the UPP Image, as needed
+        run: .github/jobs/build_docker_image.sh upp upp upp
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          BASE_IMAGE: "dtcenter/base_image:latest"
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_IMAGE: ${{ needs.job_control.outputs.build_upp }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/docker_build_upp.log ${RUNNER_WORKSPACE}/logs/.
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
+
+  build_python:
+    name: Build Python Image
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create directories to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Build and push the Python Image, as needed
+        run: .github/jobs/build_docker_image.sh python python python
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          BASE_IMAGE: "dtcenter/base_image:simple"
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_IMAGE: ${{ needs.job_control.outputs.build_python }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/docker_build_python.log ${RUNNER_WORKSPACE}/logs/.
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
+
+  build_met:
+    name: Build MET Image
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create directories to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Build and push the MET Image, as needed
+        run: .github/jobs/build_docker_image.sh met nwp-container-met met/MET
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          BASE_IMAGE: "dtcenter/base_image:latest"
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_IMAGE: ${{ needs.job_control.outputs.build_met }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/docker_build_met.log ${RUNNER_WORKSPACE}/logs/.
+
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ${{ runner.workspace }}/logs
+          if-no-files-found: ignore
+
+  build_metviewer:
+    name: Build METviewer Image
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create directories to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Build and push the WPS/WRF Image, as needed
+        run: .github/jobs/build_docker_image.sh metviewer nwp-container-metviewer metviewer/METviewer
+        env:
+          SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          BASE_IMAGE: "dtcenter/base_image:simple"
+          BUILD_BASE: ${{ needs.job_control.outputs.build_base }}
+          BUILD_IMAGE: ${{ needs.job_control.outputs.build_metviewer }}
+
+      - name: Copy Docker build log into logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/docker_build_metviewer.log ${RUNNER_WORKSPACE}/logs/.
 
       - name: Upload logs as artifact
         if: always()
@@ -91,21 +242,27 @@ jobs:
   sandy:
     name: Run Sandy
     runs-on: ubuntu-latest
-    needs: [job_control, components]
+    needs: [job_control, build_wps_wrf, build_gsi, build_upp, build_python, build_met, build_metviewer]
     if: ${{ needs.job_control.outputs.run_sandy == 'true' }}
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run Unit Tests in Docker
+      - name: Run the Sandy case
         run: .github/jobs/run_case.sh sandy
         env:
           SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
+          BUILD_WPS_WRF: ${{ needs.job_control.outputs.build_wps_wrf }}
+          BUILD_GSI: ${{ needs.job_control.outputs.build_gsi }}
+          BUILD_UPP: ${{ needs.job_control.outputs.build_upp }}
+          BUILD_PYTHON: ${{ needs.job_control.outputs.build_python }}
+          BUILD_MET: ${{ needs.job_control.outputs.build_met }}
+          BUILD_METVIEWER: ${{ needs.job_control.outputs.build_metviewer }}
 
       - name: Upload output as artifact
         uses: actions/upload-artifact@v2
         with:
           name: sandy
-          path: ${{ runner.workspace }}/output
+          path: ${{ runner.workspace }}/sandy
 
       - name: Upload logs as artifact
         if: always()
