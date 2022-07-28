@@ -22,6 +22,7 @@ function time_command {
   echo "TIMING: Command took `printf '%02d' $(($duration / 60))`:`printf '%02d' $(($duration % 60))` (MM:SS): '$*'"
   if [ ${error} -ne 0 ]; then
     echo "ERROR: '$*' exited with status = ${error}"
+    exit $error
   fi
   return $error
 }
