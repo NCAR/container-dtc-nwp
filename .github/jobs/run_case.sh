@@ -38,18 +38,27 @@ fi
 
 # Retrieve input data
 DATA_DIR=${PROJ_DIR}/data
-time_command mkdir -p ${DATA_DIR}; cd ${DATA_DIR}
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/wps_geog.tar.gz | tar zxC .
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/CRTM_v2.3.0.tar.gz | tar zxC .
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/shapefiles.tar.gz | tar zxC .
-time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${CASE_DATA_FILE} | tar zxC .
+time_command mkdir -p ${DATA_DIR}
+time_command cd ${DATA_DIR}
+# JHG
+#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/wps_geog.tar.gz | tar zxC .
+#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/CRTM_v2.3.0.tar.gz | tar zxC .
+#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/shapefiles.tar.gz | tar zxC .
+#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${CASE_DATA_FILE} | tar zxC .
+
+for TAR_FILE in `echo "wps_geog.tar.gz CRTM_v2.3.0.tar.gz shapefiles.tar.gz ${CASE_DATA_FILE}"`; do
+  time_command wget https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${TAR_FILE}
+  time_command tar -xzf ${TAR_FILE}
+  time_command rm -f ${TAR_FILE}
+done
 
 # Locate case-specific scripts
 CASE_SCRIPT=`basename ${PROJ_DIR}/components/scripts/${CASE_NAME}*`
 
 # Setup the environment
 export CASE_DIR=${PROJ_DIR}/${CASE_NAME}
-time_command mkdir -p ${CASE_DIR}; cd ${CASE_DIR}
+time_command mkdir -p ${CASE_DIR}
+time_command cd ${CASE_DIR}
 time_command mkdir -p wpsprd wrfprd gsiprd postprd pythonprd metprd metviewer/mysql
 
 # Get WPS/WRF image, if needed
