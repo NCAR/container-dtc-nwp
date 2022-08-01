@@ -38,7 +38,7 @@ fi
 
 # Retrieve input data
 DATA_DIR=${PROJ_DIR}/data
-mkdir -p ${DATA_DIR}; cd ${DATA_DIR}
+time_command mkdir -p ${DATA_DIR}; cd ${DATA_DIR}
 time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/wps_geog.tar.gz | tar zxC .
 time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/CRTM_v2.3.0.tar.gz | tar zxC .
 time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/shapefiles.tar.gz | tar zxC .
