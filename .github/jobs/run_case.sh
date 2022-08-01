@@ -112,7 +112,7 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
  -v ${CASE_DIR}/wpsprd:/home/wpsprd \
  -v ${CASE_DIR}/gsiprd:/home/gsiprd \
  -v ${CASE_DIR}/wrfprd:/home/wrfprd \
- --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:latest /home/scripts/common/run_wrf.ksh
+ --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:latest /home/scripts/common/run_wrf.ksh -np 2
 
 # Get UPP image, if needed
 if [ "${BUILD_UPP}" == "true" ]; then
