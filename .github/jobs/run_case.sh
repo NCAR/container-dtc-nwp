@@ -40,14 +40,10 @@ fi
 DATA_DIR=${PROJ_DIR}/data
 time_command mkdir -p ${DATA_DIR}
 time_command cd ${DATA_DIR}
-# JHG
-#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/wps_geog.tar.gz | tar zxC .
-#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/CRTM_v2.3.0.tar.gz | tar zxC .
-#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/shapefiles.tar.gz | tar zxC .
-#time_command curl -SL https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${CASE_DATA_FILE} | tar zxC .
 
+# Pull input data tar files
 for TAR_FILE in `echo "wps_geog.tar.gz CRTM_v2.3.0.tar.gz shapefiles.tar.gz ${CASE_DATA_FILE}"`; do
-  time_command wget https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${TAR_FILE}
+  time_command wget -q https://dtcenter.ucar.edu/dfiles/container_nwp_tutorial/tar_files/${TAR_FILE}
   time_command tar -xzf ${TAR_FILE}
   time_command rm -f ${TAR_FILE}
 done
@@ -70,7 +66,7 @@ fi
 
 # Run WPS
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/data/WPS_GEOG:/data/WPS_GEOG \
 -v ${PROJ_DIR}/data:/data \
 -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
@@ -81,7 +77,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 
 # Run Real
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/data:/data \
 -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
@@ -99,7 +95,7 @@ fi
 
 # Run GSI
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/data:/data \
 -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
@@ -110,7 +106,7 @@ docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
 
 # Run WRF
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
  -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
  -v ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
  -v ${CASE_DIR}/wpsprd:/home/wpsprd \
@@ -127,7 +123,7 @@ fi
 
 # Run UPP 
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
@@ -143,7 +139,7 @@ fi
 
 # Run Python
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${PROJ_DIR}/data/shapefiles:/home/data/shapefiles \
@@ -160,7 +156,7 @@ fi
 
 # Run MET
 time_command \
-docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` \
+docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/data:/data \
 -v ${PROJ_DIR}/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
@@ -187,11 +183,11 @@ fi
 time_command sleep 120
 
 # Load data into METviewer
-time_command docker exec -it metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
+time_command docker exec -i metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
 # Run METviewer to create plots
 for XML_FILE in `ls ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
-  time_command docker exec -it metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
+  time_command docker exec -i metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
 done
 
 echo "Done with the ${CASE_NAME} case."
