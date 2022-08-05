@@ -182,12 +182,16 @@ fi
 # Sleep for 2 minutes before loading data
 time_command sleep 120
 
+# JHG Testing
+time_command docker exec -i metviewer ls -la /scripts
+time_command docker exec -i metviewer ls -la /home/scripts
+
 # Load data into METviewer
-time_command docker exec -i metviewer /home/scripts/common/metv_load_all.ksh mv_${CASE_NAME}
+time_command docker exec -i metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
 # Run METviewer to create plots
 for XML_FILE in `ls ${PROJ_DIR}/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
-  time_command docker exec -i metviewer /METviewer/bin/mv_batch.sh /home/scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
+  time_command docker exec -i metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
 done
 
 echo "Done with the ${CASE_NAME} case."
