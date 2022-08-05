@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create directories to store output
+      - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
       - name: Build and push the WPS/WRF Image, as needed
@@ -86,7 +86,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create directories to store output
+      - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
       - name: Build and push the GSI Image, as needed
@@ -118,7 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create directories to store output
+      - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
       - name: Build and push the UPP Image, as needed
@@ -150,7 +150,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create directories to store output
+      - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
       - name: Build and push the Python Image, as needed
@@ -182,7 +182,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create directories to store output
+      - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
       - name: Build and push the MET Image, as needed
@@ -214,7 +214,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create directories to store output
+      - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
       - name: Build and push the WPS/WRF Image, as needed
@@ -247,6 +247,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Create directory to store logs
+        run: mkdir -p ${RUNNER_WORKSPACE}/logs
+
+      - name: Create directory to store output
+        run: mkdir -p ${RUNNER_WORKSPACE}/output
+
       - name: Run the Sandy case
         run: .github/jobs/run_case.sh sandy
         env:
@@ -258,11 +264,9 @@ jobs:
           BUILD_MET: ${{ needs.job_control.outputs.build_met }}
           BUILD_METVIEWER: ${{ needs.job_control.outputs.build_metviewer }}
 
-      - name: Upload output as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: sandy
-          path: ${{ runner.workspace }}/sandy
+      - name: Copy the Sandy log into the logs directory
+        if: always()
+        run: cp ${GITHUB_WORKSPACE}/run_sandy.log ${RUNNER_WORKSPACE}/logs/.
 
       - name: Upload logs as artifact
         if: always()
@@ -271,3 +275,13 @@ jobs:
           name: logs
           path: ${{ runner.workspace }}/logs
           if-no-files-found: ignore
+
+      - name: Copy run Sandy output into the output directory
+        if: always()
+        run: cp -r ${GITHUB_WORKSPACE}/output/sandy ${RUNNER_WORKSPACE}/output/.
+
+      - name: Upload output as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: sandy
+          path: ${{ runner.workspace }}/output

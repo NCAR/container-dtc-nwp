@@ -183,9 +183,6 @@ fi
 # Sleep for 2 minutes before loading data
 time_command sleep 120
 
-# JHG, testing
-time_command docker exec -i metviewer ls -la /scripts
-
 # Load data into METviewer
 time_command docker exec -i metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
 
