@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # utility function to run command get log the time it took to run
-# if CMD_LOGFILE is set, send output to that file and unset var
+# if CMD_LOGFILE is set, send output to that file
 function time_command {
   local start_seconds=$SECONDS
   echo "RUNNING: $*"
@@ -15,7 +15,6 @@ function time_command {
       echo "Logging to ${CMD_LOGFILE}"
       "$@" >> $CMD_LOGFILE 2>&1
       error=$?
-      unset CMD_LOGFILE
   fi
 
   local duration=$(( SECONDS - start_seconds ))
