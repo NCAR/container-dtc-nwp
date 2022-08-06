@@ -199,4 +199,4 @@ for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRI
 done
 
 echo "Done with the ${CASE_NAME} case."
- 
+
