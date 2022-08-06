@@ -278,7 +278,7 @@ jobs:
 
       - name: Copy run Sandy output into the output directory
         if: always()
-        run: cp -r ${GITHUB_WORKSPACE}/sandy ${RUNNER_WORKSPACE}/output/.
+        run: cp -r ${GITHUB_WORKSPACE}/sandy/pythonprd ${GITHUB_WORKSPACE}/sandy/metprd ${GITHUB_WORKSPACE}/sandy/metviewer ${RUNNER_WORKSPACE}/output/.
 
       - name: Upload output as artifact
         uses: actions/upload-artifact@v2
