@@ -21,6 +21,13 @@ if [ $# -ne 1 ]; then
 fi
 CASE_NAME=$1
 
+# Check required environment variables
+if [ -z ${SOURCE_BRANCH+x} ]; then
+   echo "ERROR: Required environment variables not set!"
+   echo "ERROR:    \${SOURCE_BRANCH} = \"${SOURCE_BRANCH}\""
+   exit 1
+fi
+
 CMD_LOGFILE=${GITHUB_WORKSPACE}/run_${CASE_NAME}.log
 
 # Determine case data file name

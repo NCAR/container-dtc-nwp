@@ -8,7 +8,7 @@ if [ $# != 3 ]; then
    echo "ERROR:   1. Software component name"
    echo "ERROR:   2. Docker image name"
    echo "ERROR:   3. Path to component Dockerfile"
-   exit 0
+   exit 1 
 else
    COMPONENT=$1
    IMAGE_NAME=$2
@@ -18,7 +18,7 @@ fi
 # Check environment variables required to push
 if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
     echo "ERROR: DockerHub credentials not set!"
-    exit 0
+    exit 1 
 fi
 
 # Check required environment variables
@@ -29,7 +29,7 @@ if [ -z ${SOURCE_BRANCH+x} ] || [ -z ${BASE_IMAGE+x}  ] ||
    echo "ERROR:    \${BASE_IMAGE}    = \"${BASE_IMAGE}\""
    echo "ERROR:    \${BUILD_BASE}    = \"${BUILD_BASE}\""
    echo "ERROR:    \${BUILD_IMAGE}   = \"${BUILD_IMAGE}\""
-   exit 0
+   exit 1 
 fi
 
 CMD_LOGFILE=${GITHUB_WORKSPACE}/docker_build_${COMPONENT}.log
@@ -62,7 +62,6 @@ if [ "${BUILD_IMAGE}" == "true" ]; then
 
    # Push the image up the DockerHub
    echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-
    time_command docker push ${COMPONENT_IMAGE}
 
 else
