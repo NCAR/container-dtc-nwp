@@ -4,4 +4,4 @@
 
 from docker_utils import get_branch_name
 
-print(get_branch_name())
+print(get_branch_name().replace("/","_"))
