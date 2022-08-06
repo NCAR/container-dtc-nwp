@@ -27,6 +27,7 @@ jobs:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
     outputs:
+      branch_name: ${{ steps.job_status.outputs.branch_name }}
       build_base: ${{ steps.job_status.outputs.build_base }}
       build_wps_wrf: ${{ steps.job_status.outputs.build_wps_wrf }}
       build_gsi: ${{ steps.job_status.outputs.build_gsi }}
