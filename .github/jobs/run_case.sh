@@ -65,11 +65,11 @@ time_command mkdir -p ${CASE_DIR}
 time_command cd ${CASE_DIR}
 time_command mkdir -p wpsprd wrfprd gsiprd postprd pythonprd metprd metviewer/mysql
 
-# Get WPS/WRF image, if needed
+# WPS/WRF image name
 if [ "${BUILD_WPS_WRF}" == "true" ]; then
-   IMAGE_NAME=dtcenter/container-dtc-nwp-dev:wps_wrf_${SOURCE_BRANCH}
-   time_command docker pull ${IMAGE_NAME}
-   time_command docker rename ${IMAGE_NAME} dtcenter/wps_wrf:latest
+   WPS_WRF_IMAGE=dtcenter/container-dtc-nwp-dev:wps_wrf_${SOURCE_BRANCH}
+else
+   WPS_WRF_IMAGE=dtcenter/wps_wrf:latest
 fi
 
 # Run WPS
@@ -80,7 +80,7 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/common:/home/scripts/common \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wpsprd:/home/wpsprd \
---name run-${CASE_NAME}-wps dtcenter/wps_wrf:latest \
+--name run-${CASE_NAME}-wps ${WPS_WRF_IMAGE} \
 /home/scripts/common/run_wps.ksh
 
 # Run Real
@@ -91,14 +91,14 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wpsprd:/home/wpsprd \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
---name run-${CASE_NAME}-real dtcenter/wps_wrf:latest \
+--name run-${CASE_NAME}-real ${WPS_WRF_IMAGE} \
 /home/scripts/common/run_real.ksh
 
-# Get GSI image, if needed
+# GSI image name
 if [ "${BUILD_GSI}" == "true" ]; then
-   IMAGE_NAME=dtcenter/container-dtc-nwp-dev:gsi_${SOURCE_BRANCH}
-   time_command docker pull ${IMAGE_NAME}
-   time_command docker rename ${IMAGE_NAME} dtcenter/gsi:latest
+   GSI_IMAGE=dtcenter/container-dtc-nwp-dev:gsi_${SOURCE_BRANCH}
+else
+   GSI_IMAGE=dtcenter/gsi:latest
 fi
 
 # Run GSI
@@ -109,7 +109,7 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/gsiprd:/home/gsiprd \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
---name run-${CASE_NAME}-gsi dtcenter/gsi:latest \
+--name run-${CASE_NAME}-gsi ${GSI_IMAGE} \
 /home/scripts/common/run_gsi.ksh
 
 # Run WRF
@@ -120,13 +120,13 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
  -v ${CASE_DIR}/wpsprd:/home/wpsprd \
  -v ${CASE_DIR}/gsiprd:/home/gsiprd \
  -v ${CASE_DIR}/wrfprd:/home/wrfprd \
- --name run-${CASE_NAME}-wrf dtcenter/wps_wrf:latest /home/scripts/common/run_wrf.ksh -np 2
+ --name run-${CASE_NAME}-wrf ${WPS_WRF_IMAGE} /home/scripts/common/run_wrf.ksh -np 2
 
-# Get UPP image, if needed
+# UPP image name
 if [ "${BUILD_UPP}" == "true" ]; then
-   IMAGE_NAME=dtcenter/container-dtc-nwp-dev:upp_${SOURCE_BRANCH}
-   time_command docker pull ${IMAGE_NAME}
-   time_command docker rename ${IMAGE_NAME} dtcenter/upp:latest
+   UPP_IMAGE=dtcenter/container-dtc-nwp-dev:upp_${SOURCE_BRANCH}
+else
+   UPP_IMAGE=dtcenter/upp:latest
 fi
 
 # Run UPP 
@@ -136,13 +136,13 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/wrfprd:/home/wrfprd \
 -v ${CASE_DIR}/postprd:/home/postprd \
---name run-${CASE_NAME}-upp dtcenter/upp:latest /home/scripts/common/run_upp.ksh
+--name run-${CASE_NAME}-upp ${UPP_IMAGE} /home/scripts/common/run_upp.ksh
 
-# Get Python image, if needed
-if [ "${BUILD_UPP}" == "true" ]; then
-   IMAGE_NAME=dtcenter/container-dtc-nwp-dev:python_${SOURCE_BRANCH}
-   time_command docker pull ${IMAGE_NAME}
-   time_command docker rename ${IMAGE_NAME} dtcenter/python:latest
+# Python image name
+if [ "${BUILD_PYTHON}" == "true" ]; then
+   PYTHON_IMAGE=dtcenter/container-dtc-nwp-dev:python_${SOURCE_BRANCH}
+else
+   PYTHON_IMAGE=dtcenter/python:latest
 fi
 
 # Run Python
@@ -153,13 +153,13 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/data/shapefiles:/home/data/shapefiles \
 -v ${CASE_DIR}/postprd:/home/postprd \
 -v ${CASE_DIR}/pythonprd:/home/pythonprd \
---name run-${CASE_NAME}-python dtcenter/python:latest /home/scripts/common/run_python.ksh
+--name run-${CASE_NAME}-python ${PYTHON_IMAGE} /home/scripts/common/run_python.ksh
 
-# Get MET image, if needed
-if [ "${BUILD_UPP}" == "true" ]; then
-   IMAGE_NAME=dtcenter/container-dtc-nwp-dev:met_${SOURCE_BRANCH}
-   time_command docker pull ${IMAGE_NAME}
-   time_command docker rename ${IMAGE_NAME} dtcenter/nwp-container-met:latest
+# MET image name
+if [ "${BUILD_MET}" == "true" ]; then
+   MET_IMAGE=dtcenter/container-dtc-nwp-dev:met_${SOURCE_BRANCH}
+else
+   MET_IMAGE=dtcenter/nwp-container-met:latest
 fi
 
 # Run MET
@@ -170,22 +170,20 @@ docker run --rm -i -e LOCAL_USER_ID=`id -u $USER` \
 -v ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}:/home/scripts/case \
 -v ${CASE_DIR}/postprd:/home/postprd \
 -v ${CASE_DIR}/metprd:/home/metprd \
---name run-${CASE_NAME}-met dtcenter/nwp-container-met:latest /home/scripts/common/run_met.ksh
+--name run-${CASE_NAME}-met ${MET_IMAGE} /home/scripts/common/run_met.ksh
 
-# Get METviewer image, if needed
-if [ "${BUILD_UPP}" == "true" ]; then
-   IMAGE_NAME=dtcenter/container-dtc-nwp-dev:metviewer_${SOURCE_BRANCH}
-   time_command docker pull ${IMAGE_NAME}
-   time_command docker rename ${IMAGE_NAME} dtcenter/container-dtc-metviewer:latest
+# Copy docker-compose.yml to working directory
+time_command cp ${PROJ_DIR}/container-dtc-nwp/components/metviewer/docker-compose.yml .
+
+# METviewer image name
+if [ "${BUILD_METVIEWER}" == "true" ]; then
+   METVIEWER_IMAGE=dtcenter/container-dtc-nwp-dev:metviewer_${SOURCE_BRANCH}
+   cat docker-compose.yml | sed "s%dtcenter/nwp-container-metviewer:latest%${METVIEWER_IMAGE}%g" > docker-compose.tmp
+   mv docker-compose.tmp docker-compose.yml
 fi
 
-# Load MET output into METviewer
-time_command cd ${PROJ_DIR}/container-dtc-nwp/components/metviewer
-if [[ -e $IS_AWS ]]; then
-  time_command docker-compose -f docker-compose-AWS.yml up -d
-else
-  time_command docker-compose up -d
-fi
+# Launch METviewer
+time_command docker-compose up -d
 
 # Sleep for 2 minutes before loading data
 time_command sleep 120
@@ -199,4 +197,3 @@ for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRI
 done
 
 echo "Done with the ${CASE_NAME} case."
-
