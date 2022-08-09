@@ -5,6 +5,7 @@
 # a push to determine which jobs to run and which to skip.
 
 # set default status for jobs
+build_all=false
 build_base=false
 build_wps_wrf=false
 build_gsi=false
@@ -13,48 +14,61 @@ build_python=false
 build_met=false
 build_metviewer=false
 run_sandy=true
-run_case_names="sandy"
 
-# TODO: Check to see what files have changed and set flags accordingly
+# handle workflow dispatch
+if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
+  if [ "${force_run}" == "true" ]; then
+    echo "Rebuild and run everything for workflow dispatch events."
+    build_all=true
+  fi
+
+# check for ci-build-all
+elif grep -q "ci-build-base" <<< "$commit_msg"; then
+    echo "Found ci-build-all in the commit message."
+    build_all=true
+fi
 
 # check for specific build commands
-if grep -q "ci-build-base" <<< "$commit_msg"; then
+else
+  if grep -q "ci-build-base" <<< "$commit_msg"; then
+    echo "Found ci-build-base in the commit message. Will rebuild everything."
+    build_all=true
+  fi
+  if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
+    echo "Found ci-build-wps-wrf in the commit message."
+    build_wps_wrf=true
+  fi
+  if grep -q "ci-build-gsi" <<< "$commit_msg"; then
+    echo "Found ci-build-gsi in the commit message."
+    build_gsi=true
+  fi
+  if grep -q "ci-build-upp" <<< "$commit_msg"; then
+    echo "Found ci-build-upp in the commit message."
+    build_upp=true
+  fi
+  if grep -q "ci-build-python" <<< "$commit_msg"; then
+    echo "Found ci-build-python in the commit message."
+    build_python=true
+  fi
+  if grep -q "ci-build-met" <<< "$commit_msg"; then
+    echo "Found ci-build-met in the commit message."
+    build_met=true
+  fi
+  if grep -q "ci-build-metviewer" <<< "$commit_msg"; then
+    echo "Found ci-build-metviewer in the commit message."
+    build_metviewer=true
+  fi
+fi
+
+# rebuild all if rebuilding the base image or ci-build-all
+if $build_all == "true"; then
   build_base=true
-fi
-if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
-  build_wps_wrf=true
-fi
-if grep -q "ci-build-gsi" <<< "$commit_msg"; then
-  build_gsi=true
-fi
-if grep -q "ci-build-upp" <<< "$commit_msg"; then
-  build_upp=true
-fi
-if grep -q "ci-build-python" <<< "$commit_msg"; then
-  build_python=true
-fi
-if grep -q "ci-build-met" <<< "$commit_msg"; then
-  build_met=true
-fi
-if grep -q "ci-build-metviewer" <<< "$commit_msg"; then
-  build_metviewer=true
-fi
-
-# if rebuilding the base image, rebuild all
-if [ $build_base == "true" ]; then
   build_wps_wrf=true
   build_gsi=true
   build_upp=true
   build_python=true
   build_met=true
   build_metviewer=true
-fi
-
-# check for specific case names being requested
-if grep -q "ci-run-case-" <<< "$commit_msg"; then
-  run_case_names=`echo ${commit_msg}  | sed -r 's/ /\n/g' | \
-                  grep "ci-run-case-" | sed -r 's/ci-run-case-//g' | \
-                  sed -r 's/$/ /g'    | tr -d '\n'`
 fi
 
 # get branch name
@@ -71,7 +85,6 @@ echo build_python=${build_python} >> job_control_status
 echo build_met=${build_met} >> job_control_status
 echo build_metviewer=${build_metviewer} >> job_control_status
 echo run_sandy=${run_sandy} >> job_control_status
-echo run_case_names=${run_case_names} >> job_control_status
 
 echo Job Control Settings:
 cat job_control_status
@@ -85,4 +98,3 @@ echo ::set-output name=build_python::$build_python
 echo ::set-output name=build_met::$build_met
 echo ::set-output name=build_metviewer::$build_metviewer
 echo ::set-output name=run_sandy::$run_sandy
-echo ::set-output name=run_case_names::$run_case_names

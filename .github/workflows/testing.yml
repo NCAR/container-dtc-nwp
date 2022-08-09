@@ -9,8 +9,16 @@ on:
       - main
       - feature**
       - bugfix**
+
   pull_request:
     types: [opened, reopened, synchronize]
+
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: "Run Sandy"
+        default: true
+        type: boolean
 
 jobs:
 
@@ -36,6 +44,7 @@ jobs:
       build_met: ${{ steps.job_status.outputs.build_met }}
       build_metviewer: ${{ steps.job_status.outputs.build_metviewer }}
       run_sandy: ${{ steps.job_status.outputs.run_sandy }}
+
     steps:
       - uses: actions/checkout@v2
       - name: Set job controls
@@ -43,6 +52,7 @@ jobs:
         run: .github/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
+          force_run: ${{ github.event.inputs.force_run }}
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
