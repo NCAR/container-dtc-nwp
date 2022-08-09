@@ -26,7 +26,6 @@ if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
 elif grep -q "ci-build-base" <<< "$commit_msg"; then
     echo "Found ci-build-all in the commit message."
     build_all=true
-fi
 
 # check for specific build commands
 else
