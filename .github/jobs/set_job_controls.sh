@@ -24,15 +24,14 @@ fi
 # handle workflow dispatch
 if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
   if [ "${force_run}" == "true" ]; then
-    echo "Rebuild and run everything for workflow dispatch events."
+    echo "Rebuild all components for workflow dispatch events."
     build_all=true
   fi
 
 # check for ci-build-all
 elif grep -q "ci-build-all" <<< "$commit_msg"; then
-    echo "Found ci-build-all in the commit message."
-    build_all=true
-fi
+  echo "Found ci-build-all in the commit message."
+  build_all=true
 
 # check for specific build commands
 else
