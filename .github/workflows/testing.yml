@@ -228,7 +228,7 @@ jobs:
       - name: Create directory to store logs
         run: mkdir -p ${RUNNER_WORKSPACE}/logs
 
-      - name: Build and push the WPS/WRF Image, as needed
+      - name: Build and push the METviewer Image, as needed
         run: .github/jobs/build_docker_image.sh metviewer nwp-container-metviewer metviewer/METviewer
         env:
           SOURCE_BRANCH: ${{ needs.job_control.outputs.branch_name }}
