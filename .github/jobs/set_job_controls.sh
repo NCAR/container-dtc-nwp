@@ -5,7 +5,7 @@
 # a push to determine which jobs to run and which to skip.
 
 # set default status for jobs
-build_all=false
+build_all=false # rebuild all components but not the base image
 build_base=false
 build_wps_wrf=false
 build_gsi=false
@@ -15,6 +15,12 @@ build_met=false
 build_metviewer=false
 run_sandy=true
 
+# check for ci-build-base
+if grep -q "ci-build-base" <<< "$commit_msg"; then
+  echo "Found ci-build-base in the commit message. Will rebuild all components."
+  build_base=true
+fi
+
 # handle workflow dispatch
 if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
   if [ "${force_run}" == "true" ]; then
@@ -23,16 +29,13 @@ if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
   fi
 
 # check for ci-build-all
-elif grep -q "ci-build-base" <<< "$commit_msg"; then
+elif grep -q "ci-build-all" <<< "$commit_msg"; then
     echo "Found ci-build-all in the commit message."
     build_all=true
+fi
 
 # check for specific build commands
 else
-  if grep -q "ci-build-base" <<< "$commit_msg"; then
-    echo "Found ci-build-base in the commit message. Will rebuild everything."
-    build_all=true
-  fi
   if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
     echo "Found ci-build-wps-wrf in the commit message."
     build_wps_wrf=true
@@ -59,9 +62,8 @@ else
   fi
 fi
 
-# rebuild all if rebuilding the base image or ci-build-all
-if $build_all == "true"; then
-  build_base=true
+# rebuild all software components but not the base image
+if [ $build_all == "true" ] || [ $build_base == "true" ]; then
   build_wps_wrf=true
   build_gsi=true
   build_upp=true
