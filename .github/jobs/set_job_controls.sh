@@ -17,7 +17,7 @@ run_sandy=true
 
 # determine comparison version
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
-  ref_version=${GITHUB_BASE_REF}
+  ref_version="origin/${GITHUB_BASE_REF}"
 elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
   ref_version=''
 else
