@@ -52,7 +52,7 @@ jobs:
         run: .github/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
-          reference_sha: ${{ github.sha }}
+          reference_sha: ${{ github.event.before }}
           force_run: ${{ github.event.inputs.force_run }}
       - uses: actions/upload-artifact@v2
         with:
