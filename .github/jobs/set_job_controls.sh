@@ -19,10 +19,11 @@ run_sandy=true
 diff_files=`git diff --name-only ${reference_sha}`
 echo "Modified files (git diff --name-only ${reference_sha}):"
 echo ${diff_files}
+echo
 
 # check for ci-build-base
 if grep -q "ci-build-base" <<< "$commit_msg"; then
-  echo "Build base and all components for ci-build-base in the commit message."
+  echo "Build base and all components since ci-build-base is in the commit message."
   build_base=true
 fi
 
@@ -35,33 +36,33 @@ if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
 
 # check for ci-build-all
 elif grep -q "ci-build-all" <<< "$commit_msg"; then
-  echo "Build all components for ci-build-all in the commit message."
+  echo "Build all components since ci-build-all is in the commit message."
   build_all=true
 
 # check for specific build commands
 else
   if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
-    echo "Build WPS/WRF for ci-build-wps-wrf in the commit message."
+    echo "Build WPS/WRF since ci-build-wps-wrf is in the commit message."
     build_wps_wrf=true
   fi
   if grep -q "ci-build-gsi" <<< "$commit_msg"; then
-    echo "Build GSI for ci-build-gsi in the commit message."
+    echo "Build GSI since ci-build-gsi is in the commit message."
     build_gsi=true
   fi
   if grep -q "ci-build-upp" <<< "$commit_msg"; then
-    echo "Build UPP for ci-build-upp in the commit message."
+    echo "Build UPP since ci-build-upp is in the commit message."
     build_upp=true
   fi
   if grep -q "ci-build-python" <<< "$commit_msg"; then
-    echo "Build Python for ci-build-python in the commit message."
+    echo "Build Python since ci-build-python is in the commit message."
     build_python=true
   fi
   if grep -q "ci-build-met" <<< "$commit_msg"; then
-    echo "Build MET for ci-build-met in the commit message."
+    echo "Build MET since ci-build-met is in the commit message."
     build_met=true
   fi
   if grep -q "ci-build-metviewer" <<< "$commit_msg"; then
-    echo "Build METviewer for ci-build-metviewer in the commit message."
+    echo "Build METviewer since ci-build-metviewer is in the commit message."
     build_metviewer=true
   fi
 fi
@@ -121,6 +122,7 @@ echo build_met=${build_met} >> job_control_status
 echo build_metviewer=${build_metviewer} >> job_control_status
 echo run_sandy=${run_sandy} >> job_control_status
 
+echo
 echo Job Control Settings:
 cat job_control_status
 
