@@ -16,8 +16,8 @@ build_metviewer=false
 run_sandy=true
 
 # get list of modified files
-diff_files=`git diff --name-only ${sha_before} ${sha_after}`
-echo "Modified files (git diff):"
+diff_files=`git diff --name-only ${reference_sha}`
+echo "Modified files (git diff --name-only ${reference_sha}):"
 echo $diff_files
 
 # check for ci-build-base
