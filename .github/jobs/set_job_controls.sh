@@ -21,9 +21,8 @@ echo "Modified files (git diff --name-only ${reference_sha}):"
 echo ${diff_files}
 
 # check for ci-build-base
-if [ grep -q "ci-build-base" <<< "$commit_msg" ] ||
-   [ grep -q "components/base" <<< "$diff_files" ]; then
-  echo "Found ci-build-base or components/base has changed. Will rebuild all components."
+if grep -q "ci-build-base" <<< "$commit_msg"; then
+  echo "Found ci-build-base in the commit message. Will rebuild all components."
   build_base=true
 fi
 
@@ -41,36 +40,60 @@ elif [ grep -q "ci-build-all" <<< "$commit_msg" ]; then
 
 # check for specific build commands
 else
-  if [ grep -q "ci-build-wps-wrf" <<< "$commit_msg" ] ||
-     [ grep -q "components/wps_wrf" <<< "$diff_files" ]; then
-    echo "Found ci-build-wps-wrf or components/wps_wrf has changed."
+  if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
+    echo "Found ci-build-wps-wrf in the commit message."
     build_wps_wrf=true
   fi
-  if [ grep -q "ci-build-gsi" <<< "$commit_msg" ] ||
-     [ grep -q "components/gsi" <<< "$diff_files" ]; then
-    echo "Found ci-build-gsi or components/gsi has changed."
+  if grep -q "ci-build-gsi" <<< "$commit_msg"; then
+    echo "Found ci-build-gsi in the commit message."
     build_gsi=true
   fi
-  if [ grep -q "ci-build-upp" <<< "$commit_msg" ] ||
-     [ grep -q "components/upp" <<< "$diff_files" ]; then
-    echo "Found ci-build-upp or components/upp has changed."
+  if grep -q "ci-build-upp" <<< "$commit_msg"; then
+    echo "Found ci-build-upp in the commit message."
     build_upp=true
   fi
-  if [ grep -q "ci-build-python" <<< "$commit_msg" ] ||
-     [ grep -q "components/python" <<< "$diff_files" ]; then
-    echo "Found ci-build-python or components/python has changed."
+  if grep -q "ci-build-python" <<< "$commit_msg"; then
+    echo "Found ci-build-python in the commit message."
     build_python=true
   fi
-  if [ grep -q "ci-build-met" <<< "$commit_msg" ] ||
-     [ grep -q "components/met" <<< "$diff_files" ]; then
-    echo "Found ci-build-met or components/met has changed."
+  if grep -q "ci-build-met" <<< "$commit_msg"; then
+    echo "Found ci-build-met in the commit message."
     build_met=true
   fi
-  if [ grep -q "ci-build-metviewer" <<< "$commit_msg" ] ||
-     [ grep -q "components/metviewer" <<< "$diff_files" ]; then
-    echo "Found ci-build-metviewer or components/metviewer has changed."
+  if grep -q "ci-build-metviewer" <<< "$commit_msg"; then
+    echo "Found ci-build-metviewer in the commit message."
     build_metviewer=true
   fi
+fi
+
+# check diff files
+if grep -q "components/base/" <<< "$diff_files"; then
+  echo "components/base has changed. Will rebuild all components."
+  build_base=true
+fi
+if grep -q "components/wps_wrf/" <<< "$diff_files"; then
+  echo "components/wps_wrf has changed."
+  build_wps_wrf=true
+fi
+if grep -q "components/gsi/" <<< "$diff_files"; then
+  echo "components/gsi has changed."
+  build_gsi=true
+fi
+if grep -q "components/upp/" <<< "$diff_files"; then
+  echo "components/upp has changed."
+  build_upp=true
+fi
+if grep -q "components/python/" <<< "$diff_files"; then
+  echo "components/python has changed."
+  build_python=true
+fi
+if grep -q "components/met/" <<< "$diff_files"; then
+  echo "components/met has changed."
+  build_met=true
+fi
+if grep -q "components/metviewer/" <<< "$diff_files"; then
+  echo "components/metviewer has changed."
+  build_metviewer=true
 fi
 
 # rebuild all software components but not the base image
