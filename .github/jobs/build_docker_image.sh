@@ -42,7 +42,7 @@ if [ "${BUILD_IMAGE}" == "true" ]; then
 
       # Check for Dockerfile or Dockerfile_simple
       BASE_DOCKERFILE="Dockerfile"
-      if [ "${BASE_IMAGE}" =~ "simple" ]; then
+      if [[ "${BASE_IMAGE}" =~ "simple" ]]; then
          BASE_DOCKERFILE="Dockerfile_simple"
       fi
 
