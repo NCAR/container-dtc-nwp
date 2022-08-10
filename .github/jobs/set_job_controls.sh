@@ -15,6 +15,11 @@ build_met=false
 build_metviewer=false
 run_sandy=true
 
+# get list of modified files
+diff_files=`git diff --name-only ${sha_before} ${sha_after}`
+echo "Modified files (git diff):"
+echo $diff_files
+
 # check for ci-build-base
 if grep -q "ci-build-base" <<< "$commit_msg"; then
   echo "Found ci-build-base in the commit message. Will rebuild all components."
