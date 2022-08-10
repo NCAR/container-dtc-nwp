@@ -22,77 +22,77 @@ echo ${diff_files}
 
 # check for ci-build-base
 if grep -q "ci-build-base" <<< "$commit_msg"; then
-  echo "Found ci-build-base in the commit message. Will rebuild all components."
+  echo "Build base and all components for ci-build-base in the commit message."
   build_base=true
 fi
 
 # handle workflow dispatch
 if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
   if [ "${force_run}" == "true" ]; then
-    echo "Rebuild all components for workflow dispatch events."
+    echo "Build all components for workflow dispatch events."
     build_all=true
   fi
 
 # check for ci-build-all
-elif [ grep -q "ci-build-all" <<< "$commit_msg" ]; then
-  echo "Found ci-build-all in the commit message."
+elif grep -q "ci-build-all" <<< "$commit_msg"; then
+  echo "Build all components for ci-build-all in the commit message."
   build_all=true
 
 # check for specific build commands
 else
   if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
-    echo "Found ci-build-wps-wrf in the commit message."
+    echo "Build WPS/WRF for ci-build-wps-wrf in the commit message."
     build_wps_wrf=true
   fi
   if grep -q "ci-build-gsi" <<< "$commit_msg"; then
-    echo "Found ci-build-gsi in the commit message."
+    echo "Build GSI for ci-build-gsi in the commit message."
     build_gsi=true
   fi
   if grep -q "ci-build-upp" <<< "$commit_msg"; then
-    echo "Found ci-build-upp in the commit message."
+    echo "Build UPP for ci-build-upp in the commit message."
     build_upp=true
   fi
   if grep -q "ci-build-python" <<< "$commit_msg"; then
-    echo "Found ci-build-python in the commit message."
+    echo "Build Python for ci-build-python in the commit message."
     build_python=true
   fi
   if grep -q "ci-build-met" <<< "$commit_msg"; then
-    echo "Found ci-build-met in the commit message."
+    echo "Build MET for ci-build-met in the commit message."
     build_met=true
   fi
   if grep -q "ci-build-metviewer" <<< "$commit_msg"; then
-    echo "Found ci-build-metviewer in the commit message."
+    echo "Build METviewer for ci-build-metviewer in the commit message."
     build_metviewer=true
   fi
 fi
 
 # check diff files
 if grep -q "components/base/" <<< "$diff_files"; then
-  echo "components/base has changed. Will rebuild all components."
+  echo "Build base and all components since components/base has changed."
   build_base=true
 fi
 if grep -q "components/wps_wrf/" <<< "$diff_files"; then
-  echo "components/wps_wrf has changed."
+  echo "Build WPS/WRF since components/wps_wrf has changed."
   build_wps_wrf=true
 fi
 if grep -q "components/gsi/" <<< "$diff_files"; then
-  echo "components/gsi has changed."
+  echo "Build GSI since components/gsi has changed."
   build_gsi=true
 fi
 if grep -q "components/upp/" <<< "$diff_files"; then
-  echo "components/upp has changed."
+  echo "Build UPP since components/upp has changed."
   build_upp=true
 fi
 if grep -q "components/python/" <<< "$diff_files"; then
-  echo "components/python has changed."
+  echo "Build Python since components/python has changed."
   build_python=true
 fi
 if grep -q "components/met/" <<< "$diff_files"; then
-  echo "components/met has changed."
+  echo "Build MET since components/met has changed."
   build_met=true
 fi
 if grep -q "components/metviewer/" <<< "$diff_files"; then
-  echo "components/metviewer has changed."
+  echo "Build METviewer since components/metviewer has changed."
   build_metviewer=true
 fi
 

@@ -2,6 +2,7 @@ FROM dtcenter/base_image:latest
 MAINTAINER Kate Fossell <fossell@ucar.edu> or Michael Kavulich <kavulich@ucar.edu>
 # 
 # This Dockerfile compiles UPP from source during "docker build" step
+
 USER comuser
 RUN umask 0002 \
  && mkdir /comsoftware/upp
