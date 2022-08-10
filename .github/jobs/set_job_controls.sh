@@ -15,9 +15,18 @@ build_met=false
 build_metviewer=false
 run_sandy=true
 
+# determine comparison version
+if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
+  ref_version=${GITHUB_BASE_REF}
+elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
+  ref_version=''
+else
+  ref_version=${reference_sha}
+fi
+
 # get list of modified files
-diff_files=`git diff --name-only ${reference_sha}`
-echo "Modified files (git diff --name-only ${reference_sha}):"
+diff_files=`git diff --name-only ${ref_version}`
+echo "Modified files (git diff --name-only ${ref_version}):"
 echo ${diff_files}
 echo
 
