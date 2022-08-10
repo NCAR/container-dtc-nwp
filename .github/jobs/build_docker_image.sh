@@ -47,7 +47,8 @@ if [ "${BUILD_IMAGE}" == "true" ]; then
       fi
 
       time_command docker build -t ${BASE_IMAGE} \
-         -f ${GITHUB_WORKSPACE}/components/base/${BASE_DOCKERFILE}
+         -f ${GITHUB_WORKSPACE}/components/base/${BASE_DOCKERFILE} \
+         ${GITHUB_WORKSPACE}/components/base
    fi
 
    COMPONENT_IMAGE=dtcenter/container-dtc-nwp-dev:${COMPONENT}_${SOURCE_BRANCH}
