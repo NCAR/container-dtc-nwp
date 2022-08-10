@@ -15,6 +15,15 @@ build_met=false
 build_metviewer=false
 run_sandy=true
 
+echo "git status"
+git status
+
+echo "git branch"
+git branch
+
+echo "git log -v"
+git log -v
+
 # get list of modified files
 diff_files=`git diff --name-only ${reference_sha}`
 echo "Modified files (git diff --name-only ${reference_sha}):"
