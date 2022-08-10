@@ -5,6 +5,7 @@ MAINTAINER John Halley Gotway <johnhg@ucar.edu>
 # This Dockerfile compiles MET from source during "docker build" step
 #
 
+
 ENV MET_GIT_NAME    v10.0.0
 ENV MET_GIT_URL     https://github.com/dtcenter/MET.git
 ENV MET_DEVELOPMENT true

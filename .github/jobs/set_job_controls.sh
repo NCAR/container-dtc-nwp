@@ -15,23 +15,15 @@ build_met=false
 build_metviewer=false
 run_sandy=true
 
-echo "git status"
-git status
-
-echo "git branch"
-git branch
-
-echo "git log -v"
-git log -v
-
 # get list of modified files
 diff_files=`git diff --name-only ${reference_sha}`
 echo "Modified files (git diff --name-only ${reference_sha}):"
-echo $diff_files
+echo ${diff_files}
 
 # check for ci-build-base
-if grep -q "ci-build-base" <<< "$commit_msg"; then
-  echo "Found ci-build-base in the commit message. Will rebuild all components."
+if [ grep -q "ci-build-base" <<< "$commit_msg" ] ||
+   [ grep -q "components/base" <<< "$diff_files" ]; then
+  echo "Found ci-build-base or components/base has changed. Will rebuild all components."
   build_base=true
 fi
 
@@ -43,34 +35,40 @@ if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
   fi
 
 # check for ci-build-all
-elif grep -q "ci-build-all" <<< "$commit_msg"; then
+elif [ grep -q "ci-build-all" <<< "$commit_msg" ]; then
   echo "Found ci-build-all in the commit message."
   build_all=true
 
 # check for specific build commands
 else
-  if grep -q "ci-build-wps-wrf" <<< "$commit_msg"; then
-    echo "Found ci-build-wps-wrf in the commit message."
+  if [ grep -q "ci-build-wps-wrf" <<< "$commit_msg" ] ||
+     [ grep -q "components/wps_wrf" <<< "$diff_files" ]; then
+    echo "Found ci-build-wps-wrf or components/wps_wrf has changed."
     build_wps_wrf=true
   fi
-  if grep -q "ci-build-gsi" <<< "$commit_msg"; then
-    echo "Found ci-build-gsi in the commit message."
+  if [ grep -q "ci-build-gsi" <<< "$commit_msg" ] ||
+     [ grep -q "components/gsi" <<< "$diff_files" ]; then
+    echo "Found ci-build-gsi or components/gsi has changed."
     build_gsi=true
   fi
-  if grep -q "ci-build-upp" <<< "$commit_msg"; then
-    echo "Found ci-build-upp in the commit message."
+  if [ grep -q "ci-build-upp" <<< "$commit_msg" ] ||
+     [ grep -q "components/upp" <<< "$diff_files" ]; then
+    echo "Found ci-build-upp or components/upp has changed."
     build_upp=true
   fi
-  if grep -q "ci-build-python" <<< "$commit_msg"; then
-    echo "Found ci-build-python in the commit message."
+  if [ grep -q "ci-build-python" <<< "$commit_msg" ] ||
+     [ grep -q "components/python" <<< "$diff_files" ]; then
+    echo "Found ci-build-python or components/python has changed."
     build_python=true
   fi
-  if grep -q "ci-build-met" <<< "$commit_msg"; then
-    echo "Found ci-build-met in the commit message."
+  if [ grep -q "ci-build-met" <<< "$commit_msg" ] ||
+     [ grep -q "components/met" <<< "$diff_files" ]; then
+    echo "Found ci-build-met or components/met has changed."
     build_met=true
   fi
-  if grep -q "ci-build-metviewer" <<< "$commit_msg"; then
-    echo "Found ci-build-metviewer in the commit message."
+  if [ grep -q "ci-build-metviewer" <<< "$commit_msg" ] ||
+     [ grep -q "components/metviewer" <<< "$diff_files" ]; then
+    echo "Found ci-build-metviewer or components/metviewer has changed."
     build_metviewer=true
   fi
 fi
