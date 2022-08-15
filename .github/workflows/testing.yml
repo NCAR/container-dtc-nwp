@@ -15,8 +15,36 @@ on:
 
   workflow_dispatch:
     inputs:
-      force_run:
-        description: "Run Sandy"
+      force_build_base:
+        description: "Build Base Image"
+        default: false
+        type: boolean
+      force_build_wps_wrf:
+        description: "Build WPS/WRF Image"
+        default: false
+        type: boolean
+      force_build_gsi:
+        description: "Build GSI Image"
+        default: false
+        type: boolean
+      force_build_upp:
+        description: "Build UPP Image"
+        default: false
+        type: boolean
+      force_build_python:
+        description: "Build Python Image"
+        default: false
+        type: boolean
+      force_build_met:
+        description: "Build MET Image"
+        default: false
+        type: boolean
+      force_build_metviewer:
+        description: "Build METviewer Image"
+        default: false
+        type: boolean
+      force_run_sandy:
+        description: "Run Sandy Case"
         default: true
         type: boolean
 
