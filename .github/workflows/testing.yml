@@ -83,7 +83,14 @@ jobs:
         env:
           commit_msg: ${{ github.event.head_commit.message }}
           reference_sha: ${{ github.event.before }}
-          force_run: ${{ github.event.inputs.force_run }}
+          force_build_base: ${{ github.event.inputs.force_build_base }}
+          force_build_wps_wrf: ${{ github.event.inputs.force_build_wps_wrf }}
+          force_build_gsi: ${{ github.event.inputs.force_build_gsi }}
+          force_build_upp: ${{ github.event.inputs.force_build_upp }}
+          force_build_python: ${{ github.event.inputs.force_build_python }}
+          force_build_met: ${{ github.event.inputs.force_build_met }}
+          force_build_metviewer: ${{ github.event.inputs.force_build_metviewer }}
+          force_run_sandy: ${{ github.event.inputs.force_run_sandy }}
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
