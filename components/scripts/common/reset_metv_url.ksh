@@ -7,10 +7,10 @@ cat ${MV_PROP} | egrep -v url.output > ${MV_PROP}-NEW
 
 # Get public ip address:
 IP_ADDRESS=`curl ifconfig.me`
-echo "Resetting METviewer URL to http://${IP_ADDRESS}/metviewer/metviewer1.jsp"
+echo "Resetting METviewer URL to http://${IP_ADDRESS}:8080/metviewer/metviewer1.jsp"
 
 # Add new url.output line
-echo "url.output=http://${IP_ADDRESS}/metviewer_output/" >> ${MV_PROP}-NEW
+echo "url.output=http://${IP_ADDRESS}:8080/metviewer_output/" >> ${MV_PROP}-NEW
 
 # Overwrite properties file
 mv ${MV_PROP}-NEW ${MV_PROP}
