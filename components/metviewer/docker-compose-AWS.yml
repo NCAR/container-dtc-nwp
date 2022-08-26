@@ -1,31 +1,31 @@
+version: "3.0"
 services:
-  db:
-    image: mysql:5.7
-    container_name: mysql_mv
-    user: "mysql:mysql"
-    ports:
-        - "6603:3306"
-    volumes:
-        - ${CASE_DIR}/metviewer/mysql:/var/lib/mysql
+    db:
+      image: mysql:5.7
+      container_name: mysql_mv
+      user: "mysql:mysql"
+      ports:
+          - "6603:3306"
+      volumes:
+          - ${MYSQL_DIR}:/var/lib/mysql
 
-    environment:
-        MYSQL_ROOT_PASSWORD: mvuser
-    tty: true
+      environment:
+          MYSQL_ROOT_PASSWORD: mvuser
+      tty: true
 
-    # For AWS, map ports using "8080:8080"
-  metviewer:
-    image: dtcenter/nwp-container-metviewer:latest
-    container_name: metviewer
-    ports:
-    - "8080:8080"
-    volumes:
-      - ${PROJ_DIR}/container-dtc-nwp/components/scripts:/scripts
-      - ${CASE_DIR}/metprd:/data
-      - ${CASE_DIR}/metviewer/output/xml:/opt/tomcat/webapps/metviewer_output/xml
-      - ${CASE_DIR}/metviewer/output/plots:/opt/tomcat/webapps/metviewer_output/plots
-      - ${CASE_DIR}/metviewer/output/data:/opt/tomcat/webapps/metviewer_output/data
-      - ${CASE_DIR}/metviewer/output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
-    links:
-      - db:mysql_mv
-    tty: true
+      # For AWS, map ports using "8080:8080"
+    metviewer:
+      image: dtcenter/container-dtc-nwp-dev:metviewer_feature_93-aws_port
+      container_name: metviewer
+      ports:
+      - "8080:8080"
+      volumes:
+        - ${METVIEWER_DATA}:/data
+        - ${METVIEWER_DIR}/metviewer_output/xml:/opt/tomcat/webapps/metviewer_output/xml
+        - ${METVIEWER_DIR}/metviewer_output/plots:/opt/tomcat/webapps/metviewer_output/plots
+        - ${METVIEWER_DIR}/metviewer_output/data:/opt/tomcat/webapps/metviewer_output/data
+        - ${METVIEWER_DIR}/metviewer_output/scripts:/opt/tomcat/webapps/metviewer_output/scripts
+      links:
+        - db:mysql_mv
+      tty: true
 #
