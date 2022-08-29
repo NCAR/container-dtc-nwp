@@ -15,7 +15,7 @@ services:
 
       # For AWS, map ports using "8080:8080"
     metviewer:
-      image: dtcenter/container-dtc-nwp-dev:metviewer_feature_93-aws_port
+      image: dtcenter/nwp-container-metviewer:latest
       container_name: metviewer
       ports:
       - "8080:8080"
