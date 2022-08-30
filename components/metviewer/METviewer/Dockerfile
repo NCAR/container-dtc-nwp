@@ -69,10 +69,12 @@ RUN if [ "x${METDATADB_GIT_NAME}" = "x" ]; then \
 # Install system updates
 #
 RUN yum -y update \
- && yum -y install epel-release \
  && yum -y install 'dnf-command(config-manager)' \
  && yum-config-manager --enable PowerTools
 
+RUN yum -y install --setopt=tsflags=nodocs epel-release && \
+    yum -y erase vim-minimal && \
+    yum -y update && yum clean all
 #
 # Install required packages
 #
