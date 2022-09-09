@@ -1,6 +1,7 @@
 #! /bin/bash
 
 source ${GITHUB_WORKSPACE}/.github/jobs/bash_functions.sh
+export RUN_METVIEWER="false"
 
 #
 # Run all commands for a particular tutorial case.
@@ -185,15 +186,23 @@ fi
 # Launch METviewer
 time_command docker-compose up -d
 
-# Sleep for 2 minutes before loading data
-time_command sleep 120
+# Load data and plot via METviewer only if configured to do so 
+if [ "${RUN_METVIEWER}" == "true" ]; then
 
-# Load data into METviewer
-time_command docker exec -i metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
+   echo "Running the METviewer database loading and plotting steps."
 
-# Run METviewer to create plots
-for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
-  time_command docker exec -i metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
-done
+   # Sleep for 2 minutes before loading data
+   time_command sleep 120
+
+   # Load data into METviewer
+   time_command docker exec -i metviewer /scripts/common/metv_load_all.ksh mv_${CASE_NAME}
+
+   # Run METviewer to create plots
+   for XML_FILE in `ls ${PROJ_DIR}/container-dtc-nwp/components/scripts/${CASE_SCRIPT}/metviewer/*.xml`; do
+      time_command docker exec -i metviewer /METviewer/bin/mv_batch.sh /scripts/${CASE_SCRIPT}/metviewer/`basename ${XML_FILE}`
+   done
+else
+   echo "Skipping the METviewer database loading and plotting steps." 
+fi
 
 echo "Done with the ${CASE_NAME} case."
