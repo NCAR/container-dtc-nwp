@@ -1,3 +1,8 @@
+
+# NOTICE
+**Effective October 1, 2022, the DTC has ceased all activities supporting this project. The resources associated with this project will remain available in their current state for community use until further notice.**
+
+
 # container-dtc-nwp
 The Developmental Testbed Center (DTC) developed NWP end-to-end systems in Docker containers for community use.
 
